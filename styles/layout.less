@@ -16,7 +16,7 @@ body {
         .gradient(#333, #444444, #333333);
     }
 }
-body > div {
+#main, #sidebar {
     position: absolute;
     top: @header-height;
     bottom: 0;
@@ -24,17 +24,7 @@ body > div {
     right: 50%;
     
     .box-sizing();
-    
-    + div {
-        left: 50%;
-        right: 0;
-        border-left: 1px solid #ccc;
-        
-        > div {
-            border-color: #666;
-        }
-    }
-    
+
     > div {
         min-height: 100px;
         padding: 10px;
@@ -76,7 +66,15 @@ body > div {
         } 
     }
 }
-
+#sidebar {
+    left: 50%;
+    right: 0;
+    border-left: 1px solid #ccc;
+    
+    > div {
+        border-color: #666;
+    }
+}
 #chat-input {
     position: absolute;
     bottom: 0;
