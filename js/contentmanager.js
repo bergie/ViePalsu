@@ -30,7 +30,8 @@ jQuery(document).ready(function() {
 
         if (data['@'] !== '<undefined>') {
             // Update to existing instance
-            var messageObject = VIE.ContainerManager.instanceSingletons[data['@']];
+            var documentId = data['@'].substring(1, data['@'].length - 1);
+            var messageObject = VIE.ContainerManager.instanceSingletons[documentId];
             messageObject.set(data);
             return;
         }
