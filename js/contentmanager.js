@@ -16,11 +16,11 @@ document.write('<script type="text/javascript" src="/socket.io/socket.io.js"></s
 
 jQuery(document).ready(function() {
 
-    var socket = new io.Socket(); 
+    var socket = new io.Socket(), log = $('#chat-history > *');
     socket.connect();
-    socket.on('connect', function(){ 
-        socket.send('Ping'); 
-    }) 
+    socket.on('connect', function(){
+        socket.send('Ping');
+    })
     socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
@@ -43,8 +43,15 @@ jQuery(document).ready(function() {
 
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
-        var json = model.toJSONLD();
-        socket.send(json);
+			var json = model.toJSONLD();
+			socket.send(json);
+
+			// auto scroll if we're within 50 pixels of the bottom
+			if ( log.scrollTop() + 50 >= log[0].scrollHeight - log.height()) {
+				window.setTimeout(function() {
+					log.scrollTop(log[0].scrollHeight);
+				}, 10);
+			}
     };
 
     // Make all RDFa entities editable
