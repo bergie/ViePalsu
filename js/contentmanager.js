@@ -46,8 +46,6 @@ jQuery(document).ready(function() {
         socket.send(json);
     };
 
-    //jQuery('ol[typeof="sioc:Forum"]').each(
-
     // Make all RDFa entities editable
     jQuery('[typeof][about]').each(function() {
         jQuery(this).vieSemanticAloha();
