@@ -4,7 +4,7 @@
 
 body {
     background-color: #f8f8f8;
-    
+    overflow-x: hidden;
     > h1 {
         disply: block;
         color: #fff;
@@ -30,6 +30,7 @@ body {
         padding: 10px;
         
         border-bottom: 1px solid #ccc;
+        position: relative;
         
         .box-sizing();
         
@@ -41,7 +42,7 @@ body {
             .gradient(#666, #777777, #666666);
             
             border-top: 1px solid #999;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #444;
             border-left: 1px solid #666;
             border-right: 1px solid #333;
             
@@ -49,7 +50,7 @@ body {
             z-index: 2;
             
             
-            &:before {
+            &:before, &:after {
                 content: " ";
                 display: block;
                 position: absolute;
@@ -59,11 +60,62 @@ body {
                 right: 0;
                 border-left: 1px solid #999;
             }
+            
+            &:after {
+                border-left: 0;
+                border-bottom: 1px solid #fff;
+                bottom: -2px;
+            }
         }
         
-        &:last-child {
-            border-bottom: 0;
-        } 
+         &:after {
+            content: " ";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            .gradient(#f8f8f8, #f8f8f8, #eeeeee);
+            z-index: -1;
+        }
+        
+        &:last-child { border-bottom: 0; }
+        &:last-child:after { display: none; }
+    }
+}
+#main > div:after, #sidebar > div:after, #main:after, #sidebar:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    .gradient(#f8f8f8, #f8f8f8, #eeeeee);
+    z-index: -1;
+}
+#main {
+    #agenda {
+        > h2 {
+            margin-right: -11px;
+        }
+    }
+    #chat-input {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;   
+    }
+    #chat-history {
+        position: absolute;
+        top: 100px;
+        bottom: 100px;
+        left: 0;
+        right: 0;
+    }
+    #chat-input, #chat-history {
+        border-top: 1px solid #fff;
     }
 }
 #sidebar {
@@ -74,21 +126,4 @@ body {
     > div {
         border-color: #666;
     }
-}
-#chat-input {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-}
-#chat-history {
-    position: absolute;
-    top: 100px;
-    bottom: 100px;
-    left: 0;
-    right: 0;
-}
-#chat-input, #chat-history {
-    border-top: 1px solid #fff;
 }
