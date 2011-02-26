@@ -21,29 +21,28 @@ jQuery(document).ready(function() {
     socket.on('connect', function(){ 
         socket.send('Ping'); 
     }) 
-    socket.on('message', function(data){ 
+    socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
             console.log("Got", data);
             return;
         }
 
-        if (data.id !== undefined) {
+        if (data['@'] !== '<undefined>') {
             // Update to existing instance
-            var messageObject = VIE.ContainerManager.instanceSingletons[data.id];
+            var messageObject = VIE.ContainerManager.instanceSingletons[data['@']];
             messageObject.set(data);
             return;
         }
 
-        if (data.a == 'sioc:Post') {
+        if (data['a'] == 'sioc:Post') {
             ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});
         }
     });
 
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
-        var json = model.toJSON();
-        json.a = model.getType();
+        var json = model.toJSONLD();
         socket.send(json);
     };
 
