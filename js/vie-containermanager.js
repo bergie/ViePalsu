@@ -147,6 +147,7 @@ VIE.ContainerManager = {
 
     getModelForContainer: function(element) {
         var type = VIE.ContainerManager._getContainerValue(element, 'typeof');
+        
 
         if (typeof VIE.ContainerManager.models[type] !== 'undefined') {
             // We already have a model for this type
@@ -160,6 +161,21 @@ VIE.ContainerManager = {
         modelProperties.getType = function() {
             return type;
         }
+
+        modelProperties.toJSONLD = function() {
+            var instance = this;
+            var instanceLD = {"@":"<" + instance.id + ">"};
+
+            // This can have only one type here, in rdf more types can be allowed
+            instanceLD.a = instance.getType();
+            for (var property in instance.attributes) if(instance.attributes.hasOwnProperty(property)) { //  && typeof instance.attributes[property] != "function"
+                if (["id"].indexOf(property) == -1)
+                    instanceLD[property] = instance.attributes[property];
+            }
+            return instanceLD;
+        }
+
+        modelProperties.getInstanceForJSONLD = function(){}
 
         VIE.ContainerManager.findAdditionalModelProperties(element, modelProperties);
 
