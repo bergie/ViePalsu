@@ -9,7 +9,6 @@ server = http.createServer(function(request, response){
     var uri = url.parse(request.url).pathname;
     if (uri === '/') {
         var filename = path.join(process.cwd(), 'index.html');
-        console.log(filename);
     } else {
         var filename = path.join(process.cwd(), uri);
     }
