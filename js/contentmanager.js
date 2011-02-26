@@ -23,19 +23,28 @@ jQuery(document).ready(function() {
     }) 
     socket.on('message', function(data){ 
         if (typeof data !== 'object') {
+            // Textual data
             console.log("Got", data);
             return;
         }
 
         if (data.id !== undefined) {
-             var messageObject = VIE.ContainerManager.instanceSingletons[data.id];
-             messageObject.set(data);
+            // Update to existing instance
+            var messageObject = VIE.ContainerManager.instanceSingletons[data.id];
+            messageObject.set(data);
+            return;
+        }
+
+        if (data.a == 'sioc:Post') {
+            ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});
         }
     });
 
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
-        socket.send(model.toJSON());
+        var json = model.toJSON();
+        json.a = model.getType();
+        socket.send(json);
     };
 
     //jQuery('ol[typeof="sioc:Forum"]').each(
