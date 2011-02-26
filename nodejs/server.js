@@ -89,7 +89,7 @@ socket.on('connection', function(client) {
                     redisClient.hset('ontologies', data['a'], true);
                 } else {
                     // Anonymous entity, save to Redis list based on type
-                    redisClient.lpush('anon-' + data['a'], JSON.stringify(data));
+                    redisClient.rpush('anon-' + data['a'], JSON.stringify(data));
                     redisClient.hset('anon-ontologies', data['a'], true);
                 }
             }
