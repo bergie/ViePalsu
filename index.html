@@ -1,17 +1,33 @@
 <!doctype html>
-<html>
+<html
+    version="HTML+RDFa 1.1"
+    xmlns:mgd="http://www.midgard-project.org/midgard2/9.03"
+    xmlns:sioc="http://rdfs.org/sioc/ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/">
     <head>
         <title>Viepalsu</title>
         <link rel="stylesheet/less" type="text/css" href="styles/base.less">
         <script src="js/less-1.0.41.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script src="js/contentmanager.js" type="text/javascript"></script>
     </head>
-    <body>
-        <h1>Meeting Title</h1>
+    <body typeof="mgd:event" about="#meeting">
+        <h1 property="dcterms:title">Meeting Title</h1>
         <div id="main">
             <div id="agenda">
                 <h2>Agenda</h2>
+                <section property="mgd:agenda">
+                    <p>
+                        Write the meeting agenda here.
+                    </p>
+                </section>
             </div>
-            <div id="chat-history">
+            <div id="chat-history" typeof="sioc:Forum" rel="sioc:has_container">
+                <article class="message" typeof="sioc:Post" about="#example">
+                    <section property="sioc:content">
+                        <p>Post contents</p>
+                    </section>
+                </article>
             </div>
             <div id="chat-input">
             </div>
