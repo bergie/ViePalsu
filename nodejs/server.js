@@ -56,6 +56,9 @@ socket.on('connection', function(client) {
 
     // Send current data from Redis
     redisClient.hkeys('anon-ontologies', function(err, ontologies) {
+        if (ontologies === undefined) {
+            return;
+        }
         ontologies.forEach(function(ontology, i) {
             redisClient.lrange('anon-' + ontology, 0, -1, function(err, anonItems) {
                 anonItems.forEach(function(anonItem, i) {
@@ -66,6 +69,9 @@ socket.on('connection', function(client) {
         });
     });
     redisClient.hkeys('ontologies', function(err, ontologies) {
+        if (ontologies === undefined) {
+            return;
+        }
         ontologies.forEach(function(ontology, i) {
             redisClient.hkeys(ontology, function(err, itemIdentifiers) {
                 itemIdentifiers.forEach(function(itemIdentifier, i) {
