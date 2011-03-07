@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
     socket.connect();
     socket.on('connect', function(){
         socket.send('Ping');
-    })
+    });
     socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
@@ -36,7 +36,7 @@ jQuery(document).ready(function() {
             return;
         }
 
-        if (data['a'] == 'sioc:Post') {
+        if (data.a == 'sioc:Post') {
             ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});
         }
     });
