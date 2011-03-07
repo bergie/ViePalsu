@@ -1,0 +1,92 @@
+<mockup version="1.0" skin="sketch" measuredW="982" measuredH="475" mockupW="704" mockupH="448">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="278" y="27" w="704" h="448" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Palsu%0Ahttp%3A//palsu.net/</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::SubTitle" x="299" y="144" w="358" h="-1" measuredW="247" measuredH="40" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Palsu%20developer%20telco</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Paragraph" x="304" y="184" w="385" h="58" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Agenda%3A%20In%20this%20meeting%20we%20will%20discuss%20how%20to%20demo%20Palsu%20to%20our%20users%2C%20and%20the%20ontologies%20to%20use</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::TextArea" x="299" y="391" w="341" h="50" measuredW="200" measuredH="140" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Write%20a%20new%20message</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="649" y="391" w="55" h="50" measuredW="55" measuredH="28" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Send</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::FieldSet" x="741" y="145" w="200" h="136" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>People</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="__group__" x="301" y="235" w="403" h="76" measuredW="403" measuredH="76" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::IconLabel" x="0" y="2" w="-1" h="-1" measuredW="48" measuredH="73" zOrder="0" locked="false" isInGroup="12">
+          <controlProperties>
+            <text>Bergie</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="55" y="0" w="348" h="76" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="12">
+          <controlProperties>
+            <text>Welcome%20to%20the%20Palsu%20meeting%21</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="13" controlTypeID="__group__" x="301" y="307" w="403" h="76" measuredW="403" measuredH="76" zOrder="9" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::IconLabel" x="0" y="2" w="-1" h="-1" measuredW="48" measuredH="73" zOrder="0" locked="false" isInGroup="13">
+          <controlProperties>
+            <text>Rupert</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="55" y="0" w="348" h="76" measuredW="200" measuredH="140" zOrder="1" locked="false" isInGroup="13">
+          <controlProperties>
+            <text>*Henri*%20should%20_draw%20a%20UI%20design_%20for%20Palsu%2C%20and%20I%20should%20_decide%20the%20ontologies_</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::TabBar" x="288" y="104" w="684" h="337" measuredW="209" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Meetings%2C%20Tasks</text>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::List" x="756" y="170" w="161" h="98" measuredW="100" measuredH="126" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nemein%0A%09Bergie%0ASalzburg%20Research%0A%09Rupert</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::FieldSet" x="741" y="287" w="200" h="136" measuredW="200" measuredH="170" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tasks</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="756" y="311" w="170" h="103" measuredW="162" measuredH="100" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5B%20%5D%20draw%20UI%20design%0A%09%28Bergie%29%0A%5Bx%5D%20decide%20the%20ontologies%0A%09%28Rupert%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::FieldSet" x="298" y="220" w="416" h="170" measuredW="200" measuredH="170" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Notes</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::Label" x="922" y="104" w="-1" h="-1" measuredW="45" measuredH="25" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bergie</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
