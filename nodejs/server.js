@@ -82,15 +82,15 @@ socket.on('connection', function(client) {
         console.log("Got message from client " + client.identifier, data);
         
         if (typeof data === 'object') {
-            if (data['a'] !== undefined) {
+            if (data.a !== undefined) {
                 if (data['@'] !== '<undefined>') {
                     // Identified object, save to Redis hash based on type
-                    redisClient.hset(data['a'], data['@'], JSON.stringify(data));
-                    redisClient.hset('ontologies', data['a'], true);
+                    redisClient.hset(data.a, data['@'], JSON.stringify(data));
+                    redisClient.hset('ontologies', data.a, true);
                 } else {
                     // Anonymous entity, save to Redis list based on type
-                    redisClient.rpush('anon-' + data['a'], JSON.stringify(data));
-                    redisClient.hset('anon-ontologies', data['a'], true);
+                    redisClient.rpush('anon-' + data.a, JSON.stringify(data));
+                    redisClient.hset('anon-ontologies', data.a, true);
                 }
             }
         }
@@ -111,5 +111,5 @@ socket.on('connection', function(client) {
         });
 
         console.log("Client " + client.identifier + " disconnected, client list is now", socketClients.length);
-    }) 
+    });
 });
