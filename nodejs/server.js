@@ -8,25 +8,14 @@ var redis = require('redis');
 
 var server = require('express').createServer();
 
-server.use('/js', express.static(process.cwd() + '/js')); 
-server.use('/styles', express.static(process.cwd() + '/styles'));
+server.configure(function(){
+    server.use(express.compiler({ src: process.cwd(), enable: ['less'] }));
+    server.use('/styles', express.static(process.cwd() + '/styles'));
+    server.use('/js', express.static(process.cwd() + '/js')); 
+});
 
 server.get('/', function(request, response) {
-    var filename = path.join(process.cwd(), 'index.html');
-    path.exists(filename, function(exists) {  
-        if (!exists) {  
-            response.writeHead(404, {"Content-Type": "text/plain"});  
-            response.write("404 Not Found\n");  
-            response.end();  
-            return;  
-        }  
-  
-        fs.readFile(filename, "binary", function(err, file) {  
-            response.writeHead(200);  
-            response.write(file, "binary");  
-            response.end();  
-        });
-    });
+    response.sendfile(path.join(process.cwd(), 'index.html'));
 });
 
 server.listen(8002);
