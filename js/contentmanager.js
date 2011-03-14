@@ -26,7 +26,13 @@ jQuery(document).ready(function() {
             console.log("Got", data);
             return;
         }
-        VIE.EntityManager.getByJSONLD(data);
+        var entity = VIE.EntityManager.getByJSONLD(data);
+        var container = entity.get('sioc:has_container');
+        if (container) {
+            container.each(function(containerInstance) {
+                containerInstance.get('sioc:container_of').add(entity, {fromServer: true});
+            });
+        }
 
         /*if (data.a == 'sioc:Post') {
             ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});

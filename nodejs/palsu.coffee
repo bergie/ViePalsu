@@ -66,7 +66,7 @@ socket.on 'connection', (client) ->
 
         # Generate a RDF Entity instance for the JSON-LD we got from the client
         modelInstance = VIE.EntityManager.getByJSONLD(data)
-        modelInstance.save()
+        #modelInstance.save()
 
         # Send the item back to everybody else
         for clientId, clientObject of socket.clients

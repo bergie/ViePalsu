@@ -23,17 +23,17 @@
                     </p>
                 </section>
             </div>
-            <div id="chat-history">
-            <dl typeof="sioc:Forum" rel="sioc:has_container">
-                <div typeof="sioc:Post" about="#post1">
-                    <dt>Screen name</dt>
-                    <dd class="message" >
-                        <div property="sioc:content">
-                            <p>Post contents</p>
-                        </div>
-                    </dd>
-                </div>
-            </dl>
+            <div id="chat-history" rel="sioc:container_of" rev="sioc:has_container">
+                <dl about="#meeting-comments" typeof="sioc:Forum" rel="sioc:container_of"  rev="sioc:has_container">
+                    <div typeof="sioc:Post" about="#post1">
+                        <dt>Screen name</dt>
+                        <dd class="message" >
+                            <div property="sioc:content">
+                                <p>Post contents</p>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
             </div>
             <div id="chat-input">
                 <div></div>

@@ -36,15 +36,15 @@ ViePalsu.DiscussionManager = {
     getCollection: function() {
         var discussionContainer = jQuery('[typeof="sioc:Forum"]');
 
-       discussionContainer.children('[about="#post1"]:first-child').hide();
+        discussionContainer.children('[about="#post1"]:first-child').hide();
 
-        ViePalsu.DiscussionManager.collection = VIE.CollectionManager.getCollectionForContainer(discussionContainer);
+        ViePalsu.DiscussionManager.collection = VIE.EntityManager.getBySubject('#meeting-comments').get('sioc:container_of');
+
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
             if (!options.fromServer) {
                 postInstance.save();
             }
         });
-        // TODO: Hide the example
     }
 };
 
