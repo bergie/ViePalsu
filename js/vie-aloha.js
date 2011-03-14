@@ -1,12 +1,28 @@
 (function($){
-    $.fn.vieSemanticAloha = function() {
+    $.fn.vieSemanticAloha = function(options) {
+        
+        // Default settings
+        var opt = { 
+                beforeEditing: null
+        };
+        $.extend(opt, options);
+
+
         this.each(function() {
-            var containerInstance = VIE.ContainerManager.getInstanceForContainer(jQuery(this));
+            var containerInstance = VIE.RDFaEntities.getInstance(jQuery(this));
             if (typeof containerInstance.editables === 'undefined') {
                 containerInstance.editables = {};
             }
-            VIE.ContainerManager.findContainerProperties(this, false).each(function() {
+
+            VIE.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
                 var containerProperty = jQuery(this);
+
+                // Call the configured beforeEditing function that may modify 
+                // the content of the editable before editing is possible
+                if (opt.beforeEditing !== null) {
+                    opt.beforeEditing(containerProperty);
+                }
+
                 var propertyName = containerProperty.attr('property');
 
                 if (containerInstance.get(propertyName) instanceof Array) {
@@ -17,8 +33,8 @@
                 containerInstance.editables[propertyName] = new GENTICS.Aloha.Editable(containerProperty);
                 containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
-        })
-    }
+        });
+    };
 })(jQuery);
 
 if (typeof VIE === 'undefined') {
@@ -38,7 +54,7 @@ VIE.AlohaEditable = {
 
             // Refresh possible RDFa objects from inside the editable
             jQuery('[typeof][about]', editableInstance.obj).each(function() {
-                var childInstance = VIE.ContainerManager.getInstanceForContainer(jQuery(this));
+                var childInstance = VIE.RDFaEntities.getInstance(jQuery(this));
             });
 
             // Copy editable contents to the modifiedProperties object

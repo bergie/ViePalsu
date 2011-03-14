@@ -7,8 +7,7 @@ document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'pl
 // We need VIE
 document.write('<script type="text/javascript" src="/js/underscore-min.js"></script>');
 document.write('<script type="text/javascript" src="/js/backbone-min.js"></script>');
-document.write('<script type="text/javascript" src="/js/vie-containermanager.js"></script>');
-document.write('<script type="text/javascript" src="/js/vie-collectionmanager.js"></script>');
+document.write('<script type="text/javascript" src="/js/vie.js"></script>');
 document.write('<script type="text/javascript" src="/js/vie-aloha.js"></script>');
 
 // And we need Socket.IO
@@ -27,18 +26,11 @@ jQuery(document).ready(function() {
             console.log("Got", data);
             return;
         }
+        VIE.EntityManager.getByJSONLD(data);
 
-        if (data['@'] !== '<undefined>') {
-            // Update to existing instance
-            var documentId = data['@'].substring(1, data['@'].length - 1);
-            var messageObject = VIE.ContainerManager.instanceSingletons[documentId];
-            messageObject.set(data);
-            return;
-        }
-
-        if (data.a == 'sioc:Post') {
+        /*if (data.a == 'sioc:Post') {
             ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});
-        }
+        }*/
     });
 
     // Implement our own Backbone.sync method
@@ -60,7 +52,7 @@ jQuery(document).ready(function() {
     });
 
     // Subscribe to the editable deactivated signal to update Backbone model
-    jQuery.each(VIE.ContainerManager.instances, function() {
+    jQuery.each(VIE.EntityManager.allEntities, function() {
         var modelInstance = this;
         jQuery.each(modelInstance.editables, function() {
             var editableInstance = this;
