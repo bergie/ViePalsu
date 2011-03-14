@@ -33,10 +33,6 @@ jQuery(document).ready(function() {
                 containerInstance.get('sioc:container_of').add(entity, {fromServer: true});
             });
         }
-
-        /*if (data.a == 'sioc:Post') {
-            ViePalsu.DiscussionManager.collection.add(data, {fromServer: true});
-        }*/
     });
 
     // Implement our own Backbone.sync method

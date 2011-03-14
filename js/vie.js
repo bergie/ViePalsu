@@ -640,6 +640,8 @@
         
         // Get predicate for an element
         getPredicate: function(element) {
+            var propertyName;
+
             element = jQuery(element);
             
             propertyName = element.attr('property');
