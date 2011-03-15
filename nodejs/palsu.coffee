@@ -18,7 +18,7 @@ server.configure ->
 server.get '/', (request, response) ->
     response.sendfile "#{process.cwd()}/index.html"
 
-server.listen(8002)
+server.listen(8000)
 
 # ## Handling sockets
 socket = io.listen server
