@@ -26,6 +26,7 @@ jQuery(document).ready(function() {
             console.log("Got", data);
             return;
         }
+        
         var entity = VIE.EntityManager.getByJSONLD(data);
         var container = entity.get('sioc:has_container');
         if (container) {

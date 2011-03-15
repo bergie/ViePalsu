@@ -1,33 +1,72 @@
 express = require 'express'
 io = require 'socket.io'
+_ = require('underscore')._
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 redis = require 'redis'
+
+date = new Date()
+console.log "#{date.toISOString()} foo"
+
+toUUID = () ->
+    S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
+    "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
 
 Backbone.sync = (method, model, success, error) ->
     redisClient = redis.createClient()
     
     if method is 'update'
-        if model.id is 'undefined'
-            # Anonymous entity, save to Redis list based on type
-            console.log "Saving anonymous entity #{model.type}"
-            redisClient.rpush "anon-#{model.type}", JSON.stringify model.toJSONLD()
-            redisClient.hset "anon-ontologies", model.type, true
-        else
-            # Identified object, save to Redis hash based on type
-            console.log "Saving entity #{model.type} #{model.id}"
-            redisClient.hset model.type, model.id, JSON.stringify model.toJSONLD()
-            redisClient.hset 'ontologies', model.type, true
+        if model.id.substr(0, 7) is "_:bnode"
+            # Generate UUID as the URI of the object
+            model.id = "urn:uuid:#{toUUID()}"
+            console.log "Anonymous entity, saving with URI #{model.id}"
+            
+        for predicate, object of model.toJSONLD()
+            if predicate is "@"
+                continue
+            
+            if VIE.RDFa._isReference object
+                if typeof object is "string"
+                    object = [object]
+                for reference in object
+                    reference = VIE.RDFa._fromReference reference
+                    console.log "Adding reference #{predicate}-#{reference} for #{model.id}"
+                    redisClient.sadd "#{predicate}-#{reference}", model.id
+
+            console.log model.id, predicate, object
+            redisClient.hset model.id, predicate, JSON.stringify object
             
     if method is 'read'
-        if model.id and model.type
-            console.log "Retrieving entity #{model.type} #{model.id}"
-            redisClient.hget model.type, model.id, (err, item) ->
+        if model instanceof VIE.RDFEntityCollection
+            if model.predicate and model.object
+                redisClient.smembers "#{model.predicate}-#{model.object}", (err, item) ->
+                    if err
+                        console.log err
+                        error err
+                    else if item
+                        for subject in item
+                            itemInstance = VIE.EntityManager.getByJSONLD
+                                "@": subject
+                            itemInstance.fetch
+                                success: (item) -> model.add(item)
+
+            else
+                throw "When seeking Collections, you must provide predicate and object"
+
+        else if model.id
+            console.log "Retrieving entity #{model.id}"
+            redisClient.hgetall model.id, (err, item) ->
                 if err
                     console.log err
                     error err
                 else if item
-                    success VIE.EntityManager.getByJSONLD JSON.parse item
+                    jsonld =
+                        "@": model.id
+                    for predicate, object of item
+                        jsonld[predicate] = JSON.parse object
+                    success VIE.EntityManager.getByJSONLD jsonld
+        else
+            throw "Unknown entity, please provide ID"
 
 server = express.createServer()
 server.configure -> 
@@ -57,6 +96,13 @@ socket.on 'connection', (client) ->
     meeting.fetch
         success: (item) ->
             client.send item.toJSONLD()
+            
+    meetingComments = new VIE.RDFEntityCollection
+    meetingComments.predicate = "sioc:has_container"
+    meetingComments.object = "#meeting-comments"
+    meetingComments.bind "add", (item) ->
+        client.send item.toJSONLD()
+    meetingComments.fetch()
 
     client.on 'message', (data) ->
         if typeof data isnt 'object'
@@ -66,7 +112,7 @@ socket.on 'connection', (client) ->
 
         # Generate a RDF Entity instance for the JSON-LD we got from the client
         modelInstance = VIE.EntityManager.getByJSONLD(data)
-        #modelInstance.save()
+        modelInstance.save()
 
         # Send the item back to everybody else
         for clientId, clientObject of socket.clients
