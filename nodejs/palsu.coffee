@@ -1,12 +1,8 @@
 express = require 'express'
 io = require 'socket.io'
-_ = require('underscore')._
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 redis = require 'redis'
-
-date = new Date()
-console.log "#{date.toISOString()} foo"
 
 toUUID = () ->
     S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
@@ -33,7 +29,6 @@ Backbone.sync = (method, model, success, error) ->
                     console.log "Adding reference #{predicate}-#{reference} for #{model.id}"
                     redisClient.sadd "#{predicate}-#{reference}", model.id
 
-            console.log model.id, predicate, object
             redisClient.hset model.id, predicate, JSON.stringify object
             
     if method is 'read'
@@ -113,8 +108,7 @@ socket.on 'connection', (client) ->
 
     client.on 'message', (data) ->
         if typeof data isnt 'object'
-            # If we get a regular string from the user, we answer with Pong
-            client.send "Pong"
+            # If we get a regular string from the user there is no need to pass it on
             return
 
         # Generate a RDF Entity instance for the JSON-LD we got from the client

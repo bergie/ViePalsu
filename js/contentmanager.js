@@ -17,9 +17,6 @@ jQuery(document).ready(function() {
 
     var socket = new io.Socket(), log = $('#chat-history > *');
     socket.connect();
-    socket.on('connect', function(){
-        socket.send('Ping');
-    });
     socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
