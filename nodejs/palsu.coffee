@@ -100,6 +100,13 @@ socket.on 'connection', (client) ->
     meetingComments = new VIE.RDFEntityCollection
     meetingComments.predicate = "sioc:has_container"
     meetingComments.object = "#meeting-comments"
+    meetingComments.comparator = (item) ->
+        itemDate = new Date item.get "dc:created"
+        itemIndex = 0
+        meetingComments.pluck("dc:created").forEach (date, index) ->
+            if itemDate.getTime() > new Date(date).getTime()
+                itemIndex = index + 1
+        return itemIndex
     meetingComments.bind "add", (item) ->
         client.send item.toJSONLD()
     meetingComments.fetch()
