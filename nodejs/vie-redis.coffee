@@ -2,12 +2,12 @@ redis = require 'redis'
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 
-toUUID = () ->
-    S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
-    "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
-
 Backbone.sync = (method, model, success, error) ->
     redisClient = redis.createClient()
+    
+    toUUID = () ->
+        S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
+        "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
     
     if method is 'update'
         if model.id.substr(0, 7) is "_:bnode"
