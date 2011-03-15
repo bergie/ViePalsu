@@ -21,7 +21,9 @@ ViePalsu.DiscussionManager = {
                 return true;
             }
 
+            var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
+                'dc:created': date.toISOString(),
                 'sioc:content': newMessage
             });
 
