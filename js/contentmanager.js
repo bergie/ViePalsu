@@ -31,7 +31,9 @@ jQuery(document).ready(function() {
         var container = entity.get('sioc:has_container');
         if (container) {
             container.each(function(containerInstance) {
-                containerInstance.get('sioc:container_of').add(entity, {fromServer: true});
+                if (containerInstance.get('sioc:container_of').indexOf(entity) === -1) {
+                    containerInstance.get('sioc:container_of').add(entity, {fromServer: true});
+                }
             });
         }
     });

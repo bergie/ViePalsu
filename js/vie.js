@@ -236,9 +236,9 @@
                         // Object already has this reference collection, keep it
                         // and add new references
                         jQuery.each(references, function() {
-                            try {
+                            if (instanceProperties[property].indexOf(this) === -1) {
                                 instanceProperties[property].add(this);
-                            } catch (e) {}
+                            }
                         });
 
                         properties[property] = instanceProperties[property];
