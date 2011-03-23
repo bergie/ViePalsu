@@ -10,7 +10,8 @@ ViePalsu.DiscussionManager = {
 
         ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
         ViePalsu.DiscussionManager.chatInputEditable = new GENTICS.Aloha.Editable(ViePalsu.DiscussionManager.chatInput);
-
+		
+		// editableDeactivated or smartContentChanged
         GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
             if (!ViePalsu.DiscussionManager.chatInputEditable.isModified()){
                 return true;
@@ -23,6 +24,8 @@ ViePalsu.DiscussionManager = {
 
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
+                // @todo dc:creator or foaf:nick and use session data...
+                'dc:creator': jQuery('#username').text(),
                 'dc:created': date.toISOString(),
                 'sioc:content': newMessage
             });
