@@ -7,12 +7,16 @@ VIE = require '../js/vie.js'
 auth = require 'connect-auth'
 sys = require 'sys'
 require './vie-redis.coffee'
+#require './vie-config.coffee'
 RedisStore = require 'connect-redis'
 require 'socket.io-connect'
 
-twitterConsumerKey = ''
-twitterConsumerSecret = ''
-port = 8002
+# ##
+cfg = {}
+cfg.twitterConsumerKey = ''
+cfg.twitterConsumerSecret = ''
+cfg.port = 8002
+# ##
 
 user = null
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
@@ -36,8 +40,8 @@ server.configure ->
         secret: 'vie palsu app'
         store: session_store
     server.use auth [auth.Twitter
-            consumerKey: twitterConsumerKey
-            consumerSecret: twitterConsumerSecret]
+            consumerKey: cfg.twitterConsumerKey
+            consumerSecret: cfg.twitterConsumerSecret]
      
      server.set 'view options', { layout: false }
 
@@ -46,7 +50,7 @@ server.configure ->
 
 # Serve the index file for /
 server.get '/', (request, response) ->
-    #sys.puts sys.inspect request.getAuthDetails()
+    sys.puts sys.inspect request.getAuthDetails()
     
     if request.session?.auth?.user? then user = request.session.auth.user
     
@@ -70,7 +74,7 @@ server.get '/signin', (request,response) ->
         true
     true
 
-server.listen(port)
+server.listen(cfg.port)
 
 # ## Handling sockets
 socket = io.listen server

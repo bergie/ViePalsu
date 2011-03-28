@@ -14,7 +14,7 @@
         <script src="js/layout.js" type="text/javascript"></script>
         <script src="js/contentmanager.js" type="text/javascript"></script>
         <script src="js/discussionmanager.js" type="text/javascript"></script>
-        
+
         <base href="/">
         
     </head>
@@ -91,6 +91,9 @@
 				"plugins": {
 					"com.gentics.aloha.plugins.Ribbon": {
 						enable: false
+					},
+					"com.gentics.aloha.plugins.Paste" : {
+					   config: { pasteHandlers: ['genericpastehandler', 'oembedpastehandler', 'wordpastehandler']}
 					}
 				}
 			};
@@ -99,8 +102,12 @@
 			$body.bind('aloha',function(){
 				//$('#content').aloha();
 			});
+			
 		})(window);
+
 	</script>
+
+
 
     </body>
 </html>

@@ -924,7 +924,6 @@ GENTICS.Aloha.FloatingMenu.Group.prototype = {
 	 * @hide
 	 */
 	doLayout: function () {
-
 		var groupVisible = false,
 			that = this;
 
@@ -932,9 +931,9 @@ GENTICS.Aloha.FloatingMenu.Group.prototype = {
 			var extButton = that.extButtonGroup.findById(button.button.id),
 				buttonVisible = button.button.isVisible() && button.scopeVisible;
 
-			if (buttonVisible && extButton && extButton.hidden) {
+			if (buttonVisible && extButton.hidden) {
 				extButton.show();
-			} else if (!buttonVisible && extButton && !extButton.hidden) {
+			} else if (!buttonVisible && !extButton.hidden) {
 				extButton.hide();
 			}
 

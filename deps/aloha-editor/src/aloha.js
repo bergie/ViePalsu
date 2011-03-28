@@ -6,6 +6,7 @@ window.GENTICS.Aloha.ui = window.GENTICS.Aloha.ui || {};
 window.Aloha_loaded_plugins = window.Aloha_loaded_plugins || [];
 window.GENTICS_Aloha_pluginDir = window.GENTICS_Aloha_pluginDir || false;
 window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
+
 /* This is auto generated on build-dev-include build. Templates at /build/deps/includejs* */
 (function(window, undefined) {
 
@@ -22,8 +23,10 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	window.Aloha_loaded_plugins['link'] = true;
 	window.Aloha_loaded_plugins['linkchecker'] = true;
 	window.Aloha_loaded_plugins['table'] = true;
-	includes.push('dep/ext-3.3.1/adapter/jquery/ext-jquery-adapter.js');
-	includes.push('dep/ext-3.3.1/ext-all-debug.js');
+	window.Aloha_loaded_plugins['cropnresize'] = true;
+	window.Aloha_loaded_plugins['image'] = true;
+	includes.push('dep/ext-3.2.1/adapter/jquery/ext-jquery-adapter.js');
+	includes.push('dep/ext-3.2.1/ext-all.js');
 	includes.push('dep/jquery.json-2.2.min.js');
 	includes.push('dep/jquery.getUrlParam.js');
 	includes.push('dep/jquery.store.js');
@@ -58,6 +61,14 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('plugin/link/src/link.js');
 	includes.push('plugin/linkchecker/src/linkchecker.js');
 	includes.push('plugin/table/src/table.js');
+	includes.push('plugin/cropnresize/src/cropnresize.js');
+	includes.push('plugin/image/src/image.js');
+    
+    // paste
+	includes.push('plugin/paste/src/paste.js');
+	includes.push('plugin/paste/src/genericpastehandler.js');
+	includes.push('plugin/paste/src/oembedpastehandler.js');
+	includes.push('plugin/paste/src/wordpastehandler.js');
 
 	// Insert Scripts
 	var value, url, scriptEl, appendEl = document.head;
