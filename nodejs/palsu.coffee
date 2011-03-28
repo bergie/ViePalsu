@@ -10,6 +10,7 @@ require './vie-redis.coffee'
 #require './vie-config.coffee'
 RedisStore = require 'connect-redis'
 require 'socket.io-connect'
+fs = require 'fs'
 
 # ##
 cfg = {}
@@ -68,11 +69,34 @@ server.get '/signout', (request, response) ->
     response.redirect '/about'
     true
 
+server.get '/meetings', (request, response) ->
+    return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
+        html = jQuery data
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances html
+        # Get the Calendar object
+        calendar = VIE.EntityManager.getBySubject '/meetings'
+        
+        # Query for events that have the calendar as component
+        events = calendar.get 'cal:has_component'
+        events.predicate = "cal:component"
+        events.object = calendar.id
+        return events.fetch
+            success: (eventCollection) ->
+                VIE.cleanup()
+                data = data.replace(data.substring(data.indexOf('<body'),data.lastIndexOf('</body')).replace(/^[^>]+>/,''), jQuery('body', html).html())
+                return response.send data
+
 server.get '/signin', (request,response) ->
     request.authenticate ['twitter'], (error, authenticated) ->
         if request.isAuthenticated() then response.redirect '/'
         true
     true
+
+server.get '/foo', (req, resp) ->
+    html = jQuery('html')
+    jQuery("<h1>test passes</h1>").appendTo("body", html)
+    resp.send jQuery(html).html()
 
 server.listen(cfg.port)
 

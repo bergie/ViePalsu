@@ -19,7 +19,7 @@ Backbone.sync = (method, model, success, error) ->
             if predicate is "@"
                 continue
             
-            if VIE.RDFa._isReference object
+            if VIE.RDFa._isReference(object)
                 if typeof object is "string"
                     object = [object]
                 for reference in object
@@ -32,17 +32,25 @@ Backbone.sync = (method, model, success, error) ->
     if method is 'read'
         if model instanceof VIE.RDFEntityCollection
             if model.predicate and model.object
-                redisClient.smembers "#{model.predicate}-#{model.object}", (err, item) ->
+                console.log "Retrieving #{model.predicate} connected to #{model.object}"
+                return redisClient.smembers "#{model.predicate}-#{model.object}", (err, subjects) ->
                     if err
                         console.log err
                         error err
-                    else if item
-                        for subject in item
+                    else if subjects
+                        if subjects.length is 0
+                            console.log "Empty, returning"
+                            return success null
+
+                        instances = []                        
+                        for subject in subjects
                             itemInstance = VIE.EntityManager.getByJSONLD
                                 "@": subject
                             itemInstance.fetch
-                                success: (item) -> model.add(item)
-
+                                success: (item) ->
+                                    instances.push item
+                                    if instances.length >= subjects.length
+                                        success instances
             else
                 throw "When seeking Collections, you must provide predicate and object"
 
