@@ -3,6 +3,8 @@ io = require 'socket.io'
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 require './vie-redis.coffee'
+fs = require 'fs'
+jQuery = require 'jquery'
 
 server = express.createServer()
 server.configure -> 
@@ -17,6 +19,30 @@ server.configure ->
 # Serve the index file for /
 server.get '/', (request, response) ->
     response.sendfile "#{process.cwd()}/index.html"
+
+# Serve the index file for /
+server.get '/meetings', (request, response) ->
+    return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
+        html = jQuery data
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances html
+        # Get the Calendar object
+        calendar = VIE.EntityManager.getBySubject '/meetings'
+        
+        # Query for events that have the calendar as component
+        events = calendar.get 'cal:has_component'
+        events.predicate = "cal:component"
+        events.object = calendar.id
+        return events.fetch
+            success: (eventCollection) ->
+                VIE.cleanup()
+                data = data.replace(data.substring(data.indexOf('<body'),data.lastIndexOf('</body')).replace(/^[^>]+>/,''), jQuery('body', html).html())
+                return response.send data
+
+server.get '/foo', (req, resp) ->
+    html = jQuery('html')
+    jQuery("<h1>test passes</h1>").appendTo("body", html)
+    resp.send jQuery(html).html()
 
 server.listen(8002)
 

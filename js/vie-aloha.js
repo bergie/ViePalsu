@@ -13,7 +13,6 @@
             if (typeof containerInstance.editables === 'undefined') {
                 containerInstance.editables = {};
             }
-
             VIE.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
                 var containerProperty = jQuery(this);
 
