@@ -22,6 +22,9 @@ cfg.port = 8002
 user = null
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
 
+jQuery = require 'jquery'
+jsdom = require 'jsdom'
+
 server = express.createServer()
 server.configure -> 
     # Our CSS files need the LessCSS compiler
@@ -71,9 +74,11 @@ server.get '/signout', (request, response) ->
 
 server.get '/meetings', (request, response) ->
     return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
-        html = jQuery data
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
         # Find RDFa entities and load them
-        VIE.RDFaEntities.getInstances html
+        VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject '/meetings'
         
@@ -97,6 +102,7 @@ server.get '/foo', (req, resp) ->
     html = jQuery('html')
     jQuery("<h1>test passes</h1>").appendTo("body", html)
     resp.send jQuery(html).html()
+                return response.send window.document.innerHTML
 
 server.listen(cfg.port)
 
