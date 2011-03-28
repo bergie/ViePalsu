@@ -11,6 +11,8 @@ require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
 require 'socket.io-connect'
 fs = require 'fs'
+jQuery = require 'jquery'
+jsdom = require 'jsdom'
 
 # ##
 cfg = {}
@@ -21,9 +23,6 @@ cfg.port = 8002
 
 user = null
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
-
-jQuery = require 'jquery'
-jsdom = require 'jsdom'
 
 server = express.createServer()
 server.configure -> 
@@ -72,6 +71,7 @@ server.get '/signout', (request, response) ->
     response.redirect '/about'
     true
 
+# Serve the index file for /
 server.get '/meetings', (request, response) ->
     return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -89,8 +89,7 @@ server.get '/meetings', (request, response) ->
         return events.fetch
             success: (eventCollection) ->
                 VIE.cleanup()
-                data = data.replace(data.substring(data.indexOf('<body'),data.lastIndexOf('</body')).replace(/^[^>]+>/,''), jQuery('body', html).html())
-                return response.send data
+                return response.send window.document.innerHTML
 
 server.get '/signin', (request,response) ->
     request.authenticate ['twitter'], (error, authenticated) ->
@@ -102,7 +101,6 @@ server.get '/foo', (req, resp) ->
     html = jQuery('html')
     jQuery("<h1>test passes</h1>").appendTo("body", html)
     resp.send jQuery(html).html()
-                return response.send window.document.innerHTML
 
 server.listen(cfg.port)
 
