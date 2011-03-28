@@ -1,10 +1,10 @@
 express = require 'express'
 io = require 'socket.io'
-Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 require './vie-redis.coffee'
 fs = require 'fs'
 jQuery = require 'jquery'
+jsdom = require 'jsdom'
 
 server = express.createServer()
 server.configure -> 
@@ -23,9 +23,11 @@ server.get '/', (request, response) ->
 # Serve the index file for /
 server.get '/meetings', (request, response) ->
     return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
-        html = jQuery data
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
         # Find RDFa entities and load them
-        VIE.RDFaEntities.getInstances html
+        VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject '/meetings'
         
@@ -36,8 +38,7 @@ server.get '/meetings', (request, response) ->
         return events.fetch
             success: (eventCollection) ->
                 VIE.cleanup()
-                data = data.replace(data.substring(data.indexOf('<body'),data.lastIndexOf('</body')).replace(/^[^>]+>/,''), jQuery('body', html).html())
-                return response.send data
+                return response.send window.document.innerHTML
 
 server.get '/foo', (req, resp) ->
     html = jQuery('html')
