@@ -40,11 +40,6 @@ server.get '/meetings', (request, response) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
 
-server.get '/foo', (req, resp) ->
-    html = jQuery('html')
-    jQuery("<h1>test passes</h1>").appendTo("body", html)
-    resp.send jQuery(html).html()
-
 server.listen(8002)
 
 # ## Handling sockets
