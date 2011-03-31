@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html
+    version="HTML+RDFa 1.1"
+    xmlns:cal="http://www.w3.org/2002/12/cal#"
+    xmlns:sioc="http://rdfs.org/sioc/ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/">
+    <head>
+        <title>Vie Palsu</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+        <script src="js/contentmanager.js" type="text/javascript"></script>
+        <foo bar="baz"></foo>
+        <link rel="foo" />
+    </head>
+    <body>
+        <h1>Meetings in Palsu</h1>
+        <ul  typeof="cal:Vcalendar" about="/meetings" rel="cal:has_component" rev="cal:component">
+            <li about="" typeof="cal:Vevent">
+                <a href="" property="cal:summary">Event title</a>
+            </li>
+        </ul>
+    </body>
+</html>
