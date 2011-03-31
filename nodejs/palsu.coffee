@@ -79,10 +79,16 @@ server.get '/meetings', (request, response) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
+        
+        # test adding events
+        #VIE.EntityManager.getBySubject '/meetings' get('cal:has_component') bind('add', model { model.save() })
+        #VIE.EntityManager.getBySubject '/meetings' get('cal:has_component') add({'cal:summary':'New event'})
+        
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject '/meetings'
+        
         
         # Query for events that have the calendar as component
         events = calendar.get 'cal:has_component'
