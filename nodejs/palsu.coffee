@@ -56,17 +56,18 @@ server.get '/meeting/:uuid', (request, response) ->
         calendar = VIE.EntityManager.getBySubject request.params.uuid
         calendar.fetch
             success: (event) ->
-                console.log event.attributes
                 # Query for posts for this event
                 posts = event.get 'sioc:container_of'
                 posts.predicate = "sioc:has_container"
                 posts.object = event.id
                 return posts.fetch
                     success: (postCollection) ->
+                        console.log "Got #{postCollection.length} posts"
                         VIE.cleanup()
                         return response.send window.document.innerHTML
                     error: (postCollection, error) ->
                         # No posts found, send the page anyway
+                        console.log "No posts"
                         VIE.cleanup()
                         return response.send window.document.innerHTML
                         

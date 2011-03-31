@@ -41,40 +41,19 @@ jQuery(document).ready(function() {
 
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
-			var json = model.toJSONLD();
-			console.log(method, json);
-			socket.send(json);
+		var json = model.toJSONLD();
+		console.log(method, json);
+		socket.send(json);
 
-            if (log.length > 0) {
-			    // auto scroll if we're within 50 pixels of the bottom
-			    if ( log.scrollTop() + 50 >= log[0].scrollHeight - log.height()) {
-				    window.setTimeout(function() {
-					    log.scrollTop(log[0].scrollHeight);
-				    }, 10);
-			    }
-			}
+        if (log.length > 0) {
+		    // auto scroll if we're within 50 pixels of the bottom
+		    if ( log.scrollTop() + 50 >= log[0].scrollHeight - log.height()) {
+			    window.setTimeout(function() {
+				    log.scrollTop(log[0].scrollHeight);
+			    }, 10);
+		    }
+		}
     };
     
     VIE.RDFaEntities.getInstances();
-
-    // Make all RDFa entities editable
-    jQuery('[typeof]').each(function() {
-        jQuery(this).vieSemanticAloha();
-    });
-
-    // Subscribe to the editable deactivated signal to update Backbone model
-    VIE.EntityManager.entities.forEach(function(modelInstance) {
-        if (typeof modelInstance.editables === 'undefined') {
-            return true;
-        }
-        jQuery.each(modelInstance.editables, function() {
-            var editableInstance = this;
-            GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
-                if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
-                    // There were changes, save
-                    modelInstance.save();
-                }
-            });
-        });
-    });
 });

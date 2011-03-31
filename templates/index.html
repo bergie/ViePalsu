@@ -7,9 +7,7 @@
     <head>
         <title>Vie Palsu</title>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
-        <script src="js/underscore-min.js" type="text/javascript"></script>
-        <script src="js/backbone-min.js" type="text/javascript"></script>
-        <script src="js/vie.js" type="text/javascript"></script>
+        <script src="js/contentmanager.js" type="text/javascript"></script>
         <script src="js/meetings.js" type="text/javascript"></script>
     </head>
     <body>
@@ -19,5 +17,11 @@
                 <a href="" property="cal:summary">Event title</a>
             </li>
         </ul>
+        <form>
+            <label>Add a meeting
+                <input id="newevent" type="text" />
+            </label>
+            <button type="button" id="eventadd">Add</button>
+        </form>
     </body>
 </html>
