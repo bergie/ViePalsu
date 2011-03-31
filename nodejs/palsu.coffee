@@ -5,6 +5,7 @@ require './vie-redis.coffee'
 fs = require 'fs'
 jQuery = require 'jquery'
 jsdom = require 'jsdom'
+browserify = require 'browserify'
 
 server = express.createServer()
 server.configure -> 
@@ -15,6 +16,8 @@ server.configure ->
     # Serve static files from /styles and /js
     server.use '/styles', express.static "#{process.cwd()}/styles"
     server.use '/js', express.static "#{process.cwd()}//js"
+    server.use browserify
+        require: [ 'jquery-browserify' ]
 
 # Serve the list of meetings for /
 server.get '/', (request, response) ->
