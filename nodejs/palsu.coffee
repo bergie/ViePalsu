@@ -22,10 +22,11 @@ server.get '/', (request, response) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
+        
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject '/meetings'
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
 
         # Query for events that have the calendar as component
         events = calendar.get 'cal:has_component'
