@@ -60,6 +60,14 @@ server.get '/meeting/:uuid', (request, response) ->
                 posts = event.get 'sioc:container_of'
                 posts.predicate = "sioc:has_container"
                 posts.object = event.id
+                posts.comparator = (item) ->
+                    itemDate = new Date item.get "dc:created"
+                    itemIndex = 0
+                    posts.pluck("dc:created").forEach (date, index) ->
+                        if itemDate.getTime() > new Date(date).getTime()
+                            itemIndex = index + 1
+                    return itemIndex
+
                 return posts.fetch
                     success: (postCollection) ->
                         console.log "Got #{postCollection.length} posts"
@@ -82,27 +90,6 @@ socket = io.listen server
 
 # Handle a new connected client
 socket.on 'connection', (client) ->
-    # TODO: Send new data
-    meeting = VIE.EntityManager.getByJSONLD
-        "@": "<#meeting>"
-        a: "<mgd:event>"
-    meeting.fetch
-        success: (item) ->
-            client.send item.toJSONLD()
-            
-    meetingComments = new VIE.RDFEntityCollection
-    meetingComments.predicate = "sioc:has_container"
-    meetingComments.object = "#meeting-comments"
-    meetingComments.comparator = (item) ->
-        itemDate = new Date item.get "dc:created"
-        itemIndex = 0
-        meetingComments.pluck("dc:created").forEach (date, index) ->
-            if itemDate.getTime() > new Date(date).getTime()
-                itemIndex = index + 1
-        return itemIndex
-    meetingComments.bind "add", (item) ->
-        client.send item.toJSONLD()
-    meetingComments.fetch()
 
     client.on 'message', (data) ->
         if typeof data isnt 'object'
