@@ -79,6 +79,14 @@
 					},
 					"ribbon": {
 						enable: true
+					},
+					"format": {
+            		 	// all elements with no specific configuration get this configuration
+                        config : [ 'b', 'i','sub','sup'],
+		            	editables : {
+		          		// no formatting allowed for title
+		          		  '#content'	: [ ], 
+		            	}
 					}
 				}
 			};

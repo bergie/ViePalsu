@@ -69,7 +69,10 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('plugin/paste/src/genericpastehandler.js');
 	includes.push('plugin/paste/src/oembedpastehandler.js');
 	includes.push('plugin/paste/src/wordpastehandler.js');
-
+    
+    // palsu, vie^2, iks annotate, ...
+	includes.push('plugin/iks_annotate/src/iks_annotate.js');
+    
 	// Insert Scripts
 	var value, url, scriptEl, appendEl = document.head;
 	for ( i=0,n=includes.length; i<n; ++i ) {

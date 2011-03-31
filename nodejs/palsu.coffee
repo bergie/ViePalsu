@@ -16,8 +16,8 @@ jsdom = require 'jsdom'
 
 # ##
 cfg = {}
-cfg.twitterConsumerKey = ''
-cfg.twitterConsumerSecret = ''
+cfg.twitterConsumerKey = 'ytB7V6C1C8NCpCAZqKwh1Q'
+cfg.twitterConsumerSecret = 'S5Jg1pov6zLCKfKNMOO6kpdNK5lpEbsrepWCZSOcY'
 cfg.port = 8002
 # ##
 
@@ -38,6 +38,8 @@ server.configure ->
     
     # oAuth with twitter
     server.use connect.cookieParser()
+
+    if !cfg.twitterConsumerKey then sys.puts 'no twitterConsumerKey'
 
     server.use connect.session
         secret: 'vie palsu app'

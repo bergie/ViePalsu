@@ -8,6 +8,9 @@
  * Register the PastePlugin as GENTICS.Aloha.Plugin
  */
 GENTICS.Aloha.PastePlugin = new GENTICS.Aloha.Plugin('paste');
+jQuery.extend(true,GENTICS.Aloha.PastePlugin,{
+	languages: ['en']
+});
 
 /**
  * All registered paste handlers

@@ -34,13 +34,9 @@ jQuery(document).ready(function() {
         var entity = VIE.EntityManager.getByJSONLD(data);
         var container = entity.get('sioc:has_container');
         if (container) {
-            container.each(function(containerEntity) {
-                var containerInstance = containerEntity.get('sioc:container_of');
-                if (!containerInstance) {
-                    return true;
-                }
-                if (containerInstance.indexOf(entity) === -1) {
-                    containerInstance.add(entity, {fromServer: true});
+            container.each(function(containerInstance) {
+                if (containerInstance.get('sioc:container_of').indexOf(entity) === -1) {
+                    containerInstance.get('sioc:container_of').add(entity, {fromServer: true});
                 }
             });
         }
@@ -49,31 +45,24 @@ jQuery(document).ready(function() {
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 			var json = model.toJSONLD();
-			console.log(method, json);
 			socket.send(json);
 
-            if (log.length > 0) {
-			    // auto scroll if we're within 50 pixels of the bottom
-			    if ( log.scrollTop() + 50 >= log[0].scrollHeight - log.height()) {
-				    window.setTimeout(function() {
-					    log.scrollTop(log[0].scrollHeight);
-				    }, 10);
-			    }
+			// auto scroll if we're within 50 pixels of the bottom
+			if ( log.scrollTop() + 50 >= log[0].scrollHeight - log.height()) {
+				window.setTimeout(function() {
+					log.scrollTop(log[0].scrollHeight);
+				}, 10);
 			}
     };
-    
-    VIE.RDFaEntities.getInstances();
 
     // Make all RDFa entities editable
-    jQuery('[typeof]').each(function() {
+    jQuery('[typeof][about]').each(function() {
         jQuery(this).vieSemanticAloha();
     });
 
     // Subscribe to the editable deactivated signal to update Backbone model
-    VIE.EntityManager.entities.forEach(function(modelInstance) {
-        if (typeof modelInstance.editables === 'undefined') {
-            return true;
-        }
+    jQuery.each(VIE.EntityManager.allEntities, function() {
+        var modelInstance = this;
         jQuery.each(modelInstance.editables, function() {
             var editableInstance = this;
             // editableDeactivated or smartContentChanged
