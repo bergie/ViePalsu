@@ -35,6 +35,9 @@ server.get '/', (request, response) ->
             success: (eventCollection) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
+            error: (collection, error) ->
+                VIE.cleanup()
+                return response.send window.document.innerHTML
 
 server.get '/meeting/:uuid', (request, response) ->
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
@@ -59,6 +62,10 @@ server.get '/meeting/:uuid', (request, response) ->
                 posts.object = event.id
                 return posts.fetch
                     success: (postCollection) ->
+                        VIE.cleanup()
+                        return response.send window.document.innerHTML
+                    error: (postCollection, error) ->
+                        # No posts found, send the page anyway
                         VIE.cleanup()
                         return response.send window.document.innerHTML
                         

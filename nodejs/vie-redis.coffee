@@ -41,11 +41,10 @@ Backbone.sync = (method, model, success, error) ->
                 return redisClient.smembers "#{model.predicate}-#{model.object}", (err, subjects) ->
                     if err
                         console.log err
-                        error err
+                        return error err
                     else if subjects
                         if subjects.length is 0
-                            console.log "Empty, returning"
-                            return success null
+                            return error "Not found"
 
                         instances = []                        
                         for subject in subjects
