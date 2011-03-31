@@ -16,13 +16,9 @@ server.configure ->
     server.use '/styles', express.static "#{process.cwd()}/styles"
     server.use '/js', express.static "#{process.cwd()}//js"
 
-# Serve the index file for /
+# Serve the list of meetings for /
 server.get '/', (request, response) ->
-    response.sendfile "#{process.cwd()}/index.html"
-
-# Serve the index file for /
-server.get '/meetings', (request, response) ->
-    return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
+    return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
@@ -30,7 +26,7 @@ server.get '/meetings', (request, response) ->
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject '/meetings'
-        
+
         # Query for events that have the calendar as component
         events = calendar.get 'cal:has_component'
         events.predicate = "cal:component"
@@ -39,6 +35,36 @@ server.get '/meetings', (request, response) ->
             success: (eventCollection) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
+
+server.get '/meeting/:uuid', (request, response) ->
+    return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+        
+        # Write the Meeting identifier into the DOM
+        jQ('[typeof="cal\\:Vevent"]').attr('about', request.params.uuid);
+        
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances jQ "*"
+        
+        # Get the Meeting object
+        calendar = VIE.EntityManager.getBySubject request.params.uuid
+        calendar.fetch
+            success: (event) ->
+                console.log event.attributes
+                # Query for posts for this event
+                posts = event.get 'sioc:container_of'
+                posts.predicate = "sioc:has_container"
+                posts.object = event.id
+                return posts.fetch
+                    success: (postCollection) ->
+                        VIE.cleanup()
+                        return response.send window.document.innerHTML
+                        
+            error: (event, error) ->
+                VIE.cleanup()
+                return response.send error
 
 server.listen(8002)
 

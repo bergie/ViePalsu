@@ -2,6 +2,11 @@ redis = require 'redis'
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 
+isEmpty = (object) ->
+    for key of object
+        return false
+    return true
+
 Backbone.sync = (method, model, success, error) ->
     redisClient = redis.createClient()
     
@@ -61,6 +66,8 @@ Backbone.sync = (method, model, success, error) ->
                     console.log err
                     error err
                 else if item
+                    if isEmpty item
+                        error "Not found"
                     jsonld =
                         "@": model.id
                     for predicate, object of item
