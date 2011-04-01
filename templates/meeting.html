@@ -15,6 +15,12 @@
         <script src="js/discussionmanager.js" type="text/javascript"></script>
         
         <base href="/">
+
+        <script type="text/javascript" src="/browserify.js"></script>
+        <script type="text/javascript">
+            var jQuery = require('jquery-browserify');
+        </script>
+
     </head>
     
     <body typeof="cal:Vevent" about="#meeting">
@@ -35,8 +41,8 @@
                     </p>
                 </section>
             </div>
-            <div id="chat-history" rel="sioc:container_of" rev="sioc:has_container">
-                <dl about="#meeting-comments" typeof="sioc:Forum" rel="sioc:container_of" rev="sioc:has_container">
+            <div id="chat-history">
+                <dl rel="sioc:container_of" rev="sioc:has_container">
                     <div typeof="sioc:Post" about="#post1">
                         <dt property="dc:creator">Screen name</dt>
                         <dd class="message" >

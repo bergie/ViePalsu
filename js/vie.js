@@ -589,6 +589,7 @@
             this.elementTemplate = this.options.elementTemplate;
             _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
             this.collection.bind('add', this.addItem);
+            this.collection.bind('remove', this.removeItem);
             this.collection.bind('refresh', this.refreshItems);
         },
         

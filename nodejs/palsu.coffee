@@ -97,7 +97,7 @@ server.get '/dashboard', (request, response) ->
             VIE.cleanup()
             # todo return error message
             return response.send window.document.innerHTML
-        
+
         # Query for events that have the calendar as component
         events = calendar.get 'cal:has_component'
         events.predicate = "cal:component"
@@ -170,6 +170,7 @@ server.listen(cfg.port)
 socket = io.listen server
 
 # Handle a new connected client
+###
 #socket.on 'connection', (client) ->
 socket.on 'connection', socket.prefixWithMiddleware (client, request, response) ->
     # session usage
@@ -202,7 +203,9 @@ socket.on 'connection', socket.prefixWithMiddleware (client, request, response) 
     meetingComments.bind "add", (item) ->
         client.send item.toJSONLD()
     meetingComments.fetch()
+###
 
+socket.on 'connection', (client) ->
     client.on 'message', (data) ->
         if typeof data isnt 'object'
             # If we get a regular string from the user there is no need to pass it on
@@ -217,11 +220,6 @@ socket.on 'connection', socket.prefixWithMiddleware (client, request, response) 
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
-
-
-
-
-
 
 
 ###
