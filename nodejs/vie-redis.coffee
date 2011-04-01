@@ -2,6 +2,11 @@ redis = require 'redis'
 Backbone = require 'backbone'
 VIE = require '../js/vie.js'
 
+isEmpty = (object) ->
+    for key of object
+        return false
+    return true
+
 Backbone.sync = (method, model, success, error) ->
     redisClient = redis.createClient()
     
@@ -36,11 +41,10 @@ Backbone.sync = (method, model, success, error) ->
                 return redisClient.smembers "#{model.predicate}-#{model.object}", (err, subjects) ->
                     if err
                         console.log err
-                        error err
+                        return error err
                     else if subjects
                         if subjects.length is 0
-                            console.log "Empty, returning"
-                            return success null
+                            return error "Not found"
 
                         instances = []                        
                         for subject in subjects
@@ -61,6 +65,8 @@ Backbone.sync = (method, model, success, error) ->
                     console.log err
                     error err
                 else if item
+                    if isEmpty item
+                        error "Not found"
                     jsonld =
                         "@": model.id
                     for predicate, object of item

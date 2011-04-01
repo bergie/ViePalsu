@@ -13,6 +13,7 @@ require 'socket.io-connect'
 fs = require 'fs'
 jQuery = require 'jquery'
 jsdom = require 'jsdom'
+browserify = require 'browserify'
 
 # ##
 cfg = {}
@@ -35,6 +36,8 @@ server.configure ->
     server.use '/js', express.static "#{process.cwd()}/js"
     server.use '/static', express.static "#{process.cwd()}/static"
     server.use '/deps', express.static "#{process.cwd()}/deps"
+    server.use browserify
+        require: [ 'jquery-browserify' ]
     
     # oAuth with twitter
     server.use connect.cookieParser()
@@ -53,7 +56,12 @@ server.configure ->
 #server.dynamicHelpers
 #    messages: require 'express-messages'
 
-# Serve the index file for /
+jsdom.defaultDocumentFeatures =
+    FetchExternalResources: ['script'], 
+    ProcessExternalResources: false
+    
+
+# Serve the home page
 server.get '/', (request, response) ->
     sys.puts sys.inspect request.getAuthDetails()
     
@@ -73,22 +81,22 @@ server.get '/signout', (request, response) ->
     response.redirect '/about'
     true
 
-# Serve the index file for /
-server.get '/meetings', (request, response) ->
-    return fs.readFile "#{process.cwd()}/meetings.html", "utf-8", (err, data) ->
+# Serve the list of meetings for /
+server.get '/dashboard', (request, response) ->
+    return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
         
-        # test adding events
-        #VIE.EntityManager.getBySubject '/meetings' get('cal:has_component') bind('add', model { model.save() })
-        #VIE.EntityManager.getBySubject '/meetings' get('cal:has_component') add({'cal:summary':'New event'})
-        
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject '/meetings'
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
         
+        if !calendar
+            VIE.cleanup()
+            # todo return error message
+            return response.send window.document.innerHTML
         
         # Query for events that have the calendar as component
         events = calendar.get 'cal:has_component'
@@ -98,6 +106,52 @@ server.get '/meetings', (request, response) ->
             success: (eventCollection) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
+            error: (collection, error) ->
+                VIE.cleanup()
+                return response.send window.document.innerHTML
+
+server.get '/meeting/:uuid', (request, response) ->
+    return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+        
+        # Write the Meeting identifier into the DOM
+        jQ('[typeof="cal\\:Vevent"]').attr('about', request.params.uuid);
+        
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances jQ "*"
+        
+        # Get the Meeting object
+        calendar = VIE.EntityManager.getBySubject request.params.uuid
+        calendar.fetch
+            success: (event) ->
+                # Query for posts for this event
+                posts = event.get 'sioc:container_of'
+                posts.predicate = "sioc:has_container"
+                posts.object = event.id
+                posts.comparator = (item) ->
+                    itemDate = new Date item.get "dc:created"
+                    itemIndex = 0
+                    posts.pluck("dc:created").forEach (date, index) ->
+                        if itemDate.getTime() > new Date(date).getTime()
+                            itemIndex = index + 1
+                    return itemIndex
+
+                return posts.fetch
+                    success: (postCollection) ->
+                        console.log "Got #{postCollection.length} posts"
+                        VIE.cleanup()
+                        return response.send window.document.innerHTML
+                    error: (postCollection, error) ->
+                        # No posts found, send the page anyway
+                        console.log "No posts"
+                        VIE.cleanup()
+                        return response.send window.document.innerHTML
+                        
+            error: (event, error) ->
+                VIE.cleanup()
+                return response.send error
 
 server.get '/signin', (request,response) ->
     request.authenticate ['twitter'], (error, authenticated) ->
@@ -163,3 +217,34 @@ socket.on 'connection', socket.prefixWithMiddleware (client, request, response) 
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
+
+
+
+
+
+
+
+###
+404 handler -- http://42blue.de/webstandards/kleiner-formhandler-in-nodejs
+
+function startServer() {
+  http.createServer(function (req, res) {
+    var uri = url.parse(req.url).pathname; //Dateiname
+    var filename = path.join(process.cwd(), uri); //Pfad und Filename
+    if (uri = '/formhandler') {
+      readFormSubmit(req, res);         
+    } else {
+      path.exists(filename, function (exists) {	
+      if(!exists) {  
+	    res.writeHead(404, { "Content-Type": "text/plain"});
+	    res.end("Not Found");
+      } else {
+        readFile(req, res, uri);
+      }
+    });
+    }    
+  }).listen(PORT, HOST);
+  console.log('Server running');
+} 
+startServer();
+###

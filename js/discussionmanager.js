@@ -43,7 +43,11 @@ ViePalsu.DiscussionManager = {
 
         discussionContainer.children('[about="#post1"]:first-child').hide();
 
-        ViePalsu.DiscussionManager.collection = VIE.EntityManager.getBySubject('#meeting-comments').get('sioc:container_of');
+        jQuery.each(VIE.EntityManager.getByType('cal:Vevent'), function() {
+            if (this.id) {
+                ViePalsu.DiscussionManager.collection = this.get('sioc:container_of');
+            }
+        });
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
             if (!options.fromServer) {
