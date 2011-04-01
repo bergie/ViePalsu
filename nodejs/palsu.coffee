@@ -19,6 +19,10 @@ server.configure ->
     server.use browserify
         require: [ 'jquery-browserify' ]
 
+jsdom.defaultDocumentFeatures =
+    FetchExternalResources: ['script'], 
+    ProcessExternalResources: false
+
 # Serve the list of meetings for /
 server.get '/', (request, response) ->
     return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
