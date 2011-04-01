@@ -1,6 +1,8 @@
 // We need Aloha Editor
 GENTICS_Aloha_base = '/deps/aloha-editor/src';
+
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/dep/jquery-1.5.1.js"></script>');
+
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/aloha.js" id="aloha-script-include" data-plugins="format"></script>');
 document.write('<link href="' + GENTICS_Aloha_base + '/aloha.css" id="aloha-style-include" rel="stylesheet">');
 
@@ -61,8 +63,6 @@ jQuery(document).ready(function() {
 		    }
 		}
     };
-    
-    VIE.RDFaEntities.getInstances();
 
 /*
     // Make all RDFa entities editable
@@ -87,4 +87,8 @@ jQuery(document).ready(function() {
         });
     });
 */
+
+    VIE.RDFaEntities.getInstances();
+
+
 });
