@@ -13,18 +13,6 @@ fs = require 'fs'
 jsdom = require 'jsdom'
 browserify = require 'browserify'
 ProxyRequest = require 'request'
-querystring = require 'querystring'
-eyes = require 'eyes'
-#xml2js = require 'xml2js'
-xml = require "node-xml/lib/node-xml";
-
-#require "../deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery/1.4/jquery-1.4.4.min.js"
-#require "../deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"
-#require "../deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"
-#require "../deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"
-#require "../deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"
-#require "/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"
-#require "/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"
 
 configFile = "configuration.json"
 if process.argv.length > 2
@@ -70,47 +58,37 @@ jsdom.defaultDocumentFeatures =
     FetchExternalResources: false, 
     ProcessExternalResources: false
 
-
 # Serve the home page
 server.get '/', (request, response) ->
     sys.puts sys.inspect request.getAuthDetails()
     if request.session?.auth?.user? then user = request.session.auth.user
     if request.isAuthenticated() then return response.redirect '/dashboard' else return response.redirect '/signin'
-    true
 
 server.get '/about', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/about.html"
-    true
 
 server.get '/signin', (request,response) ->
     if request.session?.auth?.user? then user = request.session.auth.user
     if request.isAuthenticated() then return response.redirect '/dashboard'
-    #doc = new Document()
-    #currentElement = doc
-    totalElements = 0
     
     request.authenticate ['twitter'], (error, authenticated) ->
         if request.isAuthenticated()
             if request.session?.auth?.user? then user = request.session.auth.user
-            rdfXmlUrl = "http://semantictweet.com/" + user.username + "/show"
             jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+user.username
             
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
-                    #eyes.inspect(body)
                     userData = JSON.parse(body)
-                    #eyes.inspect(userData)
                     user.image = userData.profile_image_url
                     user.homepage = userData.url
                     user.name = userData.name
                     return response.redirect '/dashboard'
                 else
-                    rdfXml = null
                     # write info message about error
                     return response.redirect '/about'
-            
-            #return response.redirect '/dashboard'
-    true
+        else
+            console.log 'Error on signin'
+    return
 
 server.get '/signout', (request, response) ->
     user.username = 'guest'
@@ -128,10 +106,11 @@ server.all '/proxy', (request, response) ->
                 return response.send('Proxy Error: No response data.')
     else
         return response.send('Proxy Error: No "proxy_url" param set.')
+    
+    return
 
 # Serve the list of meetings for /
 server.get '/dashboard', (request, response) ->
-    eyes.inspect(user)
     if user.username == 'guest' then return response.redirect '/signin'
     return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -141,12 +120,12 @@ server.get '/dashboard', (request, response) ->
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
         jQ('#account [property="foaf\\:name"]').text(user.name)
-        jQ('#account [rel="foaf\\:img"]').attr({
+        jQ('#account [rel="foaf\\:img"] img').attr({
             src: user.image,
             title: "Picture of " + user.name,
             alt: "Picture of " + user.name
         })
-                        
+
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
@@ -155,7 +134,7 @@ server.get '/dashboard', (request, response) ->
         if !calendar
             VIE.cleanup()
             # todo return error message
-            console.log "Error loading calendar."
+            console.error "Error loading calendar."
             return response.send window.document.innerHTML
 
         # Query for events that have the calendar as component
@@ -169,6 +148,7 @@ server.get '/dashboard', (request, response) ->
             error: (collection, error) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
+    return
 
 server.get '/meeting/:uuid', (request, response) ->
     if user.username == 'guest' then return response.redirect '/signin'
@@ -180,7 +160,7 @@ server.get '/meeting/:uuid', (request, response) ->
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
         jQ('#account [property="foaf\\:name"]').text(user.name)
-        jQ('#account [rel="foaf\\:img"]').attr({
+        jQ('#account [rel="foaf\\:img"] img').attr({
             src: user.image,
             title: "Picture of " + user.name,
             alt: "Picture of " + user.name
@@ -245,27 +225,3 @@ socket.on 'connection', (client) ->
                 console.log "Forwarding data to #{clientId}"
                 #clientObject.header('Access-Control-Allow-Origin', '*')
                 clientObject.send data
-
-###
-404 handler -- http://42blue.de/webstandards/kleiner-formhandler-in-nodejs
-function startServer() {
-  http.createServer(function (req, res) {
-    var uri = url.parse(req.url).pathname; //Dateiname
-    var filename = path.join(process.cwd(), uri); //Pfad und Filename
-    if (uri = '/formhandler') {
-      readFormSubmit(req, res);         
-    } else {
-      path.exists(filename, function (exists) {	
-      if(!exists) {  
-	    res.writeHead(404, { "Content-Type": "text/plain"});
-	    res.end("Not Found");
-      } else {
-        readFile(req, res, uri);
-      }
-    });
-    }    
-  }).listen(PORT, HOST);
-  console.log('Server running');
-} 
-startServer();
-###

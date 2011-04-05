@@ -72,11 +72,11 @@
     <body typeof="rdfcal:Vevent" about="#meeting">
         <div id="account" typeof="foaf:Person" about="#user">
             <p>
-                <span>
-                  <img rel="foaf:img" width="40" src="#" alt="User Picture"/>
+                <span rel="foaf:img">
+                  <img width="40" src="#" alt="User Picture"/>
                 </span>
                 
-                Hello, <span property="foaf:name" id="name">name</span> (<span property="foaf:nick" id="username">username</span>)!
+                Hello, <span property="foaf:nick" id="username">username</span> (<span property="foaf:name" id="name">name</span>)!
                 | <a href="/dashboard">Dashboard</a> &middot; <a href="/signout">Sign-out</a>
             </p>
         </div>
@@ -95,7 +95,7 @@
                 <dl rel="sioc:container_of" rev="sioc:has_container">
                     <div typeof="sioc:Post" about="#post1">
                         <span rel="foaf:img" >
-                        <img src="#" />
+                            <img src="#" alt="" />
                         </span>
                         <dt property="dc:creator">screen name</dt>
                         <dd class="message" >
