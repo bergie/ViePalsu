@@ -94,63 +94,16 @@ server.get '/signin', (request,response) ->
         if request.isAuthenticated()
             if request.session?.auth?.user? then user = request.session.auth.user
             rdfXmlUrl = "http://semantictweet.com/" + user.username + "/show"
-
-            ProxyRequest {uri:rdfXmlUrl}, (error, ProxyResponse, body) ->
+            jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+user.username
+            
+            ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
-                    parser = new xml.SaxParser (cb) ->
-                        cb.onStartDocument () ->
-                            sys.puts 'start xml parsing'
-                        cb.onEndDocument () ->
-                            sys.puts 'end xml parsing'
-                            #sys.puts doc.getElementsByTagName("*").length === totalElements ? "success" : "fail");
-                        cb.onError (msg) ->
-                            sys.puts('<ERROR>'+JSON.stringify(msg)+"</ERROR>")
-
-                        cb.onStartElementNS (elem, attrs, prefix, uri, namespaces) ->
-                            totalElements++
-                            #jAttrs = JSON.parse(attrs)
-                            #element = doc.createElement(elem)
-                            #currentElement.appendChild(element)
-                            #currentElement = element
-                            #console.log(attrs)
-                            #predicate = attrs[0]
-                            #eyes.inspect(jAttrs)
-                            #console.log("Predicate", predicate)
-                            #console.log("Object", predicate[0])
-                            #console.log("Object", predicate[0])
-                            #console.log(attrs['rdf:resource'])
-                            #console.log(attrs[]['rdf:resource'])
-                            #sys.puts "=> Started: " + elem + " (Attributes: " + JSON.stringify(attrs) + " )"
-                            #if elem == "img" then user.image = jAttrs[["rdf:resource"]]
-                            #if elem == "homepage" then user.homepage = jAttrs[["rdf:resource"]]
-                            
-                            #test = (x) -> x
-                            #cubes = (test num for num in attrs)
-                            #eyes.inspect(cubes)
-                            #eyes.inspect(test)
-                            #eyes.inspect(test)
-                            #eyes.inspect(test)
-
-                        cb.onEndElementNS (elem, prefix, uri) ->
-                            #currentElement = currentElement.parentNode
-                            sys.puts "<= End: " + elem + " uri="+uri + "\n"
-
-                        cb.onCharacters (chars) ->
-                            if chars.length > 0 then sys.puts '<CHARS>'+chars+"</CHARS>"
-
-                        cb.onCdata (cdata) ->
-                            sys.puts '<CDATA>'+cdata+"</CDATA>"
-
-                        cb.onComment (msg) ->
-                            sys.puts '<COMMENT>'+msg+"</COMMENT>"
-
-                        cb.onWarning (msg) ->
-                            sys.puts '<WARNING>'+msg+"</WARNING>"
-                            
-                    parser.parseString(body)
-                    eyes.inspect(body)
-                    eyes.inspect(user)
-                    #eyes.inspect(result)
+                    #eyes.inspect(body)
+                    userData = JSON.parse(body)
+                    #eyes.inspect(userData)
+                    user.image = userData.profile_image_url
+                    user.homepage = userData.url
+                    user.name = userData.name
                     return response.redirect '/dashboard'
                 else
                     rdfXml = null
@@ -188,7 +141,13 @@ server.get '/dashboard', (request, response) ->
 
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
-                
+        jQ('#account [property="foaf\\:name"]').text(user.name)
+        jQ('#account [rel="foaf\\:img"]').attr({
+            src: user.image,
+            title: "Picture of " + user.name,
+            alt: "Picture of " + user.name
+        })
+                        
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
@@ -221,6 +180,12 @@ server.get '/meeting/:uuid', (request, response) ->
 
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
+        jQ('#account [property="foaf\\:name"]').text(user.name)
+        jQ('#account [rel="foaf\\:img"]').attr({
+            src: user.image,
+            title: "Picture of " + user.name,
+            alt: "Picture of " + user.name
+        })
 
         # Write the Meeting identifier into the DOM
         jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
