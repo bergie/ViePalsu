@@ -29,8 +29,8 @@ xml = require "node-xml/lib/node-xml";
 
 # ##
 cfg = {}
-cfg.twitterConsumerKey = ''
-cfg.twitterConsumerSecret = ''
+cfg.twitterConsumerKey = '2GXBcCyhecaX1hstqcxsg'
+cfg.twitterConsumerSecret = 'KPHeWQYZxiIEcM9eYrt3iHfmoessX2Ld5cpGx07goQ'
 cfg.port = 8002
 # ##
 
@@ -112,9 +112,14 @@ server.get '/signin', (request,response) ->
                             #element = doc.createElement(elem)
                             #currentElement.appendChild(element)
                             #currentElement = element
+                            #console.log(attrs)
+                            #predicate = attrs[0]
                             #eyes.inspect(jAttrs)
-                            #eyes.inspect(jAttrs[["rdf:resource"]])
-                            #eyes.inspect(jAttrs["rdf:resource"])
+                            #console.log("Predicate", predicate)
+                            #console.log("Object", predicate[0])
+                            #console.log("Object", predicate[0])
+                            #console.log(attrs['rdf:resource'])
+                            #console.log(attrs[]['rdf:resource'])
                             #sys.puts "=> Started: " + elem + " (Attributes: " + JSON.stringify(attrs) + " )"
                             #if elem == "img" then user.image = jAttrs[["rdf:resource"]]
                             #if elem == "homepage" then user.homepage = jAttrs[["rdf:resource"]]
