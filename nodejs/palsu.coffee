@@ -20,7 +20,7 @@ server.configure ->
         require: [ 'jquery-browserify' ]
 
 jsdom.defaultDocumentFeatures =
-    FetchExternalResources: ['script'], 
+    FetchExternalResources: false, 
     ProcessExternalResources: false
 
 # Serve the list of meetings for /
