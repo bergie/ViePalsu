@@ -39,15 +39,13 @@ ViePalsu.DiscussionManager = {
     },
 
     getCollection: function() {
-        var discussionContainer = jQuery('[typeof="sioc:Forum"]');
-
-        discussionContainer.children('[about="#post1"]:first-child').hide();
-
         jQuery.each(VIE.EntityManager.getByType('rdfcal:Vevent'), function() {
             if (this.id) {
                 ViePalsu.DiscussionManager.collection = this.get('sioc:container_of');
             }
         });
+        
+        jQuery('[about="#post1"]').remove();
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
             if (!options.fromServer) {
