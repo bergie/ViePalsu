@@ -393,7 +393,11 @@
                 attributeValue = instance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
-                        return referenceInstance.getSubject();
+                        if (referenceInstance.id) {	
+                            return VIE.RDFa._toReference(referenceInstance.id);
+                        } else {
+                            return referenceInstance.cid.replace('c', '_:bnode');
+                        }
                     });
                 } else {
                     instanceLD[property] = attributeValue;
@@ -532,7 +536,7 @@
             if (viewInstance) {
                 return viewInstance;
             }
-            
+
             viewInstance = new VIE.RDFaView({
                 model: entityInstance, 
                 el: element,
@@ -668,7 +672,7 @@
                 jQuery(this.el).append(itemViewElement);
             } else {
                 jQuery(this.el).children().each(function(index, element) {
-                    if (index === itemOrder) {
+                    if (index >= itemOrder) {
                         jQuery(element).before(itemViewElement);
                         return false;
                     }
@@ -701,6 +705,14 @@
         // When removing items from Collection we remove their views from the DOM.
         removeItem: function(itemInstance) {
             if (typeof this.itemViews[itemInstance] === 'undefined') {
+                // Try to find it from DOM
+                jQuery(VIE.RDFa.subjectSelector, this.el).filter(function() {
+                    if (VIE.RDFa.getSubject(this) === itemInstance.getSubject()) {
+                        return true;
+                    }
+                }).each(function() {
+                    jQuery(this).remove();
+                });
                 return;
             }
             this.trigger('remove', this.itemViews[itemInstance]);
@@ -791,6 +803,9 @@
         
         // Set subject for an element
         setSubject: function(element, subject) {
+            if (jQuery(element).attr('src')) {
+                return jQuery(element).attr('src', subject);
+            }
             jQuery(element).attr('about', subject);
         },
         
