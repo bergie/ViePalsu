@@ -6,13 +6,13 @@ ViePalsu.DiscussionManager = {
     defaultMessage: '<p>Write your message here</p>',
 
     initInput: function() {
-        ViePalsu.DiscussionManager.chatInput = jQuery('#chat-input');
+        ViePalsu.DiscussionManager.chatInput = jQuery('#chat-input div');
 
         ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
         ViePalsu.DiscussionManager.chatInputEditable = new GENTICS.Aloha.Editable(ViePalsu.DiscussionManager.chatInput);
 		
 		// editableDeactivated or smartContentChanged
-        GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
+        jQuery('#chat-input button').button().click(function() {
             if (!ViePalsu.DiscussionManager.chatInputEditable.isModified()){
                 return true;
             }
@@ -34,7 +34,15 @@ ViePalsu.DiscussionManager = {
         });
 
         GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableActivated', function() {
-            ViePalsu.DiscussionManager.chatInput.html('');
+            if (ViePalsu.DiscussionManager.chatInput.html() === ViePalsu.DiscussionManager.defaultMessage) {
+                ViePalsu.DiscussionManager.chatInput.html('');
+            }
+        });
+
+        GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
+            if (ViePalsu.DiscussionManager.chatInput.html() === '') {
+                ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
+            }
         });
     },
 
