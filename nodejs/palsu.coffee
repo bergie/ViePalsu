@@ -26,13 +26,11 @@ xml = require "node-xml/lib/node-xml";
 #require "/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"
 #require "/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"
 
+configFile = "configuration.json"
+if process.argv.length > 2
+    configFile = process.argv[2]
 
-# ##
-cfg = {}
-cfg.twitterConsumerKey = '2GXBcCyhecaX1hstqcxsg'
-cfg.twitterConsumerSecret = 'KPHeWQYZxiIEcM9eYrt3iHfmoessX2Ld5cpGx07goQ'
-cfg.port = 8002
-# ##
+cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
 user = {}
 user.username = 'guest'
@@ -56,14 +54,15 @@ server.configure ->
     server.use connect.bodyParser()
 
     # oAuth with twitter
-    if !cfg.twitterConsumerKey then sys.puts 'Error: No twitterConsumerKey'
+    unless cfg.twitter.key
+        console.error "Error: No Twitter ConsumerKey, check your configuration.json"
 
     server.use connect.session
         secret: 'vie palsu app'
         store: session_store
     server.use auth [auth.Twitter
-            consumerKey: cfg.twitterConsumerKey
-            consumerSecret: cfg.twitterConsumerSecret]
+            consumerKey: cfg.twitter.key
+            consumerSecret: cfg.twitter.secret]
      
      server.set 'view options', { layout: false }
 
