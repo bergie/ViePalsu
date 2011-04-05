@@ -23,7 +23,6 @@ Backbone.sync = (method, model, success, error) ->
         for predicate, object of model.toJSONLD()
             if predicate is "@"
                 continue
-            
             if VIE.RDFa._isReference(object)
                 if typeof object is "string"
                     object = [object]
