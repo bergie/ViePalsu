@@ -7,9 +7,9 @@ isEmpty = (object) ->
         return false
     return true
 
+redisClient = redis.createClient()
+
 Backbone.sync = (method, model, success, error) ->
-    redisClient = redis.createClient()
-    
     toUUID = () ->
         S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
         "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
