@@ -45,6 +45,19 @@ ViePalsu.DiscussionManager = {
             }
         });
     },
+    
+    autoScroll: function(force) {
+        var log = jQuery('#chat-history > *');
+        if (log.length > 0) {
+            // auto scroll if we're within 100 pixels of the bottom
+            if (log.scrollTop() + 100 >= log[0].scrollHeight - log.height() ||
+                force) {
+	            window.setTimeout(function() {
+		            log.scrollTop(log[0].scrollHeight);
+	            }, 10);
+            }
+        }
+    },
 
     getCollection: function() {
         jQuery.each(VIE.EntityManager.getByType('rdfcal:Vevent'), function() {
@@ -52,6 +65,10 @@ ViePalsu.DiscussionManager = {
                 ViePalsu.DiscussionManager.collection = this.get('sioc:container_of');
             }
         });
+        
+        ViePalsu.DiscussionManager.collection.bind('add', function() {
+            ViePalsu.DiscussionManager.autoScroll();
+		});
         
         jQuery('[about="#post1"]').remove();
 
@@ -106,4 +123,5 @@ jQuery(document).ready(function() {
 
     ViePalsu.DiscussionManager.initInput();
     ViePalsu.DiscussionManager.getCollection();
+    ViePalsu.DiscussionManager.autoScroll(true);
 });
