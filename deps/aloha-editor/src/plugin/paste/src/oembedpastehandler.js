@@ -7,7 +7,7 @@
 * Made by Thomas Lété for Aloha Editor
 */
 
-﻿(function($) {
+(function($) {
     $.fn.oembed = function(url, options, callback) {
 
         options = $.extend(true, $.fn.oembed.defaults, options);
@@ -29,7 +29,7 @@
                 if (provider != null) {						
 					provider.params = getNormalizedParams(options[provider.name]) || {};
                     provider.maxWidth = options.maxWidth;
-                    provider.maxHeight = options.maxHeight;										
+                    provider.maxHeight = options.maxHeight;
                     provider.embedCode(container, resourceURL, callback);
                     return;
                 }
@@ -40,9 +40,10 @@
     };
 
     // Plugin defaults
+    // @to make configurable
     $.fn.oembed.defaults = {
-        maxWidth: null,
-        maxHeight: null,
+        maxWidth: 500,
+        maxHeight: 400,
 		embedMethod: "replace" // "auto", "append", "fill"
     };
 	
@@ -81,9 +82,24 @@
 
     $.fn.oembed.getPhotoCode = function(url, data) {
 	    var alt = data.title ? data.title : '';
+	    var width = data.width ? data.width : 0;
+	    var height = data.width ? data.width : 0;
+	    // @todo calculate size -- do resizing
+	    var img = new Image();
+        img.onload = function() {
+            //alert(this.width + 'x' + this.height);
+            var newSize = scaleSize(400, 300, this.width, this.height);
+            //alert('New Width: ' + newSize[0] + ', New Height: ' + newSize[1]);
+            width = newSize[0];
+            height = newSize[1];
+        }
+        img.src = data.url;
+        
         alt += data.author_name ? ' - ' + data.author_name : '';
         alt += data.provider_name ? ' - ' +data.provider_name : '';
-        var code = '<div><a href="' + url + '" target="_blank"><img src="' + data.url + '" alt="' + alt + '"/></a></div>';
+        //var code = '<div><a href="' + url + '" target="_blank"><img width="' + width + '" height="' + height + '" src="' + data.url + '" alt="' + alt + '"/></a></div>';
+        //var code = '<div><a href="' + url + '" target="_blank"><img src="' + data.url + '" alt="' + alt + '"/></a></div>';
+        var code = '<div><a href="' + url + '" target="_blank"><img width="400" src="' + data.url + '" alt="' + alt + '"/></a></div>';
         if (data.html)
             code += "<div>" + data.html + "</div>";
         return code;
@@ -230,6 +246,22 @@
             });
         };
     }
+    
+    function scaleSize(maxW, maxH, currW, currH) {
+
+        var ratio = currH / currW;
+
+        if(currW >= maxW && ratio <= 1){
+            currW = maxW;
+            currH = currW * ratio;
+        } else if(currH >= maxH){
+            currH = maxH;
+            currW = currH / ratio;
+        }
+
+        return [currW, currH];
+    }
+    
 })(jQuery);
 
 /**

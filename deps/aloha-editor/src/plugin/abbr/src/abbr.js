@@ -7,7 +7,7 @@
 /**
  * register the plugin with unique name
  */
-GENTICS.Aloha.Abbr = new GENTICS.Aloha.Plugin('com.gentics.aloha.plugins.Abbr');
+GENTICS.Aloha.Abbr = new GENTICS.Aloha.Plugin('abbr');
 
 /**
  * Configure the available languages

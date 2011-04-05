@@ -43,7 +43,7 @@ ViePalsu.DiscussionManager = {
 
         discussionContainer.children('[about="#post1"]:first-child').hide();
 
-        jQuery.each(VIE.EntityManager.getByType('cal:Vevent'), function() {
+        jQuery.each(VIE.EntityManager.getByType('rdfcal:Vevent'), function() {
             if (this.id) {
                 ViePalsu.DiscussionManager.collection = this.get('sioc:container_of');
             }
