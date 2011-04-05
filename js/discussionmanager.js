@@ -12,7 +12,7 @@ ViePalsu.DiscussionManager = {
         ViePalsu.DiscussionManager.chatInputEditable = new GENTICS.Aloha.Editable(ViePalsu.DiscussionManager.chatInput);
 		
 		// editableDeactivated or smartContentChanged
-        jQuery('#chat-input button').click(function() {
+        jQuery('#chat-input button').button().click(function() {
             if (!ViePalsu.DiscussionManager.chatInputEditable.isModified()){
                 return true;
             }
