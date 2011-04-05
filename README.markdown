@@ -12,3 +12,9 @@ Palsu
 _Palsu_ comes from the Finnish word for a "meeting".
 
 Read more from the [Palsu planning page](http://wiki.iks-project.eu/index.php/VIE/Palsu).
+
+
+INSTALLATION
+============
+
+npm install express socket.io jquery backbone connect connect-auth connect-redis socket.io-connect jquery jsdom browserify oauth ejs request

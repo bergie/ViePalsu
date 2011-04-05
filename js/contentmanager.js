@@ -1,8 +1,17 @@
 // We need Aloha Editor
+GENTICS_Aloha_base = '/deps/aloha-editor/src';
+
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/dep/jquery-1.5.1.js"></script>');
+
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/aloha.js" id="aloha-script-include" data-plugins="format"></script>');
+document.write('<link href="' + GENTICS_Aloha_base + '/aloha.css" id="aloha-style-include" rel="stylesheet">');
+
+/*
 GENTICS_Aloha_base = 'http://aloha-editor.org/aloha-0.9.3/aloha/';
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'aloha.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'plugins/com.gentics.aloha.plugins.Format/plugin.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script>');
+*/
 
 // We need VIE
 document.write('<script type="text/javascript" src="/js/underscore-min.js"></script>');
@@ -54,6 +63,32 @@ jQuery(document).ready(function() {
 		    }
 		}
     };
-    
+
+/*
+    // Make all RDFa entities editable
+    jQuery('[typeof]').each(function() {
+        jQuery(this).vieSemanticAloha();
+    });
+
+    // Subscribe to the editable deactivated signal to update Backbone model
+    VIE.EntityManager.entities.forEach(function(modelInstance) {
+        if (typeof modelInstance.editables === 'undefined') {
+            return true;
+        }
+        jQuery.each(modelInstance.editables, function() {
+            var editableInstance = this;
+            // editableDeactivated or smartContentChanged
+            GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
+                if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
+                    // There were changes, save
+                    modelInstance.save();
+                }
+            });
+        });
+    });
+*/
+
     VIE.RDFaEntities.getInstances();
+
+
 });
