@@ -87,7 +87,7 @@ server.get '/signin', (request,response) ->
                     # write info message about error
                     return response.redirect '/about'
         else
-            console.log 'Error on signin'
+            #console.log 'Error on signin'
     return
 
 server.get '/signout', (request, response) ->

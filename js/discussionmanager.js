@@ -25,7 +25,7 @@ ViePalsu.DiscussionManager = {
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
                 'dc:creator': jQuery('#username').text(),
-                'foaf:img': jQuery('#account[rel="foaf\\:img"] img').attr('src'),
+                'foaf:img': jQuery('#account [rel="foaf\\:img"] img').attr('src'),
                 'dc:created': date.toISOString(),
                 'sioc:content': newMessage
             });
