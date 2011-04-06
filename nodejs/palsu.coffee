@@ -24,6 +24,17 @@ user = {}
 user.username = 'guest'
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
 
+writeUser = (user, jQuery) ->
+    # Write user data
+    jQuery('#account [property="foaf\\:nick"]').text(user.username)
+    jQuery('#account').attr('about', 'http://twitter.com/' + user.username)
+    jQuery('#account [property="foaf\\:name"]').text(user.name)
+    jQuery('#account [rel="foaf\\:img"] img').attr({
+        src: user.image,
+        title: "Picture of " + user.name,
+        alt: "Picture of " + user.name
+    })
+
 server = express.createServer()
 server.configure -> 
     # Our CSS files need the LessCSS compiler
@@ -117,15 +128,7 @@ server.get '/dashboard', (request, response) ->
         window = document.createWindow()
         jQ = jQuery.create window
 
-        # Write user data
-        jQ('#account [property="foaf\\:nick"]').text(user.username)
-        jQ('#account').attr('about', 'http://twitter.com/' + user.username)
-        jQ('#account [property="foaf\\:name"]').text(user.name)
-        jQ('#account [rel="foaf\\:img"] img').attr({
-            src: user.image,
-            title: "Picture of " + user.name,
-            alt: "Picture of " + user.name
-        })
+        writeUser user, jQ
 
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
@@ -158,15 +161,7 @@ server.get '/meeting/:uuid', (request, response) ->
         window = document.createWindow()
         jQ = jQuery.create window
 
-        # Write user data
-        jQ('#account [property="foaf\\:nick"]').text(user.username)
-        jQ('#account').attr('about', 'http://twitter.com/' + user.username)
-        jQ('#account [property="foaf\\:name"]').text(user.name)
-        jQ('#account [rel="foaf\\:img"] img').attr({
-            src: user.image,
-            title: "Picture of " + user.name,
-            alt: "Picture of " + user.name
-        })
+        writeUser user, jQ
 
         # Write the Meeting identifier into the DOM
         jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
