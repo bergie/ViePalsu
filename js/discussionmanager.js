@@ -122,23 +122,25 @@ ViePalsu.DiscussionManager = {
 };
 
 jQuery(document).ready(function() {
-    // Make all RDFa entities editable
-    jQuery('[typeof]').each(function() {
-        jQuery(this).vieSemanticAloha();
-    });
+    // Make RDFa entities editable on double click
+    jQuery('[about]').each(function() {
+        var subject = VIE.RDFa.getSubject(jQuery(this));
+        jQuery('[property]', this).dblclick(function() {
+            if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
+                return true;
+            }
+            jQuery(this).vieSemanticAloha();
+            var modelInstance = VIE.EntityManager.getBySubject(subject);
 
-    // Subscribe to the editable deactivated signal to update Backbone model
-    VIE.EntityManager.entities.forEach(function(modelInstance) {
-        if (typeof modelInstance.editables === 'undefined') {
-            return true;
-        }
-        jQuery.each(modelInstance.editables, function() {
-            var editableInstance = this;
-            GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
-                if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
-                    // There were changes, save
-                    modelInstance.save();
-                }
+            // Subscribe to the editable deactivated signal to update Backbone model
+            jQuery.each(modelInstance.editables, function() {
+                var editableInstance = this;
+                GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
+                    if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
+                        // There were changes, save
+                        modelInstance.save();
+                    }
+                });
             });
         });
     });
