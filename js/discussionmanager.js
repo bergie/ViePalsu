@@ -47,7 +47,7 @@ ViePalsu.DiscussionManager = {
     },
     
     autoScroll: function(force) {
-        var log = jQuery('#chat-history > *');
+        var log = jQuery('#chat-history');
         if (log.length > 0) {
             // auto scroll if we're within 100 pixels of the bottom
             if (log.scrollTop() + 100 >= log[0].scrollHeight - log.height() ||
