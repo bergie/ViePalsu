@@ -20,8 +20,8 @@ if process.argv.length > 2
 
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
-user = {}
-user.username = 'guest'
+#user.username = 'guest'
+
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
 
 writeUser = (user, jQuery) ->
@@ -71,27 +71,24 @@ jsdom.defaultDocumentFeatures =
 
 # Serve the home page
 server.get '/', (request, response) ->
-    if request.session?.auth?.user? then user = request.session.auth.user
     if request.isAuthenticated() then return response.redirect '/dashboard' else return response.redirect '/signin'
 
 server.get '/about', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/about.html"
 
 server.get '/signin', (request,response) ->
-    if request.session?.auth?.user? then user = request.session.auth.user
     if request.isAuthenticated() then return response.redirect '/dashboard'
     
     request.authenticate ['twitter'], (error, authenticated) ->
         if request.isAuthenticated()
-            if request.session?.auth?.user? then user = request.session.auth.user
-            jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+user.username
+            jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+request.session.auth.user.username
             
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
                     userData = JSON.parse(body)
-                    user.image = userData.profile_image_url
-                    user.homepage = userData.url
-                    user.name = userData.name
+                    request.session.auth.user.image = userData.profile_image_url
+                    request.session.auth.user.homepage = userData.url
+                    request.session.auth.user.name = userData.name
                     return response.redirect '/dashboard'
                 else
                     # write info message about error
@@ -101,7 +98,7 @@ server.get '/signin', (request,response) ->
     return
 
 server.get '/signout', (request, response) ->
-    user.username = 'guest'
+    request.session.auth.user.username = 'guest'
     request.session.destroy();
     response.redirect '/about'
 
@@ -121,13 +118,14 @@ server.all '/proxy', (request, response) ->
 
 # Serve the list of meetings for /
 server.get '/dashboard', (request, response) ->
-    if user.username == 'guest' then return response.redirect '/signin'
+    console.log request.session
+    if request.session.auth.user.username == 'guest' then return response.redirect '/signin'
     return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
 
-        writeUser user, jQ
+        writeUser request.session.auth.user, jQ
 
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
@@ -154,14 +152,14 @@ server.get '/dashboard', (request, response) ->
     return
 
 server.get '/meeting/:uuid', (request, response) ->
-    console.log('open meeting: ' + request.params.uuid + ' - '+ user.username );
-    if user.username == 'guest' then return response.redirect '/signin'
+    if request.session.auth.user.username == 'guest' then return response.redirect '/signin'
+    console.log('open meeting: ' + request.params.uuid + ' - '+ request.session.auth.user.username );
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
 
-        writeUser user, jQ
+        writeUser request.session.auth.user, jQ
 
         # Write the Meeting identifier into the DOM
         jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
@@ -220,5 +218,4 @@ socket.on 'connection', (client) ->
         for clientId, clientObject of socket.clients
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
-                #clientObject.header('Access-Control-Allow-Origin', '*')
                 clientObject.send data
