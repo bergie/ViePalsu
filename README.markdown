@@ -16,7 +16,7 @@ Read more from the [Palsu planning page](http://wiki.iks-project.eu/index.php/VI
 Public version
 --------------
 
-IKS is hosting a public Palsu instance on http://palsuapp.info/
+IKS is hosting a public Palsu instance on [palsuapp.info](http://palsuapp.info/)
 
 Installation
 ------------
