@@ -176,28 +176,37 @@ server.get '/meeting/:uuid', (request, response) ->
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         
+        # Clean up VIE internal state and send content out
+        sendContent = (collection, error) ->
+            VIE.cleanup()
+            return response.send window.document.innerHTML
+            
+        # Query for posts for this event
+        getPosts = (event, callback) ->
+            posts = event.get "sioc:container_of"
+            posts.predicate = "sioc:has_container"
+            posts.object = event.id
+            posts.comparator = (item) ->
+                return dateComparator item, posts
+            return posts.fetch
+                success: (collection) ->
+                    callback event
+                error:  (collection, error) ->
+                    callback event
+        
+        getParticipants = (event) ->
+            participants = event.get "rdfcal:attendee"
+            participants.predicate = "rdfcal:attendeeOf"
+            participants.object = event.id
+            return participants.fetch
+                success: sendContent
+                error: sendContent
+        
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.uuid
         calendar.fetch
             success: (event) ->
-                # Query for posts for this event
-                posts = event.get 'sioc:container_of'
-                posts.predicate = "sioc:has_container"
-                posts.object = event.id
-                posts.comparator = (item) ->
-                    return dateComparator item, posts
-
-                return posts.fetch
-                    success: (postCollection) ->
-                        console.log "Got #{postCollection.length} posts"
-                        VIE.cleanup()
-                        return response.send window.document.innerHTML
-                    error: (postCollection, error) ->
-                        # No posts found, send the page anyway
-                        console.log "No posts"
-                        VIE.cleanup()
-                        return response.send window.document.innerHTML
-                        
+                getPosts event, getParticipants
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error
