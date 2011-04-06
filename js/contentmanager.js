@@ -26,11 +26,19 @@ jQuery(document).ready(function() {
             return;
         }
         
+        var inverseProperties = {
+            'sioc:has_container': 'sioc:container_of',
+            'rdfcal:attendee': 'rdfcal:attendeeOf'
+        };
+        
         var entity = VIE.EntityManager.getByJSONLD(data);
-        var container = entity.get('sioc:has_container');
-        if (container) {
+        _.each(inverseProperties, function(to, from) {
+            var container = entity.get(from);
+            if (!container) {
+                return true;
+            }
             container.each(function(containerEntity) {
-                var containerInstance = containerEntity.get('sioc:container_of');
+                var containerInstance = containerEntity.get(to);
                 if (!containerInstance) {
                     return true;
                 }
@@ -38,7 +46,7 @@ jQuery(document).ready(function() {
                     containerInstance.add(entity, {fromServer: true});
                 }
             });
-        }
+        });
     });
 
     // Implement our own Backbone.sync method
