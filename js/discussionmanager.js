@@ -85,7 +85,7 @@ ViePalsu.DiscussionManager = {
         
         ViePalsu.DiscussionManager.collection.comparator = function(item) {
             return dateComparator(item, ViePalsu.DiscussionManager.collection);
-        }
+        };
     },
     
     participate: function() {

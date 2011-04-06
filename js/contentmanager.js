@@ -21,7 +21,7 @@ var dateComparator = function(item, collection) {
     if (typeof itemDate === 'undefined') {
         return -1;
     }
-    var itemDate = new Date(itemDate);
+    itemDate = new Date(itemDate);
 
     collection.pluck('dc:created').forEach(function(date, index) {
         if (typeof date === 'undefined') {
