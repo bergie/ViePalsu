@@ -106,6 +106,12 @@ ViePalsu.DiscussionManager = {
         
         // Remove placeholder
         jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
+
+        attendees.bind('add', function(person, attendees, options) {
+            if (!options.fromServer) {
+                person.save();
+            }
+        });
         
         // Add myself if I'm not already there
         var me = VIE.RDFaEntities.getInstance(jQuery('#account'));
