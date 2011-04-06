@@ -1,7 +1,9 @@
 jQuery(document).ready(function() {    
     var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
-    eventCollection.bind('add', function(event) {
-        event.save();
+    eventCollection.bind('add', function(event, calendar, options) {
+        if (!options.fromServer) {
+            event.save();
+        }
     });
     
     // Go through the meetings
