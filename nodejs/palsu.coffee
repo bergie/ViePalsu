@@ -119,6 +119,7 @@ server.get '/dashboard', (request, response) ->
 
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
+        jQ('#account').attr('about', 'http://twitter.com/' + user.username)
         jQ('#account [property="foaf\\:name"]').text(user.name)
         jQ('#account [rel="foaf\\:img"] img').attr({
             src: user.image,
@@ -159,6 +160,7 @@ server.get '/meeting/:uuid', (request, response) ->
 
         # Write user data
         jQ('#account [property="foaf\\:nick"]').text(user.username)
+        jQ('#account').attr('about', 'http://twitter.com/' + user.username)
         jQ('#account [property="foaf\\:name"]').text(user.name)
         jQ('#account [rel="foaf\\:img"] img').attr({
             src: user.image,

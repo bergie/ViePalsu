@@ -69,7 +69,7 @@
     </head>
     
     <body typeof="rdfcal:Vevent" about="#meeting">
-        <div id="account" typeof="foaf:Person" about="#user">
+        <div id="account" typeof="foaf:Person" about="#me">
             <p>
                 <span rel="foaf:img">
                   <img width="40" src="#" alt="User Picture"/>
@@ -93,7 +93,7 @@
             <div id="chat-history">
                 <dl rel="sioc:container_of" rev="sioc:has_container">
                     <div typeof="sioc:Post" about="#post1">
-                        <!-- span rel="mgd:icon"><img src="#" /></span -->
+                        <span rel="foaf:depiction"><img src="#" /></span>
                         <dt property="dc:creator">screen name</dt>
                         <dd class="message" >
                             <div property="sioc:content">
@@ -113,7 +113,6 @@
             <div>
                 <h2>Participants</h2>
                 <div>
-                    <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
                     <ul class="persons"></ul>
                 </div>
             </div>
