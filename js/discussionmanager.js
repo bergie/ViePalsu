@@ -77,22 +77,7 @@ ViePalsu.DiscussionManager = {
         });
         
         ViePalsu.DiscussionManager.collection.comparator = function(item) {
-            var itemIndex = 0;
-            var itemDate = item.get('dc:created');
-            if (typeof itemDate === 'undefined') {
-                return -1;
-            }
-            var itemDate = new Date(itemDate);
-
-            ViePalsu.DiscussionManager.collection.pluck('dc:created').forEach(function(date, index) {
-                if (typeof date === 'undefined') {
-                    return true;
-                }
-                if (itemDate.getTime() > new Date(date).getTime()) {
-                    itemIndex = index + 1;
-                }
-            });
-            return itemIndex;
+            return dateComparator(item, ViePalsu.DiscussionManager.collection);
         }
     },
     

@@ -35,6 +35,14 @@ writeUser = (user, jQuery) ->
         alt: "Picture of " + user.name
     })
 
+dateComparator = (item, collection) ->
+    itemDate = new Date item.get "dc:created"
+    itemIndex = 0
+    collection.pluck("dc:created").forEach (date, index) ->
+        if itemDate.getTime() > new Date(date).getTime()
+            itemIndex = index + 1
+    return itemIndex
+
 server = express.createServer()
 server.configure -> 
     # Our CSS files need the LessCSS compiler
@@ -142,6 +150,8 @@ server.get '/dashboard', (request, response) ->
         events = calendar.get 'rdfcal:has_component'
         events.predicate = "rdfcal:component"
         events.object = calendar.id
+        events.comparator = (item) ->
+            return dateComparator item, events
         return events.fetch
             success: (eventCollection) ->
                 VIE.cleanup()
@@ -176,12 +186,7 @@ server.get '/meeting/:uuid', (request, response) ->
                 posts.predicate = "sioc:has_container"
                 posts.object = event.id
                 posts.comparator = (item) ->
-                    itemDate = new Date item.get "dc:created"
-                    itemIndex = 0
-                    posts.pluck("dc:created").forEach (date, index) ->
-                        if itemDate.getTime() > new Date(date).getTime()
-                            itemIndex = index + 1
-                    return itemIndex
+                    return dateComparator item, posts
 
                 return posts.fetch
                     success: (postCollection) ->

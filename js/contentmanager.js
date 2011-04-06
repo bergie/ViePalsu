@@ -15,6 +15,25 @@ document.write('<script type="text/javascript" src="/js/vie-aloha.js"></script>'
 // And we need Socket.IO
 document.write('<script type="text/javascript" src="/socket.io/socket.io.js"></script>');
 
+var dateComparator = function(item, collection) {
+    var itemIndex = 0;
+    var itemDate = item.get('dc:created');
+    if (typeof itemDate === 'undefined') {
+        return -1;
+    }
+    var itemDate = new Date(itemDate);
+
+    collection.pluck('dc:created').forEach(function(date, index) {
+        if (typeof date === 'undefined') {
+            return true;
+        }
+        if (itemDate.getTime() > new Date(date).getTime()) {
+            itemIndex = index + 1;
+        }
+    });
+    return itemIndex;
+};
+
 jQuery(document).ready(function() {
 
     var socket = new io.Socket();

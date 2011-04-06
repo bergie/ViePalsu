@@ -6,6 +6,10 @@ jQuery(document).ready(function() {
         }
     });
     
+    eventCollection.comparator = function(item) {
+        return dateComparator(item, eventCollection);
+    }
+    
     // Go through the meetings
     eventCollection.forEach(function(event) {
         if (typeof event.id !== 'string') {
@@ -21,8 +25,10 @@ jQuery(document).ready(function() {
         if (!eventTitle) {
             return;
         }
+        var date = new Date();
         eventCollection.add({
-            'rdfcal:summary': eventTitle
+            'rdfcal:summary': eventTitle,
+            'dc:created': date.toISOString(),
         });
         jQuery('#newevent').attr('value', '');
     });
