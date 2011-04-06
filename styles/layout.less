@@ -114,6 +114,7 @@ body {
         left: 0;
         right: 0;
         height: 140px;
+        overflow: auto;
         div {
             float: left;
             width: 90%;
@@ -137,9 +138,40 @@ body {
         left: 0;
         right: 0;
         padding: 0;
+        overflow: auto;
     }
     #chat-input, #chat-history {
         border-top: 1px solid #fff;
+    }
+    #chat-history div[rel="sioc:container_of"] {
+        overflow: auto;
+        width: 99%;
+    }
+    #chat-history div[typeof="sioc:Post"] {
+        margin: 0 0 5px 0;
+        overflow: auto;
+    }
+    #chat-history div[rel="foaf:depiction"] {
+        float: left;
+        padding: 2px;
+        width: 30px;
+        height: 30px;
+    }
+    #chat-history div[class="message"] {
+        width: 90%;
+        float: left;
+        margin: 0 0 0 13px;
+    }
+    #chat-history div[property="dc:creator"] {
+        width: 200px;
+        float: left;
+        margin: 0 0 2px 3px;
+        font-weight: bold;
+    }
+    #chat-history div[property="dc:created"] {
+        width: 200px;
+        float: left;
+        margin: 0 0 2px 3px;
     }
 }
 #sidebar {

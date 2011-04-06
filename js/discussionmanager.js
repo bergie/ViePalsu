@@ -29,7 +29,7 @@ ViePalsu.DiscussionManager = {
                 'dc:created': date.toISOString(),
                 'sioc:content': newMessage
             });
-
+            
             ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
         });
 
@@ -73,6 +73,7 @@ ViePalsu.DiscussionManager = {
         jQuery('[about="#post1"]').remove();
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
+
             if (!options.fromServer) {
                 postInstance.save();
             }

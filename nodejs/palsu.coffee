@@ -60,7 +60,6 @@ jsdom.defaultDocumentFeatures =
 
 # Serve the home page
 server.get '/', (request, response) ->
-    sys.puts sys.inspect request.getAuthDetails()
     if request.session?.auth?.user? then user = request.session.auth.user
     if request.isAuthenticated() then return response.redirect '/dashboard' else return response.redirect '/signin'
 
@@ -152,6 +151,7 @@ server.get '/dashboard', (request, response) ->
     return
 
 server.get '/meeting/:uuid', (request, response) ->
+    console.log('open meeting: ' + request.params.uuid + ' - '+ user.username );
     if user.username == 'guest' then return response.redirect '/signin'
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
