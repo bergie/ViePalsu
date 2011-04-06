@@ -1,25 +1,35 @@
 <!doctype html>
-<html
-    version="HTML+RDFa 1.1"
-    xmlns:sioc="http://rdfs.org/sioc/ns#"
-    xmlns:dcterms="http://purl.org/dc/terms/">
+<html>
     <head>
-        <title>Palsu App | About</title>
+        <title>About Palsu App</title>
         <link type="text/css" rel="stylesheet" href="styles/base.css">
         
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/browserify.js"></script>
+        <script type="text/javascript">
+            var jQuery = require('jquery-browserify');
+        </script>
         
         <script src="js/layout.js" type="text/javascript"></script>
         <base href="/">
         
     </head>
     <body>
-        <h1 property="dcterms:title">About the Palsu App</h1>
+        <h1>About the Palsu App</h1>
         <div id="main">
-            <div id="signin">
+            <div>
                 <h2>About</h2>
                     <p>
-                        Some information about the Palsu App.
+                        <strong>Palsu</strong> is an interactive meeting tool that is used to demonstrate capabilities of VIE. The idea is to create a tool for coordinating both online and real-world meetings. This means being able to manage:
+                    </p>
+                    <ul>
+                        <li>Meeting scheduling</li>
+                        <li>Agenda for meetings</li>
+                        <li>Collaboratively written meeting notes</li>
+                        <li>Action points (tasks) that arise in the meeting</li>
+                        <li>Participants of the meeting, and action points assigned to them</li>
+                    </ul>
+                    <p>
+                        Palsu comes from the Finnish word for a "meeting"
                     </p>
                     <br /><br />
                     <p>
@@ -33,6 +43,10 @@
                 <div>
                     <p>Palsu App is a meeting tool brought to you by the <a href="http://iks-project.eu">IKS Project</a>.
                     </p>
+                    <br /><br />
+                    <p>
+                        <script type="text/javascript" src="http://www.ohloh.net/p/489057/widgets/project_partner_badge.js"></script>
+                    </p>
                 </div>
             </div>
             <div>
@@ -42,10 +56,11 @@
                         Software used in this project:
                     </p>
                     <ul>
-                       <li>Aloha Editor</li>
-                       <li>Apache Stanbol</li>
-                       <li>IKS VIE and VIE^2</li>
-                       <li>Node.JS</li>
+                       <li><a href="http://aloha-editor.org/">Aloha Editor</a></li>
+                       <li><a href="http://incubator.apache.org/stanbol/">Apache Stanbol</a></li>
+                       <li><a href="http://www.iks-project.eu/projects/vienna-iks-editables">Vienna IKS Editables</a></li>
+                       <li><a href="http://nodejs.org/">Node.js</a></li>
+                       <li><a href="http://socket.io/">Socket.io</a></li>
                     </ul>
                 </div>
             </div>
