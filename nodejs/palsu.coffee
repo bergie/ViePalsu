@@ -126,8 +126,7 @@ server.all '/proxy', (request, response) ->
 
 # Serve the list of meetings for /
 server.get '/dashboard', (request, response) ->
-    console.log request.session
-    if request.session.auth.user.username == 'guest' then return response.redirect '/signin'
+    if !request.isAuthenticated() then return response.redirect '/signin'
     return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
@@ -162,7 +161,7 @@ server.get '/dashboard', (request, response) ->
     return
 
 server.get '/meeting/:uuid', (request, response) ->
-    if request.session.auth.user.username == 'guest' then return response.redirect '/signin'
+    if !request.isAuthenticated() then return response.redirect '/signin'
     console.log('open meeting: ' + request.params.uuid + ' - '+ request.session.auth.user.username );
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
