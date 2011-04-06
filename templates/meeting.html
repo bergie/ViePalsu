@@ -109,8 +109,9 @@
             <div>
                 <h2>Participants</h2>
                 <div>
-                    <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
-                    <ul class="persons"></ul>
+                    <ul rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
+                        <li about="#" typeof="foaf:Person" property="foaf:nick">Example User</li>
+                    </ul>
                 </div>
             </div>
             <div>
@@ -119,7 +120,10 @@
             </div>
             <div>
                 <h2>Mentions</h2>
-                <div></div>
+                <div>
+                    <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
+                    <ul class="persons"></ul>
+                </div>
             </div>
             <div>
                 <h2>Media</h2>

@@ -66,13 +66,11 @@ ViePalsu.DiscussionManager = {
             }
         });
         
-        ViePalsu.DiscussionManager.collection.bind('add', function() {
-            ViePalsu.DiscussionManager.autoScroll();
-		});
-        
+        // Remove placeholder
         jQuery('[about="#post1"]').remove();
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
+            ViePalsu.DiscussionManager.autoScroll();
             if (!options.fromServer) {
                 postInstance.save();
             }
@@ -95,6 +93,24 @@ ViePalsu.DiscussionManager = {
                 }
             });
             return itemIndex;
+        }
+    },
+    
+    participate: function() {
+        var attendees;
+        jQuery.each(VIE.EntityManager.getByType('rdfcal:Vevent'), function() {
+            if (this.id) {
+                attendees = this.get('rdfcal:attendee');
+            }
+        });
+        
+        // Remove placeholder
+        jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
+        
+        // Add myself if I'm not already there
+        var me = VIE.RDFaEntities.getInstance(jQuery('#account'));
+        if (attendees.indexOf(me) === -1) {
+            attendees.add(me);
         }
     }
 };
@@ -124,4 +140,5 @@ jQuery(document).ready(function() {
     ViePalsu.DiscussionManager.initInput();
     ViePalsu.DiscussionManager.getCollection();
     ViePalsu.DiscussionManager.autoScroll(true);
+    ViePalsu.DiscussionManager.participate();
 });
