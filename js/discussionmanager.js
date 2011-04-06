@@ -66,14 +66,11 @@ ViePalsu.DiscussionManager = {
             }
         });
         
-        ViePalsu.DiscussionManager.collection.bind('add', function() {
-            ViePalsu.DiscussionManager.autoScroll();
-		});
-        
+        // Remove placeholder
         jQuery('[about="#post1"]').remove();
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
-
+            ViePalsu.DiscussionManager.autoScroll();
             if (!options.fromServer) {
                 postInstance.save();
             }
@@ -97,27 +94,53 @@ ViePalsu.DiscussionManager = {
             });
             return itemIndex;
         }
+    },
+    
+    participate: function() {
+        var attendees;
+        jQuery.each(VIE.EntityManager.getByType('rdfcal:Vevent'), function() {
+            if (this.id) {
+                attendees = this.get('rdfcal:attendee');
+            }
+        });
+        
+        // Remove placeholder
+        jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
+
+        attendees.bind('add', function(person, attendees, options) {
+            if (!options.fromServer) {
+                person.save();
+            }
+        });
+        
+        // Add myself if I'm not already there
+        var me = VIE.RDFaEntities.getInstance(jQuery('#account'));
+        if (attendees.indexOf(me) === -1) {
+            attendees.add(me);
+        }
     }
 };
 
 jQuery(document).ready(function() {
-    // Make all RDFa entities editable
-    jQuery('[typeof]').each(function() {
-        jQuery(this).vieSemanticAloha();
-    });
+    // Make RDFa entities editable on double click
+    jQuery('[about]').each(function() {
+        var subject = VIE.RDFa.getSubject(jQuery(this));
+        jQuery('[property]', this).dblclick(function() {
+            if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
+                return true;
+            }
+            jQuery(this).vieSemanticAloha();
+            var modelInstance = VIE.EntityManager.getBySubject(subject);
 
-    // Subscribe to the editable deactivated signal to update Backbone model
-    VIE.EntityManager.entities.forEach(function(modelInstance) {
-        if (typeof modelInstance.editables === 'undefined') {
-            return true;
-        }
-        jQuery.each(modelInstance.editables, function() {
-            var editableInstance = this;
-            GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
-                if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
-                    // There were changes, save
-                    modelInstance.save();
-                }
+            // Subscribe to the editable deactivated signal to update Backbone model
+            jQuery.each(modelInstance.editables, function() {
+                var editableInstance = this;
+                GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
+                    if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
+                        // There were changes, save
+                        modelInstance.save();
+                    }
+                });
             });
         });
     });
@@ -125,4 +148,5 @@ jQuery(document).ready(function() {
     ViePalsu.DiscussionManager.initInput();
     ViePalsu.DiscussionManager.getCollection();
     ViePalsu.DiscussionManager.autoScroll(true);
+    ViePalsu.DiscussionManager.participate();
 });
