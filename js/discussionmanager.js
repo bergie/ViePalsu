@@ -71,6 +71,13 @@ ViePalsu.DiscussionManager = {
 
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
             ViePalsu.DiscussionManager.autoScroll();
+            
+            window.setTimeout(function() {
+                jQuery('[typeof="sioc:Post"]').each(function() {
+                    ViePalsu.DiscussionManager.updateDate(this);
+                });	  
+            }, 20);
+            
             if (!options.fromServer) {
                 postInstance.save();
             }
@@ -103,6 +110,12 @@ ViePalsu.DiscussionManager = {
         if (attendees.indexOf(me) === -1) {
             attendees.add(me);
         }
+    },
+    
+    updateDate: function(element) {
+        jQuery('.easydate', element).attr('title', jQuery('div[property="dc:created"]', element).hide().text());
+        
+        jQuery('.easydate', element).easydate();
     }
 };
 
@@ -129,6 +142,10 @@ jQuery(document).ready(function() {
             });
         });
     });
+
+    jQuery('[typeof="sioc:Post"]').each(function() {
+        ViePalsu.DiscussionManager.updateDate(this);
+    });	    
 
     ViePalsu.DiscussionManager.initInput();
     ViePalsu.DiscussionManager.getCollection();
