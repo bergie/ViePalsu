@@ -1,6 +1,6 @@
 @import '/styles/mixins.less';
 
-@header-height: 100px;
+@header-height: 50px;
 
 body {
     background-color: #f8f8f8;
@@ -20,7 +20,31 @@ body {
 }
 
 #account {
+    position: absolute;
+    right: 0;
+    top: 5;
+    color: #ffffff;
+    vertical-align: top;
     height: 50px;
+    padding-right: 1em;
+    width: 20em;
+    
+    .avatar {
+        float: left;
+        margin-right: 1em;
+    }
+    
+    p {
+        white-space: nowrap;
+    }
+    
+    nav {
+        display: block;
+    }
+    
+    a {
+        color: #ffffff;
+    }
 }
 
 #main, #sidebar {
