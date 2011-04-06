@@ -24,8 +24,8 @@ ViePalsu.DiscussionManager = {
 
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
-                // @todo dc:creator or foaf:nick and use session data...
                 'dc:creator': jQuery('#username').text(),
+                'foaf:depiction': ["<"+jQuery('#account [rel="foaf\\:img"] img').attr('src')+">"],
                 'dc:created': date.toISOString(),
                 'sioc:content': newMessage
             });

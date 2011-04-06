@@ -46,64 +46,67 @@
     </head>
     <body>
 
-                <div id="account" typeof="foaf:Person" about="#user">
-                    <p>
-                        Hello, <span property="foaf:nick" id="username">username</span>!
-                        | <strong>Dashboard</strong> &middot; <a href="/signout">Sign-out</a>
-                    </p>
-                </div>
-
-
-                <h1>Meetings in Palsu</h1>
-                <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
-                    <li about="" typeof="rdfcal:Vevent">
-                        <a href="" property="rdfcal:summary">Event title</a>
-                    </li>
-                </ul>
-                <form>
-                    <label>Add a meeting
-                        <input id="newevent" type="text" />
-                    </label>
-                    <button type="button" id="eventadd">Add</button>
-                </form>
+        <div id="account" typeof="foaf:Person" about="#user">
+            <p>
+                <span rel="foaf:img">
+                  <img width="40" src="#" alt="User Picture"/>
+                </span>
                 
+                Hello, <span property="foaf:nick" id="username">username</span> (<span property="foaf:name" id="name">name</span>)!
+                | <a href="/signout">Sign-out</a>
+            </p>
+        </div>
+
+        <h1>Meetings in Palsu</h1>
+        <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
+            <li about="" typeof="rdfcal:Vevent">
+                <a href="" property="rdfcal:summary">Event title</a>
+            </li>
+        </ul>
+        <form>
+            <label>Add a meeting
+                <input id="newevent" type="text" />
+            </label>
+            <button type="button" id="eventadd">Add</button>
+        </form>
+        
+        </div>
+        <div id="sidebar">
+            <div>
+                <h2>Participants</h2>
+                <div>
                 </div>
-                <div id="sidebar">
-                    <div>
-                        <h2>Participants</h2>
-                        <div>
-                        </div>
-                    </div>
-                    <div>
-                        <h2>Tasks</h2>
-                        <div></div>
-                    </div>
-                    <div>
-                        <h2>Mentions</h2>
-                        <div></div>
-                    </div>
-                    <div>
-                        <h2>Media</h2>
-                        <div>
-                        </div>
-                    </div>
+            </div>
+            <div>
+                <h2>Tasks</h2>
+                <div></div>
+            </div>
+            <div>
+                <h2>Mentions</h2>
+                <div></div>
+            </div>
+            <div>
+                <h2>Media</h2>
+                <div>
                 </div>
+            </div>
+        </div>
 
-        	<script type="text/javascript" defer>
-        		(function(window,undefined){
-        			// Prepare
-        			var
-        				$ = window.jQuery,
-        				GENTICS = window.GENTICS,
-        				$body = $('body');
+	<script type="text/javascript" defer>
+		(function(window,undefined){
+			// Prepare
+			var
+				$ = window.jQuery,
+				GENTICS = window.GENTICS,
+				$body = $('body');
 
-        			// Bind to Aloha Ready Event
-        			$body.bind('aloha',function(){
-        				//$('#chat-input').aloha();
-        			});
+			// Bind to Aloha Ready Event
+			$body.bind('aloha',function(){
+				//$('#chat-input').aloha();
+			});
 
-        		})(window);
-        	</script>
+		})(window);
+	</script>
 
-            </body>
-        </html>
+    </body>
+</html>

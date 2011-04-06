@@ -34,7 +34,6 @@
         <link type="text/css" rel="stylesheet" href="/styles/base.css">
         <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css">
 
-        <!-- link rel="meta" type="application/rdf+xml" title="FOAF" href="http://semantictweet.com/username" / -->
         <base href="/">
 
         <script type="text/javascript" src="/browserify.js"></script>
@@ -70,9 +69,13 @@
     </head>
     
     <body typeof="rdfcal:Vevent" about="#meeting">
-        <div id="account" typeof="foaf:Person" about="#user">
+        <div id="account" typeof="foaf:Person" about="#me">
             <p>
-                Hello, <span property="foaf:nick" id="username">username</span>!
+                <span rel="foaf:img">
+                  <img width="40" src="#" alt="User Picture"/>
+                </span>
+                
+                Hello, <span property="foaf:nick" id="username">username</span> (<span property="foaf:name" id="name">name</span>)!
                 | <a href="/dashboard">Dashboard</a> &middot; <a href="/signout">Sign-out</a>
             </p>
         </div>
@@ -90,6 +93,7 @@
             <div id="chat-history">
                 <dl rel="sioc:container_of" rev="sioc:has_container">
                     <div typeof="sioc:Post" about="#post1">
+                        <span rel="foaf:depiction"><img src="#" /></span>
                         <dt property="dc:creator">screen name</dt>
                         <dd class="message" >
                             <div property="sioc:content">
@@ -109,7 +113,7 @@
             <div>
                 <h2>Participants</h2>
                 <div>
-                    <ul rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
+                    <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
                         <li about="#" typeof="foaf:Person" property="foaf:nick">Example User</li>
                     </ul>
                 </div>
@@ -183,9 +187,6 @@
 			$body.bind('aloha',function(){
 				//$('#chat-input').aloha();
 			});
-			
-
-			// </closure>
 		})(window);
 	</script>
 
