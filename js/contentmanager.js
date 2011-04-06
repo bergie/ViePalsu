@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
         
         var inverseProperties = {
             'sioc:has_container': 'sioc:container_of',
-            'rdfcal:attendee': 'rdfcal:attendeeOf'
+            'rdfcal:attendeeOf': 'rdfcal:attendee'
         };
         
         var entity = VIE.EntityManager.getByJSONLD(data);
