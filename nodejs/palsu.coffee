@@ -212,6 +212,28 @@ server.get '/meeting/:uuid', (request, response) ->
                 VIE.cleanup()
                 return response.send error
 
+# Proxy VIE-2 cross-site requests
+server.post '^\\/proxy.*', (request, response) ->
+    postHandler = (request, callback) ->
+        content = "";
+        request.addListener "data", (chunk) ->
+            content = "#{content}#{chunk}"
+
+	    request.addListener "end", ->
+	        callback content
+
+    postHandler request, (content) ->
+        requestData = JSON.parse(content)
+        
+        req = ProxyRequest
+            method: requestData.verb or "GET"
+            uri: requestData.proxy_url
+            body: requestData.content
+            headers:
+                "Accept": requestData.format or "text/plain"
+        , (error, resp, body) ->
+            response.send body
+
 server.listen(cfg.port)
 
 # ## Handling sockets
