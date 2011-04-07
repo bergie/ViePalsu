@@ -10,6 +10,8 @@
  * Create the Repositories object. Namespace for Repositories
  * @hide
  */
+ if ( !GENTICS.Aloha ) alert('no G.A');
+ if ( !GENTICS.Aloha.Repositories ) alert('no G.A.R');
 if ( !GENTICS.Aloha.Repositories ) GENTICS.Aloha.Repositories = {};
 
 /**

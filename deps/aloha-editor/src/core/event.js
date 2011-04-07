@@ -20,7 +20,7 @@
 
 (function(window, undefined) {
 	var
-		$ = jQuery = window.alohaQuery,
+		jQuery = window.alohaQuery, $ = jQuery,
 		GENTICS = window.GENTICS,
 		Aloha = GENTICS.Aloha;
 
@@ -48,9 +48,7 @@ GENTICS.Aloha.Event = function (eventName, eventSource, properties) {
  * @constructor
  * @singleton
  */
-GENTICS.Aloha.EventRegistry = function () {};
-
-GENTICS.Aloha.EventRegistry.prototype = {
+GENTICS.Aloha.EventRegistry = Class.extend({
 	/**
 	 * Subscribe on the given Event from the event source
 	 * @method
@@ -81,7 +79,7 @@ GENTICS.Aloha.EventRegistry.prototype = {
 	trigger: function (event) {
 		jQuery(event.source).trigger(event.name, event.properties);
 	}
-};
+});
 
 GENTICS.Aloha.EventRegistry = new GENTICS.Aloha.EventRegistry();
 

@@ -1,6 +1,7 @@
 express = require 'express'
 io = require 'socket.io'
 jQuery = require 'jquery'
+_ = require("underscore")._
 Backbone = require 'backbone'
 connect = require 'connect'
 VIE = require '../js/vie.js'

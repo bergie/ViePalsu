@@ -145,7 +145,7 @@
 			// Bind the event
 			bind: function(callback){
 				var $this = $(this);
-				   return $this.bind(eventName,callback);
+					return $this.bind(eventName,callback);
 			},
 
 			// Trigger the event
@@ -213,9 +213,12 @@
 
 		// Fetch already bound events
 		var boundHandlers = [];
-		$.each($this.data('events')[eventName], function(i,event){
-			boundHandlers.push(event.handler);
-		});
+		$.each(
+			($this.data('events') || {})[eventName] || [],
+			function(i,event){
+				boundHandlers.push(event.handler);
+			}
+		);
 
 		// Unbind already bound events
 		$this.unbind(eventName);
@@ -259,6 +262,29 @@
 			el = $el.get(0),
 			outerHtml = el.outerHTML || new XMLSerializer().serializeToString(el);
 		return outerHtml;
+	};
+
+
+	jQuery.fn.zap = function () {
+		return this.each(function(){ jQuery(this.childNodes).insertBefore(this); }).remove();
+	};
+
+	jQuery.fn.textNodes = function(excludeBreaks, includeEmptyTextNodes) {
+			var ret = [];
+
+			(function(el){
+					if (
+							(el.nodeType === 3 && jQuery.trim(el.data) && !includeEmptyTextNodes) ||
+							(el.nodeType === 3 && includeEmptyTextNodes) ||
+							(el.nodeName =="BR" && !excludeBreaks)) {
+							ret.push(el);
+					} else {
+							for (var i=0, childLength = el.childNodes.length; i < childLength; ++i) {
+									arguments.callee(el.childNodes[i]);
+							}
+					}
+			})(this[0]);
+			return jQuery(ret);
 	};
 
 })(jQuery);

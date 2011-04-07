@@ -18,16 +18,14 @@
 */
 (function(window, undefined) {
 	var
-		$ = jQuery = window.alohaQuery,
+		jQuery = window.alohaQuery, $ = jQuery,
 		GENTICS = window.GENTICS,
 		Aloha = GENTICS.Aloha;
 
 /**
  * Markup object
  */
-GENTICS.Aloha.Markup = function() {};
-
-GENTICS.Aloha.Markup.prototype = {
+GENTICS.Aloha.Markup = Class.extend({
 	/**
 	 * Key handlers for special key codes
 	 */
@@ -824,7 +822,7 @@ GENTICS.Aloha.Markup.prototype = {
 	toString: function() {
 		return 'GENTICS.Aloha.Markup';
 	}
-};
+});
 
 GENTICS.Aloha.Markup = new GENTICS.Aloha.Markup();
 

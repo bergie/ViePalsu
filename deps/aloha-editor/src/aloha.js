@@ -1,5 +1,6 @@
 // Ensure Namespace
 window.GENTICS = window.GENTICS || {};
+window.GENTICS.Utils = window.GENTICS.Utils || {};
 window.GENTICS.Aloha = window.GENTICS.Aloha || {};
 window.GENTICS.Aloha.settings = window.GENTICS.Aloha.settings || {};
 window.GENTICS.Aloha.ui = window.GENTICS.Aloha.ui || {};
@@ -23,8 +24,7 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	window.Aloha_loaded_plugins['link'] = true;
 	window.Aloha_loaded_plugins['linkchecker'] = true;
 	window.Aloha_loaded_plugins['table'] = true;
-	window.Aloha_loaded_plugins['cropnresize'] = true;
-	window.Aloha_loaded_plugins['image'] = true;
+	includes.push('util/base.js');
 	includes.push('dep/ext-3.2.1/adapter/jquery/ext-jquery-adapter.js');
 	includes.push('dep/ext-3.2.1/ext-all.js');
 	includes.push('dep/jquery.json-2.2.min.js');
@@ -36,7 +36,6 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('util/range.js');
 	includes.push('util/position.js');
 	includes.push('util/dom.js');
-	includes.push('util/indexof.js');
 	includes.push('core/ext-alohaproxy.js');
 	includes.push('core/ext-alohareader.js');
 	includes.push('core/ext-alohatreeloader.js');
@@ -57,13 +56,13 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('core/repositorymanager.js');
 	includes.push('core/repository.js');
 	includes.push('core/repositoryobjects.js');
+	includes.push('plugin/link/extra/linklist.js')
+	includes.push('plugin/link/extra/delicious.js')
 	includes.push('plugin/format/src/format.js');
 	includes.push('plugin/link/src/link.js');
 	includes.push('plugin/linkchecker/src/linkchecker.js');
 	includes.push('plugin/table/src/table.js');
-	includes.push('plugin/cropnresize/src/cropnresize.js');
-	includes.push('plugin/image/src/image.js');
-    
+
     // paste
 	includes.push('plugin/paste/src/paste.js');
 	includes.push('plugin/paste/src/genericpastehandler.js');
@@ -72,7 +71,8 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
     
     // palsu, vie^2, iks annotate, ...
 	includes.push('plugin/iks_annotate/src/iks_annotate.js');
-    
+	
+
 	// Insert Scripts
 	var value, url, scriptEl, appendEl = document.head;
 	for ( i=0,n=includes.length; i<n; ++i ) {

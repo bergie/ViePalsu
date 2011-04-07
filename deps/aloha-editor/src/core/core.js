@@ -29,7 +29,7 @@ window.alohaQuery = window.jQuery.sub();
 // Start Closure
 (function(window, undefined) {
 	var
-		$ = jQuery = window.alohaQuery,
+		jQuery = window.alohaQuery, $ = jQuery,
 		GENTICS = window.GENTICS,
 		Aloha = GENTICS.Aloha;
 
@@ -39,9 +39,9 @@ window.alohaQuery = window.jQuery.sub();
 	 * @class Aloha The Aloha base object, which contains all the core functionality
 	 * @singleton
 	 */
-	GENTICS.Aloha = function () {};
+	//GENTICS.Aloha = function () {};
 
-	GENTICS.Aloha = {
+	GENTICS.Aloha = jQuery.extend({
 
 		// provide aloha version, is automatically set during build process
 		version: '##ALOHAVERSION##',
@@ -155,7 +155,7 @@ window.alohaQuery = window.jQuery.sub();
 			this.Log.init();
 
 			// initialize the error handler for general javascript errors
-			if (!(this.settings.errorhandling == false)) {
+			if ( this.settings.errorhandling ) {
 				window.onerror = function (msg, url, linenumber) {
 					GENTICS.Aloha.Log.error(GENTICS.Aloha, 'Error message: ' + msg + '\nURL: ' + url + '\nLine Number: ' + linenumber);
 					// TODO eventually add a message to the message line?
@@ -541,9 +541,9 @@ window.alohaQuery = window.jQuery.sub();
 				return '??? ' + key + ' ???';
 			} else {
 				// substitute placeholders
-				if (typeof replacements !== 'undefined' && replacements != null) {
+				if (typeof replacements !== 'undefined' && replacements !== null) {
 					for ( var i = 0, repLength = replacements.length; i < repLength; ++i) {
-						if (typeof replacements[i] !== 'undefined' && replacements[i] != null) {
+						if (typeof replacements[i] !== 'undefined' && replacements[i] !== null) {
 							var regEx = new RegExp('\\{' + (i) + '\\}', 'g'),
 								safeArgument = replacements[i].toString().replace(/\{/g, '\\{');
 							safeArgument = safeArgument.replace(/\}/g, '\\}');
@@ -755,12 +755,12 @@ window.alohaQuery = window.jQuery.sub();
 				loadPackage: function(data){
 					// Cycle through CSS
 					$.each(data.css||[], function(i,value){
-						GENTICS.Aloha.loadCss(pluginUrl+'/'+value)
+						GENTICS.Aloha.loadCss(pluginUrl+'/'+value);
 					});
 
 					// Cycle through JS
 					$.each(data.js||[], function(i,value){
-						GENTICS.Aloha.loadJs(pluginUrl+'/'+value)
+						GENTICS.Aloha.loadJs(pluginUrl+'/'+value);
 					});
 
 					// Done
@@ -769,7 +769,6 @@ window.alohaQuery = window.jQuery.sub();
 			};
 
 			// Load In
-			try{
 			$.ajax({
 				url: pluginUrl+'/package.json',
 				dataType: 'json',
@@ -797,15 +796,11 @@ window.alohaQuery = window.jQuery.sub();
 					return true;
 				}
 			});
-			}
-			catch ( e ) {
-				alert('asd');
-			}
 
 			// Done
 			return true;
 		}
-	};
+	}, GENTICS.Aloha);
 
 	// Load Plugins
 	var $alohaScriptInclude = $('#aloha-script-include');
@@ -817,7 +812,7 @@ window.alohaQuery = window.jQuery.sub();
 		}
 
 		// Load in Plugins
-		$.each(plugins||{},function(i,pluginName){
+		$.each(plugins||[],function(i,pluginName){
 			// Load Plugin
 			GENTICS.Aloha.loadPlugin(pluginName);
 		});

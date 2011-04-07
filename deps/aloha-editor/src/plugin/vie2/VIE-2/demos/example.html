@@ -148,7 +148,7 @@
             
 			function analyzeText (elem, button) {
 				//disable button
-				$(button).attr('disabled', 'disabled');
+				//$(button).attr('disabled', 'disabled');
                 $(button).text('Analyzing...');
 				
 				//start analysis
@@ -175,8 +175,27 @@
             
             
             function addName () {
+              var model =  $.VIE2.Backbone['person']['collection'].get('<http://dbpedia.org/resource/Barack_Obama>');
+              
+              var names = model.get("foaf:name");
+              names.push($.rdf.literal("B. Obama"));
+              
+              model.set({"foaf:name": names});
+                
+                /*
+                 * ALTERNATIVE: 
                 $(document).vie2().vie2('annotate',
-                  '<http://dbpedia.org/resource/Barack_Obama> foaf:name "B B Obama"');
+                  '<http://dbpedia.org/resource/Barack_Obama> foaf:name "B. Obama"');
+                  */
+            };
+            
+            function changeName () {
+              var model =  $.VIE2.Backbone['person']['collection'].get('<http://dbpedia.org/resource/Barack_Obama>');
+              
+              var names = model.get("foaf:name");
+              names[0].value = "B B Obama";
+              
+              model.set({"foaf:name": names});
             };
 		</script>
 		

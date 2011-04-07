@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="VIE^2" basedir="." default="all">
     
-	<property name="VERSION" value="0.8"/>
+	<property name="VERSION" value="0.9"/>
 	    
     <property name="DOCS_DIR" value="./docs" description="API documentation"/>
     <property name="DIST_DIR" value="./dist"/>
@@ -25,6 +25,7 @@
   			<arg value="${SRC_DIR}/connector/dbpedia.js" />
   			<arg value="${SRC_DIR}/connector/rdfa.js" />
   			<arg value="${SRC_DIR}/connector/stanbol.js" />
+  			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
 		</exec>
     </target>
 	
@@ -57,10 +58,10 @@
     <target name="combine" description="combines core/*.js files into one file">
         <echo message="Building VIE^2 Distribution" />
         <concat destfile="${DIST_DIR}/vie2-${VERSION}.debug.js">
+        	<fileset dir="${SRC_DIR}" includes="core/util.js"/>
         	<fileset dir="${SRC_DIR}" includes="core/connector.js"/>
         	<fileset dir="${SRC_DIR}" includes="core/mapping.js"/>
         	<fileset dir="${SRC_DIR}" includes="core/core.js"/>
-        	<fileset dir="${SRC_DIR}" includes="core/util.js"/>
        	</concat>
         <copy file="${DIST_DIR}/vie2-${VERSION}.debug.js" tofile="${DIST_DIR}/vie2-latest.debug.js" overwrite="true" />
     </target>

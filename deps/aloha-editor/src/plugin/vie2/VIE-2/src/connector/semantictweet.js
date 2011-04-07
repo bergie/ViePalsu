@@ -25,6 +25,7 @@ jQuery.VIE2.connectors['semantictweet'].query = function (uri, props, namespaces
 		return;
 	}
 	var uri = uri.replace(/^</, '').replace(/>$/, '');
+    
 	if (!uri.match(/^http\:\/\/semantictweet.com\/.*/)) {
 		jQuery.VIE2.log ("warn", "VIE2.Connector('" + this.id + "')", "Query does not support the given URI!");
 		callback({});

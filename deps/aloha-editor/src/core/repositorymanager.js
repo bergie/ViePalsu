@@ -18,7 +18,7 @@
 */
 (function(window, undefined) {
 	var
-		$ = jQuery = window.alohaQuery,
+		jQuery = window.alohaQuery, $ = jQuery,
 		GENTICS = window.GENTICS,
 		Aloha = GENTICS.Aloha;
 
@@ -28,11 +28,9 @@
  * @class RepositoryManager
  * @singleton
  */
-GENTICS.Aloha.RepositoryManager = function() {
-	this.repositories = [];
-};
+GENTICS.Aloha.RepositoryManager = Class.extend({
+	repositories: [],
 
-GENTICS.Aloha.RepositoryManager.prototype = {
 	openCallbacks: [],
 
 	/**
@@ -419,7 +417,7 @@ GENTICS.Aloha.RepositoryManager.prototype = {
 			}
 		}
 	}
-};
+});
 
 /**
  * Create the RepositoryManager object

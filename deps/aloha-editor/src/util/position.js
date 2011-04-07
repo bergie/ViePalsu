@@ -17,14 +17,6 @@
 *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if (typeof GENTICS === 'undefined' || !GENTICS) {
-	var GENTICS = {};
-}
-
-if (typeof GENTICS.Utils === 'undefined' || !GENTICS) {
-	GENTICS.Utils = {};
-}
-
 /**
  * position utility, which will provide scroll and mouse positions
  * please note that the positions provided by this class are not
@@ -80,13 +72,15 @@ GENTICS.Utils.Position.mouseStopCallbacks = [];
 GENTICS.Utils.Position.mouseMoveCallbacks = [];
 
 /**
- * updates scroll position and the scrolling status 
+ * updates scroll position and the scrolling status
  */
 GENTICS.Utils.Position.update = function () {
 	// update scroll position
-	var st = this.w.scrollTop();
-	var sl = this.w.scrollLeft();
-	
+	var
+		st = this.w.scrollTop(),
+		sl = this.w.scrollLeft(),
+		i;
+
 	if (this.Scroll.isScrolling) {
 		if (this.Scroll.top == st && this.Scroll.left == sl) {
 			// stopped scrolling
@@ -98,11 +92,11 @@ GENTICS.Utils.Position.update = function () {
 			this.Scroll.isScrolling = true;
 		}
 	}
-	
+
 	// update scroll positions
 	this.Scroll.top = st;
 	this.Scroll.left = sl;
-	
+
 	// check wether the user has stopped moving the mouse
 	if (this.Mouse.x == this.Mouse.oldX && this.Mouse.y == this.Mouse.oldY) {
 		this.Mouse.isMoving = false;
@@ -110,7 +104,7 @@ GENTICS.Utils.Position.update = function () {
 		if (!this.Mouse.triggeredMouseStop) {
 			this.Mouse.triggeredMouseStop = true;
 			// iterate callbacks
-			for (var i=0; i<this.mouseStopCallbacks.length; i++) {
+			for (i=0; i<this.mouseStopCallbacks.length; i++) {
 				this.mouseStopCallbacks[i].call();
 			}
 		}
@@ -118,11 +112,11 @@ GENTICS.Utils.Position.update = function () {
 		this.Mouse.isMoving = true;
 		this.Mouse.triggeredMouseStop = false;
 		// iterate callbacks
-		for (var i=0; i<this.mouseMoveCallbacks.length; i++) {
+		for (i=0; i<this.mouseMoveCallbacks.length; i++) {
 			this.mouseMoveCallbacks[i].call();
 		}
 	}
-	
+
 	// update mouse positions
 	this.Mouse.oldX = this.Mouse.x;
 	this.Mouse.oldY = this.Mouse.y;
@@ -154,7 +148,9 @@ GENTICS.Utils.Position.addMouseMoveCallback = function (callback) {
 // timeouts will interfere with mouse movement
 // detection
 jQuery(document).ready(function() {
-	setInterval('GENTICS.Utils.Position.update()', 500);
+	setInterval(function(){
+		GENTICS.Utils.Position.update();
+	}, 500);
 });
 
 // listen to the mousemove event and update positions
