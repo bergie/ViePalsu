@@ -46,8 +46,6 @@
         <script src="/js/discussionmanager.js" type="text/javascript"></script>
         <script src="/js/jquery.easydate-0.2.4.min.js" type="text/javascript"></script>
 
-
-
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
 
@@ -135,20 +133,6 @@
         </div>
 
 	<script type="text/javascript" defer>        
-
-    /*VIE.RDFaEntities.getInstances("body");
-    //var VIEtest = VIE.EntityManager.getByType('foaf:Person');
-    //console.log(VIEtest);
-    var lookupData = _.map(VIE.EntityManager.getByType('foaf:Person'), function(item) {
-        return {
-            name: item.get('foaf:name'),
-            url: item.id,
-            type: 'person'
-        }
-    });
-    
-    console.log(lookupData);*/
-
 		(function(window,undefined){
 			// Prepare
 			var
@@ -156,10 +140,9 @@
 				GENTICS = window.GENTICS,
 				$body = $('body');
 	
-
 			// Customise
 			GENTICS.Aloha.settings = {
-				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': true},
+				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
 				errorhandling : false,
 				"i18n": {
 					// let the system detect the users language
@@ -168,18 +151,10 @@
 				},
 				"repositories": {
 					"com.gentics.aloha.repositories.LinkList": {
-						data: (function() {
-						    console.log("Called");
-						    return _.map(VIE.EntityManager.getByType('foaf:Person'), function(item) {
-                                var person = {
-                                    name: item.get('foaf:name'),
-                                    url: item.id,
-                                    type: 'person'
-                                };
-                                console.log(person);
-                                return person;
-                            });
-                        })()
+						data: [
+                    	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'website' },
+                    	    { name: 'IKS Project', url:'http://iks-project.eu', type:'website' }
+						]
 					}
 				},
 				"plugins": {
@@ -202,9 +177,7 @@
 					}
 				}
 			};
-			/*
-			*/
-			
+
 			// Bind to Aloha Ready Event
 			$body.bind('aloha',function(){
 				//$('#chat-input').aloha();
