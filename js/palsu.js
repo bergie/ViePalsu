@@ -18,7 +18,7 @@ jQuery(function() {
     
                
     $.VIE2.Backbone['person']['collection'].bind("add", function (p) {
-        
+        new AgentView({id: 'agent-' + PseudoGuid.GetNew(), model: p});
         new PersonView({id: 'person-' + PseudoGuid.GetNew(), model: p});
     });
     
@@ -54,20 +54,28 @@ jQuery(function() {
     
     var AgentView = Backbone.View.extend({
         
-        tagName: 'b',
+        tagName: 'li',
         
         initialize: function() {
             _.bindAll(this, "render");
           this.model.bind('change', this.render);
+          $('.mentions').append($(this.el));
+          this.render();
         },
         
         render: function() {
             var name = this.model.get("foaf:name");
             
-            if (name && name[0]) {
-                name = name[0].value;
+            if (name) {
+                if (typeof name === 'string') {
+                    name = name;
+                } else if ($.isArray(name)) {
+                    name = name[0];
+                } else {
+                    name = "???";
+                }    
             } else {
-                name = "???";
+                 name = "???";
             }
             $(this.el).text(name);
           return this;

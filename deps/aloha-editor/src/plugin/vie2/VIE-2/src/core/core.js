@@ -491,6 +491,22 @@ jQuery.VIE2.registerBackboneModel = function (entity) {
     //check whether we already have this entity registered
     if (VIE.EntityManager.getBySubject(entity["id"]) !== undefined) {
         $.VIE2.log("info", "$.VIE2.registerBackboneModel()", "Entity " + entity["id"] + " already registered, no need to add it.");
+        jQuery.each(jQuery.VIE2.Backbone, function (i, e) {
+           	var belongsHere = false;
+           	jQuery.each(e['a'], function () {
+           		if (jQuery.inArray(this.toString(), entity["a"]) !== -1) {
+           			belongsHere = true;
+           			return false;
+           		}
+           	});
+           		if (belongsHere && e['collection'].indexOf(VIE.EntityManager.getBySubject(entity["id"])) === -1) {
+           		    
+            		e['collection'].add(VIE.EntityManager.getBySubject(entity["id"]));
+           		    
+       		    }
+           	
+        });
+           	
         return;
     }
     

@@ -121,13 +121,14 @@
             </div>
             <div>
                 <h2>Tasks</h2>
-                <div></div>
+                <div>
+                    <ul class="task"></ul>
+                </div>
             </div>
             <div>
                 <h2>Mentions</h2>
                 <div>
-                    <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
-                    <ul class="persons"></ul>
+                    <ul class="mentions"></ul>
                 </div>
             </div>
         </div>
@@ -152,8 +153,8 @@
 				"repositories": {
 					"com.gentics.aloha.repositories.LinkList": {
 						data: [
-                    	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'website' },
-                    	    { name: 'IKS Project', url:'http://iks-project.eu', type:'website' }
+                    	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'foaf:Person' },
+                    	    { name: 'IKS Project', url:'http://iks-project.eu', type:'foaf:Person' }
 						]
 					}
 				},
