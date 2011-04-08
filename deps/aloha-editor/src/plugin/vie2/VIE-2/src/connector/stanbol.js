@@ -66,6 +66,13 @@ jQuery.VIE2.connectors['stanbol'].analyze = function (object, namespaces, callba
 				object.get(0).tagName && 
 				object.get(0).tagName == 'TEXTAREA') {
 			text = object.get(0).val();
+		} else if (object.get(0) &&
+		            object.get(0).innerHTML &&
+		            object.get(0).innerHTML.length > 0) {
+		                
+            //text = object.get(0).innerHTML;
+            text = object.get(0).innerHTML.replace(/\0\b\n\r\f\t/g, '').replace(/\s+/g, ' ').trim();
+		    
 		} else {
 			text = object
 		        .clone()    //clone the element
@@ -169,18 +176,33 @@ jQuery.VIE2.connectors['stanbol'].queryEnhancer = function (text, callback) {
 	var enhancer_url = this.options().enhancer_url;
 
 	if (proxy) {
+	    /*jQuery.post(proxy, {
+			"proxy_url": enhancer_url, 
+			"content": text,
+			"verb": "POST",
+			"format": "application/rdf+json"
+		}, callback, "json"
+	        );*/
+	        /*console.log(JSON.stringify({
+    			proxy_url: enhancer_url, 
+    			content: text,
+    			verb: "POST",
+    			format: "application/rdf+json"
+			}));*/
 		jQuery.ajax({
 			async: true,
 			success: callback,
 			error: callback,
 			type: "POST",
 			url: proxy,
-			data: {
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify({
     			proxy_url: enhancer_url, 
     			content: text,
     			verb: "POST",
     			format: "application/rdf+json"
-			}
+			})
 		});
 	} else {
 		jQuery.ajax({

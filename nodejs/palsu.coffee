@@ -21,11 +21,14 @@ if process.argv.length > 2
 
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
-#user.username = 'guest'
-
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
 
 writeUser = (user, jQuery) ->
+    #user = {}
+    #user.username = 'rene_kapusta'
+    #user.name = "Rene Kapusta"
+    #user.image = ""
+
     # Write user data
     jQuery('#account [property="foaf\\:nick"]').text(user.username)
     jQuery('#account').attr('about', 'http://twitter.com/' + user.username)
@@ -111,6 +114,7 @@ server.get '/signout', (request, response) ->
     request.session.destroy();
     response.redirect '/about'
 
+###
 # todo implement other proxy server
 server.all '/proxy', (request, response) ->
     if request.param("proxy_url")
@@ -124,6 +128,7 @@ server.all '/proxy', (request, response) ->
         return response.send('Proxy Error: No "proxy_url" param set.')
     
     return
+###
 
 # Serve the list of meetings for /
 server.get '/dashboard', (request, response) ->
@@ -213,27 +218,30 @@ server.get '/meeting/:uuid', (request, response) ->
                 return response.send error
 
 # Proxy VIE-2 cross-site requests
-server.post '^\\/proxy.*', (request, response) ->
-    postHandler = (request, callback) ->
-        content = "";
-        request.addListener "data", (chunk) ->
-            content = "#{content}#{chunk}"
+#server.post '^\\/proxy.*', (request, response) ->
+server.post '/proxy', (request, response) ->
+    console.log 'PROXY'
+    requestData = request.body
 
-	    request.addListener "end", ->
-	        callback content
+    proxiedRequest =
+        method: requestData.verb or "GET"
+        uri: requestData.proxy_url
+        data: requestData.content
+        headers:
+            "Accept": requestData.format or "text/plain"
 
-    postHandler request, (content) ->
-        requestData = JSON.parse(content)
+    return req = ProxyRequest
+        method: requestData.verb or "GET"
+        uri: requestData.proxy_url
+        data: requestData.content
+        headers:
+            "Accept": requestData.format or "text/plain"
+    , (error, resp, body) ->
+        console.log 'PROXY 4'
+        console.log proxiedRequest
+        console.log body
+        return response.send body
         
-        req = ProxyRequest
-            method: requestData.verb or "GET"
-            uri: requestData.proxy_url
-            body: requestData.content
-            headers:
-                "Accept": requestData.format or "text/plain"
-        , (error, resp, body) ->
-            response.send body
-
 server.listen(cfg.port)
 
 # ## Handling sockets

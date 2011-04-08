@@ -1,21 +1,24 @@
 jQuery(function() {
     
-    /*
-    $.VIE2.connectors['stanbol'].options({
- 	    "proxy_url" : "/proxy",
- 	    "enhancer_url" : "http://stanbol.iksfordrupal.net:9000/engines/",
- 	    "entityhub_url" : "http://stanbol.iksfordrupal.net:9000/entityhub/"
-    });
-    */
+    if ($.VIE2.connectors['stanbol']) {
+        $.VIE2.connectors['stanbol'].options({
+        	    "proxy_url" : "/proxy",
+        	    "enhancer_url" : "http://stanbol.iksfordrupal.net/engines/",
+        	    "entityhub_url" : "http://stanbol.iksfordrupal.net/entityhub/"
+        });
+    }
     
-    $.VIE2.connectors['dbpedia'].options({
-        "proxy_url" : "/proxy"
-    });
+    if ($.VIE2.connectors['dbpedia']) {
+        $.VIE2.connectors['dbpedia'].options({
+            "proxy_url" : "/proxy"
+        });
+    }
     
-    $.VIE2.connectors['semantictweet'].options({
-        "proxy_url" : "/proxy"
-    });
-    
+    if ($.VIE2.connectors['semantictweet']) {
+        $.VIE2.connectors['semantictweet'].options({
+            "proxy_url" : "/proxy"
+        });
+    }
                
     $.VIE2.Backbone['person']['collection'].bind("add", function (p) {
         new AgentView({id: 'agent-' + PseudoGuid.GetNew(), model: p});

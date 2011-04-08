@@ -55,18 +55,18 @@
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
 		
-		<!-- Connector plug-ins 
+		<!-- Connector plug-ins -->
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
-		-->
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/semantictweet.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
+		
 		
 		<!-- Mapping plug-ins -->
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
 
 		<script src="/js/palsu.js" type="text/javascript"></script>
+
     </head>
     
     <body typeof="rdfcal:Vevent" about="#meeting">
@@ -122,8 +122,17 @@
             <div>
                 <h2>Tasks</h2>
                 <div>
-                    <ul class="task"></ul>
+                    <ul class="tasks"></ul>
                 </div>
+                <section property="mgd:tasks">
+                    <p>
+                        Write the meeting tasks here.
+                    </p>
+                </section>
+                <!-- input type="button" name="addtask" value="Annotate the task below" onclick="annotateAsTask($('#task'), '<http://twitter.com/rene_kapusta>', 'implement annotating tasks via Aloha Editor')"/ -->
+                <!-- input type="button" value="Annotate the task below" onclick="annotateAsTask($('#task'), '<http://twitter.com/rene_kapusta>', 'implement annotating tasks via Aloha Editor');$(this).attr('disabled', 'disabled'); return true;"/ -->
+                <br />
+                <!-- span id="task"><span class=".person">Rene</span> should implement annotating tasks via Aloha Editor.</span -->
             </div>
             <div>
                 <h2>Mentions</h2>

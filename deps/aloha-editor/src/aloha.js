@@ -56,8 +56,6 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('core/repositorymanager.js');
 	includes.push('core/repository.js');
 	includes.push('core/repositoryobjects.js');
-	includes.push('plugin/link/extra/linklist.js')
-	includes.push('plugin/link/extra/delicious.js')
 	includes.push('plugin/format/src/format.js');
 	includes.push('plugin/link/src/link.js');
 	includes.push('plugin/linkchecker/src/linkchecker.js');
@@ -71,6 +69,7 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
     
     // palsu, vie^2, iks annotate, ...
 	includes.push('plugin/iks_annotate/src/iks_annotate.js');
+	//includes.push('plugin/iks_annotate/src/iks_annotate_task.js');
 	
 	includes.push('plugin/vie/src/vie-repository.js');
 	includes.push('plugin/link/extra/linklist.js')
