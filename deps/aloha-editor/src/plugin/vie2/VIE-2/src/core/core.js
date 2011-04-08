@@ -267,15 +267,17 @@ jQuery.VIE2.addToGlobalContext = function (uri, prop, values) {
     	jQuery.VIE2.log("warn", "$.VIE2.core#addToGlobalContext()", "No values specified, returning without action!");
     	return;
     }
-    if (!jQuery.isArray(values)) {
-        jQuery.VIE2.addToGlobalContext(uri, prop, [values]);
+    if (jQuery.isArray(values)) {
+        for (var i = 0; i < values.length; i++) {
+            var triple = jQuery.rdf.triple(uri, prop, values[i], {namespaces: jQuery.VIE2.namespaces});
+            jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
+            jQuery.VIE2.globalContext.add(triple);
+        }
+    } else {
+            var triple = jQuery.rdf.triple(uri, prop, values, {namespaces: jQuery.VIE2.namespaces});
+            jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
+            jQuery.VIE2.globalContext.add(triple);
     }
-    
-    jQuery.each(values, function (i, v) {
-        var triple = jQuery.rdf.triple(uri, prop, v, {namespaces: jQuery.VIE2.namespaces});
-        jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
-        jQuery.VIE2.globalContext.add(triple);
-    });
     jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Global context holds now " + jQuery.VIE2.globalContext.databank.triples().length + " triples!");
 };
 

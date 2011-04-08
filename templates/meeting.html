@@ -121,18 +121,20 @@
             </div>
             <div>
                 <h2>Tasks</h2>
-                <div>
-                    <ul class="tasks"></ul>
-                </div>
                 <section property="mgd:tasks">
                     <p>
                         Write the meeting tasks here.
                     </p>
                 </section>
-                <!-- input type="button" name="addtask" value="Annotate the task below" onclick="annotateAsTask($('#task'), '<http://twitter.com/rene_kapusta>', 'implement annotating tasks via Aloha Editor')"/ -->
-                <!-- input type="button" value="Annotate the task below" onclick="annotateAsTask($('#task'), '<http://twitter.com/rene_kapusta>', 'implement annotating tasks via Aloha Editor');$(this).attr('disabled', 'disabled'); return true;"/ -->
                 <br />
-                <!-- span id="task"><span class=".person">Rene</span> should implement annotating tasks via Aloha Editor.</span -->
+                <br />
+                <input type="button" value="Annotate a task." onclick='annotateAsTask($("#task"), "&lt;http://twitter.com/rene_kapusta&gt;", "\"implement annotating tasks via Aloha Editor\"", "\"2011-04-10\"^^xsd:date");$(this).attr("disabled", "disabled");' />
+                <br />
+                <div>
+                    <ul class="tasks"></ul>
+                </div>
+                
+                
             </div>
             <div>
                 <h2>Mentions</h2>
