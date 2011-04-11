@@ -88,7 +88,10 @@ server.get '/', (request, response) ->
 server.get '/about', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/about.html"
 
-server.get '/signin', (request,response) ->
+server.get '/signin', (request, response) ->
+    response.sendfile "#{process.cwd()}/templates/signin.html"
+
+server.get '/oauth-signin', (request,response) ->
     if request.isAuthenticated() then return response.redirect '/dashboard'
     
     request.authenticate ['twitter'], (error, authenticated) ->
