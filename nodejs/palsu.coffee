@@ -177,7 +177,7 @@ server.get '/tasks', (request, response) ->
         VIE.RDFaEntities.getInstances jQ "*"
         
         # meeting 1
-        task_list = VIE.EntityManager.getBySubject 'urn:uuid:c296520b-4447-1f67-f7c3-60b1c45c8047'
+        task_list = VIE.EntityManager.getBySubject 'urn:uuid:046ef968-ce27-0aaf-4612-e3697d97f337'
         #task_list = VIE.EntityManager.getByType 'rdfcal:Task'
         #console.log task_list
         events = task_list.get 'rdfcal:has_component'
