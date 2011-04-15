@@ -4,5 +4,15 @@
         "key": "",
         "secret": ""
     },
+    "linkedin":
+    {
+        "key": "",
+        "secret": ""
+    },
+    "facebook":
+    {
+        "key": "",
+        "secret": ""
+    },
     "port": 8002
 }

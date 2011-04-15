@@ -52,7 +52,7 @@
             </span>
             <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/signout">Sign-out</a></narv>
+                <nav><a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></narv>
             </p>
         </div>
 
@@ -69,8 +69,8 @@
                 </label>
                 <button type="button" id="eventadd">Add</button>
             </form>
-        
         </div>
+        
 
     	<script type="text/javascript" defer>        
     		(function(window,undefined){
@@ -79,44 +79,6 @@
     				$ = window.jQuery,
     				GENTICS = window.GENTICS,
     				$body = $('body');
-
-    			// Customise
-    			GENTICS.Aloha.settings = {
-    				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
-    				errorhandling : false,
-    				"i18n": {
-    					// let the system detect the users language
-    					//"acceptLanguage": '<?=$_SERVER['HTTP_ACCEPT_LANGUAGE']?>'
-    					//"acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
-    				},
-    				"repositories": {
-    					"com.gentics.aloha.repositories.LinkList": {
-    						data: [
-                        	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'foaf:Person' },
-                        	    { name: 'IKS Project', url:'http://iks-project.eu', type:'foaf:Person' }
-    						]
-    					}
-    				},
-    				"plugins": {
-    					"com.gentics.aloha.plugins.Link": {
-    						// all links that match the targetregex will get set the target
-    						// e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
-    						targetregex : '^(?!.*palsuapp.info).*',
-    						// this target is set when either targetregex matches or not set
-    						// e.g. _blank opens all links in new window
-    						target : '_blank',
-    						// the same for css class as for target
-    						cssclassregex : '^(?!.*palsuapp.info).*',
-    						cssclass : 'external'
-    					},
-    					"com.gentics.aloha.plugins.Table": {
-    						config: ['table']
-    					},
-    					"com.gentics.aloha.plugins.Ribbon": {
-    						enable: false
-    					}
-    				}
-    			};
 
     			// Bind to Aloha Ready Event
     			$body.bind('aloha',function(){

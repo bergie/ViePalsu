@@ -1,4 +1,5 @@
-jQuery(function() {
+//jQuery(function() {
+jQuery(document).ready(function() {    
     
     if ($.VIE2.connectors['stanbol']) {
         $.VIE2.connectors['stanbol'].options({
@@ -168,3 +169,4 @@ function addName () {
     $(document).vie2().vie2('annotate',
       '<http://dbpedia.org/resource/Barack_Obama> foaf:name "B B Obama"');
 };
+

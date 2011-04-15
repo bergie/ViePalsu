@@ -19,6 +19,24 @@ body {
     }
 }
 
+.task_status_completed {
+    color: green;
+    text-decoration:line-through;
+    list-style-image: url('/static/icons/tick.png');
+}
+
+.task_status_active {
+    list-style-image: url('/static/icons/stop.png');
+}
+
+.task_complete_action {
+    cursor:pointer;
+}
+
+.tasks {
+    margin: 0 0 0 20px;
+}
+
 #account {
     position: absolute;
     right: 0;
@@ -228,4 +246,9 @@ body {
     > div {
         border-color: #666;
     }
+}
+
+
+.main_tasks {
+    margin: 10px 0 10px 40px;
 }
