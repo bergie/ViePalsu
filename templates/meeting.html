@@ -1,189 +1,186 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html  
-    version="XHTML+RDFa 1.0"
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xml:lang="en"
-	xmlns:dbpedia = "http://dbpedia.org/resource/"
-	xmlns:dbprop = "http://dbpedia.org/property/"
-	xmlns:dbonto = "http://dbpedia.org/ontology/"
-    xmlns:yago = "http://dbpedia.org/class/yago/"
-	xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:rdfs = "http://www.w3.org/2000/01/rdf-schema#"
-	xmlns:iks = "http://www.iks-project.eu/#"
-	xmlns:fise = "http://fise.iks-project.eu/ontology/"
-	xmlns:foaf = "http://xmlns.com/foaf/0.1/"
-	xmlns:dc = "http://purl.org/dc/terms/"
-	xmlns:geo = "http://www.w3.org/2003/01/geo/wgs84_pos#"
-	xmlns:google = "http://rdf.data-vocabulary.org/#"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-    xmlns:rdfcal="http://www.w3.org/2002/12/cal#"
-    xmlns:demo="http://demo.palsuapp.info/"
-    xmlns:aair="http://xmlns.notu.be/aair#"
-    xmlns:atom="http://www.w3.org/2005/Atom"
-    xmlns:thr="http://purl.org/syndication/thread/1.0"
-    xmlns:activity="http://activitystrea.ms/spec/1.0/"
-    xmlns:media="http://purl.org/syndication/atommedia"
-    xmlns:pc="http://portablecontacts.net/schema/1.0"
-    xmlns:mgd="http://www.midgard-project.org/midgard2/9.03"
-    xmlns:dcterms="http://purl.org/dc/terms/"
-    xmlns:sioc="http://rdfs.org/sioc/ns#">
-	<head>
-        <title>Palsu App</title>
-        
-        <link type="text/css" rel="stylesheet" href="/styles/base.css">
-        <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css">
-
-        <base href="/">
-
-        <script type="text/javascript" src="/browserify.js"></script>
-        <script type="text/javascript">
-            var jQuery = require('jquery-browserify');
-        </script>
-
-        <script src="/js/layout.js" type="text/javascript"></script>
-        <script src="/js/contentmanager.js" type="text/javascript"></script>
-        <script src="/js/discussionmanager.js" type="text/javascript"></script>
-        <script src="/js/jquery.easydate-0.2.4.min.js" type="text/javascript"></script>
-
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
-
-		<!-- VIE^2 -->
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
-		
-		<!-- Connector plug-ins 
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
-		-->
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/semantictweet.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
-		
-		<!-- Mapping plug-ins -->
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
-
-		<script src="/js/palsu.js" type="text/javascript"></script>
-    </head>
+<!DOCTYPE html> 
+<html version="HTML+RDFa 1.1" 
+      lang="en"
+      xml:lang="en"
+      xmlns:dbpedia="http://dbpedia.org/resource/"
+      xmlns:dbprop="http://dbpedia.org/property/"
+      xmlns:dbonto="http://dbpedia.org/ontology/"
+      xmlns:yago="http://dbpedia.org/class/yago/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xmlns:iks="http://www.iks-project.eu/#"
+      xmlns:fise="http://fise.iks-project.eu/ontology/"
+      xmlns:foaf="http://xmlns.com/foaf/0.1/"
+      xmlns:dc="http://purl.org/dc/terms/"
+      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+      xmlns:google="http://rdf.data-vocabulary.org/#"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+      xmlns:rdfcal="http://www.w3.org/2002/12/cal#"
+      xmlns:demo="http://demo.palsuapp.info/"
+      xmlns:aair="http://xmlns.notu.be/aair#"
+      xmlns:atom="http://www.w3.org/2005/Atom"
+      xmlns:thr="http://purl.org/syndication/thread/1.0"
+      xmlns:activity="http://activitystrea.ms/spec/1.0/"
+      xmlns:media="http://purl.org/syndication/atommedia"
+      xmlns:pc="http://portablecontacts.net/schema/1.0"
+      xmlns:dcterms="http://purl.org/dc/terms/"
+      xmlns:sioc="http://rdfs.org/sioc/ns#">
+  <head>
+    <title>Palsu &mdash; Online meeting tool</title>
+    <link rel="stylesheet" href="/styles/palsu.css" />
+    <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css" />
+    <script type="text/javascript" src="/browserify.js"></script>
+    <script type="text/javascript">
+      var jQuery = require('jquery-browserify');
+    </script>
+    <script src="/js/layout.js" type="text/javascript"></script>
+    <script src="/js/contentmanager.js" type="text/javascript"></script>
+    <script src="/js/discussionmanager.js" type="text/javascript"></script>
+    <script src="/js/jquery.easydate-0.2.4.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
     
-    <body typeof="rdfcal:Vevent" about="#meeting">
-        <div id="account" typeof="foaf:Person" about="#me">
-            <span class="avatar" rel="foaf:img">
-                <img width="40" src="#" alt="User Picture"/>
-            </span>
-            <p> 
-                Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/dashboard">Dashboard</a> &middot; <a href="/signout">Sign-out</a></nav>
-            </p>
-        </div>
+    <!-- VIE^2 -->
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
+		
+    <!-- Connector plug-ins 
+	 <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
+	 -->
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/semantictweet.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
+    
+    <!-- Mapping plug-ins -->
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
+    <script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
 
+    <script src="/js/palsu.js" type="text/javascript"></script>
+  </head>
+    
+  <body typeof="rdfcal:Vevent" about="#meeting">
+    <header>
+      <div>
         <h1 property="rdfcal:summary">Meeting Title</h1>
-        <div id="main">
-            <div id="agenda">
-                <h2>Agenda</h2>
-                <section property="mgd:agenda">
-                    <p>
-                        Write the meeting agenda here.
-                    </p>
-                </section>
-            </div>
-            <div id="chat-history">
-                <div rel="sioc:container_of" rev="sioc:has_container">
-                    <div typeof="sioc:Post" about="#post1">
-                        <div rel="foaf:depiction"><img width="30" src="#" /></div>
-                        <div property="dc:creator">screen name</div>
-                        <abbr title="" class="easydate"></abbr><div property="dc:created">date</div>
-                        <div class="message" >
-                            <div property="sioc:content">
-                                <p>Post contents</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clear">&nbsp;</div>
-                </div>
-            </div>
-            <div id="chat-input">
-                <div></div>
-                <button>Send</button>
-            </div>
+        <div id="account" typeof="foaf:Person" about="#me">
+          <span class="avatar" rel="foaf:img">
+            <img width="40" src="#" alt="User Picture"/>
+          </span>
+          <p> 
+            Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
+            <nav><a href="/dashboard">Dashboard</a> &middot; <a href="/signout">Sign-out</a></nav>
+          </p>
         </div>
-        <div id="sidebar">
-            <div>
-                <h2>Participants</h2>
-                <div>
-                    <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-                        <li about="#" typeof="foaf:Person" property="foaf:name">Example User</li>
-                    </ul>
-                </div>
+      </div>
+    </header>
+
+    <article>
+      <div id="chat-history">
+        <div rel="sioc:container_of" rev="sioc:has_container">
+          <div typeof="sioc:Post" about="#post1">
+            <div rel="foaf:depiction"><img width="30" src="#" /></div>
+            <div property="dc:creator">screen name</div>
+            <abbr title="" class="easydate"></abbr><div property="dc:created">date</div>
+            <div class="message" >
+              <div property="sioc:content">
+                <p>Post contents</p>
+              </div>
             </div>
-            <div>
-                <h2>Tasks</h2>
-                <div></div>
-            </div>
-            <div>
-                <h2>Mentions</h2>
-                <div>
-                    <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
-                    <ul class="persons"></ul>
-                </div>
-            </div>
+          </div>
+          <div class="clear">&nbsp;</div>
         </div>
+      </div>
+      <div id="chat-input">
+        <div></div>
+        <button>Send</button>
+      </div>
+    </article>
+    <aside>
+      <div id="agenda">
+        <h2>Agenda</h2>
+        <section property="mgd:agenda">
+          <p>
+            Write the meeting agenda here.
+          </p>
+        </section>
+      </div>
 
-	<script type="text/javascript" defer>        
-		(function(window,undefined){
-			// Prepare
-			var
-				$ = window.jQuery,
-				GENTICS = window.GENTICS,
-				$body = $('body');
-	
-			// Customise
-			GENTICS.Aloha.settings = {
-				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
-				errorhandling : false,
-				"i18n": {
-					// let the system detect the users language
-					//"acceptLanguage": '<?=$_SERVER['HTTP_ACCEPT_LANGUAGE']?>'
-					//"acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
-				},
-				"repositories": {
-					"com.gentics.aloha.repositories.LinkList": {
-						data: [
-                    	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'website' },
-                    	    { name: 'IKS Project', url:'http://iks-project.eu', type:'website' }
-						]
-					}
-				},
-				"plugins": {
-					"com.gentics.aloha.plugins.Link": {
-						// all links that match the targetregex will get set the target
-						// e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
-						targetregex : '^(?!.*palsuapp.info).*',
-						// this target is set when either targetregex matches or not set
-						// e.g. _blank opens all links in new window
-						target : '_blank',
-						// the same for css class as for target
-						cssclassregex : '^(?!.*palsuapp.info).*',
-						cssclass : 'external'
-					},
-					"com.gentics.aloha.plugins.Table": {
-						config: ['table']
-					},
-					"com.gentics.aloha.plugins.Ribbon": {
-						enable: false
-					}
-				}
-			};
+      <div>
+        <h2>Participants</h2>
+        <div>
+          <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
+            <li about="#" typeof="foaf:Person" property="foaf:name">Example User</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <h2>Tasks</h2>
+        <div></div>
+      </div>
+      <div>
+        <h2>Mentions</h2>
+        <div>
+          <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
+          <ul class="persons"></ul>
+        </div>
+      </div>
+    </aside>
 
-			// Bind to Aloha Ready Event
-			$body.bind('aloha',function(){
-				//$('#chat-input').aloha();
-			});
-		})(window);
-	</script>
-
-    </body>
+    <script type="text/javascript" defer>        
+      (function(window,undefined){
+      // Prepare
+      var
+      $ = window.jQuery,
+      GENTICS = window.GENTICS,
+      $body = $('body');
+      
+      // Customise
+      GENTICS.Aloha.settings = {
+      logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
+      errorhandling : false,
+      "i18n": {
+      // let the system detect the users language
+      //"acceptLanguage": '<?=$_SERVER['HTTP_ACCEPT_LANGUAGE']?>'
+      //"acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
+      },
+      "repositories": {
+      "com.gentics.aloha.repositories.LinkList": {
+      data: [
+      { name: 'PalsuApp', url:'http://PalsuApp.info', type:'website' },
+      { name: 'IKS Project', url:'http://iks-project.eu', type:'website' }
+      ]
+      }
+      },
+      "plugins": {
+      "com.gentics.aloha.plugins.Link": {
+      // all links that match the targetregex will get set the target
+      // e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
+      targetregex : '^(?!.*palsuapp.info).*',
+      // this target is set when either targetregex matches or not set
+      // e.g. _blank opens all links in new window
+      target : '_blank',
+      // the same for css class as for target
+      cssclassregex : '^(?!.*palsuapp.info).*',
+      cssclass : 'external'
+      },
+      "com.gentics.aloha.plugins.Table": {
+      config: ['table']
+      },
+      "com.gentics.aloha.plugins.Ribbon": {
+      enable: false
+      }
+      }
+      };
+      
+      // Bind to Aloha Ready Event
+      $body.bind('aloha',function(){
+      //$('#chat-input').aloha();
+      });
+      })(window);
+    </script>
+    
+  </body>
 </html>
