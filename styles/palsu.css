@@ -164,3 +164,12 @@ body.welcome footer {
     margin: 0px;
     padding: 0px;
 }
+
+aside .persons span[property="iks:online"][content="1"] {
+    background-color: #73d216;
+    color: #73d216;
+    width: 10px;
+    height: 10px;
+    display: block;
+    float: left;
+}

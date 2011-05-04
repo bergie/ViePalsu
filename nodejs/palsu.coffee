@@ -242,7 +242,17 @@ socket = io.listen server
 socket.on 'connection', (client) ->
     client.on 'message', (data) ->
         if typeof data isnt 'object'
-            # If we get a regular string from the user there is no need to pass it on
+            # We got a user identifier, mark as online
+            user = VIE.EntityManager.getByJSONLD
+                '@': data
+            client.userInstance = user
+            user.fetch
+                success: (user) ->
+                    user.set
+                        'iks:online': 1
+                    for clientId, clientObject of socket.clients
+                        clientObject.send user.toJSONLD()
+                    user.save()
             return
 
         # Generate a RDF Entity instance for the JSON-LD we got from the client
@@ -254,3 +264,11 @@ socket.on 'connection', (client) ->
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
+
+    client.on 'disconnect', ->
+        # Mark user as offline and notify other users
+        client.userInstance.set
+            'iks:online': 0
+        for clientId, clientObject of socket.clients
+            clientObject.send client.userInstance.toJSONLD()
+            client.userInstance.save()
