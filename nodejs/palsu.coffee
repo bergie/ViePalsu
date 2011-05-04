@@ -84,9 +84,6 @@ server.get '/', (request, response) ->
         return response.redirect '/dashboard'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
-server.get '/about', (request, response) ->
-    response.sendfile "#{process.cwd()}/templates/about.html"
-
 server.get '/signin', (request,response) ->
     if request.isAuthenticated() then return response.redirect '/dashboard'
 
@@ -103,7 +100,7 @@ server.get '/signin', (request,response) ->
                     return response.redirect '/dashboard'
                 else
                     # write info message about error
-                    return response.redirect '/about'
+                    return response.redirect '/'
         else
             #console.log 'Error on signin'
     return
@@ -111,7 +108,7 @@ server.get '/signin', (request,response) ->
 server.get '/signout', (request, response) ->
     request.session.auth.user.username = 'guest'
     request.session.destroy();
-    response.redirect '/about'
+    response.redirect '/'
 
 # todo implement other proxy server
 server.all '/proxy', (request, response) ->
