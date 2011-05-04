@@ -170,8 +170,8 @@ aside .persons span[property="iks:online"][content="1"] {
     color: #73d216;
     width: 10px;
     height: 10px;
-    display: block;
-    float: left;
+    display: inline-block;
+
 }
 
 ::-webkit-scrollbar {
