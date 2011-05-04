@@ -77,7 +77,7 @@ dateComparator = (item, collection) ->
 
 server = express.createServer()
 server.configure ->
-    #console.server
+
     # Our CSS files need the LessCSS compiler
     server.use express.compiler
         src: process.cwd()
@@ -89,7 +89,7 @@ server.configure ->
     server.use '/deps', express.static "#{process.cwd()}/deps"
     server.use browserify
         require: [ 'jquery-browserify' ]
-    
+
     server.use connect.cookieParser()
     server.use connect.bodyParser()
 
@@ -124,15 +124,15 @@ server.configure ->
 ###
 
 jsdom.defaultDocumentFeatures =
-    FetchExternalResources: false, 
+    FetchExternalResources: false,
     ProcessExternalResources: false
 
 # Serve the home page
 server.get '/', (request, response) ->
-    if request.isAuthenticated() then return response.redirect '/dashboard' else return response.redirect '/signin'
+    if request.isAuthenticated()
+        return response.redirect '/dashboard'
+    response.sendfile "#{process.cwd()}/templates/welcome.html"
 
-server.get '/about', (request, response) ->
-    response.sendfile "#{process.cwd()}/templates/about.html"
 
 server.get '/signin', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/signin.html"
@@ -142,17 +142,17 @@ server.get '/oauth-signin', (request,response) ->
     provider = request.param('p')
     if !provider then provider = null
     console.log 'provider: ' + provider
-    
+
     if request.isAuthenticated() then return response.redirect '/dashboard'    
-    
+
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
         console.log 'auth: ' + authenticated
-        
+
         if request.isAuthenticated() and provider == 'twitter'
             console.log 'is twitter'
             jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+request.session.auth.user.username
-            
+
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
                     userData = JSON.parse(body)
@@ -164,11 +164,11 @@ server.get '/oauth-signin', (request,response) ->
                 else
                     console.log 'redirect to dashboard'
                     return response.redirect '/dashboard'
-        
+
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
             return response.redirect '/dashboard'
-            
+
         if request.isAuthenticated() and provider == 'linkedin'
             console.log 'is linkedin'
             return response.redirect '/dashboard'
@@ -182,7 +182,7 @@ server.get '/signout', (request, response) ->
     userData.homepage = null
     userData.name = null
     updateUserSession request, userData
-    
+
     request.session.destroy();
     response.redirect '/about'
 
@@ -247,7 +247,7 @@ server.get '/dashboard', (request, response) ->
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        
+
         if !calendar
             VIE.cleanup()
             # todo return error message
@@ -281,16 +281,15 @@ server.get '/meeting/:uuid', (request, response) ->
 
         # Write the Meeting identifier into the DOM
         jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
-        
+
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
-        
+
         # Clean up VIE internal state and send content out
         sendContent = (collection, error) ->
             VIE.cleanup()
             return response.send window.document.innerHTML
-            # Clean up VIE internal state and send content out
-        
+                
         sendContent2 = (collection, error) ->
             VIE.cleanup()
             return true
@@ -310,7 +309,7 @@ server.get '/meeting/:uuid', (request, response) ->
                 error:  (collection, error) ->
                     callback event
                     callback2 event
-        
+
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
             console.log '### participants list: '
@@ -334,7 +333,6 @@ server.get '/meeting/:uuid', (request, response) ->
         calendar.fetch
             success: (event) ->
                 getPosts event, getTasks, getParticipants
-                #getPosts event, getParticipants, getTasks
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error
@@ -357,7 +355,6 @@ server.post '/proxy', (request, response) ->
         headers:
             "Accept": requestData.format or "text/plain"
     , (error, resp, body) ->
-        console.log 'PROXY 4'
         console.log proxiedRequest
         console.log body
         return response.send body
@@ -387,7 +384,17 @@ socket = io.listen server
 socket.on 'connection', (client) ->
     client.on 'message', (data) ->
         if typeof data isnt 'object'
-            # If we get a regular string from the user there is no need to pass it on
+            # We got a user identifier, mark as online
+            user = VIE.EntityManager.getByJSONLD
+                '@': data
+            client.userInstance = user
+            user.fetch
+                success: (user) ->
+                    user.set
+                        'iks:online': 1
+                    for clientId, clientObject of socket.clients
+                        clientObject.send user.toJSONLD()
+                    user.save()
             return
 
         # Generate a RDF Entity instance for the JSON-LD we got from the client
@@ -399,3 +406,11 @@ socket.on 'connection', (client) ->
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
+
+    client.on 'disconnect', ->
+        # Mark user as offline and notify other users
+        client.userInstance.set
+            'iks:online': 0
+        for clientId, clientObject of socket.clients
+            clientObject.send client.userInstance.toJSONLD()
+            client.userInstance.save()

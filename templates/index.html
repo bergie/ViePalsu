@@ -1,92 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html  
-    version="XHTML+RDFa 1.0"
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xml:lang="en"
-	xmlns:dbpedia = "http://dbpedia.org/resource/"
-	xmlns:dbprop = "http://dbpedia.org/property/"
-	xmlns:dbonto = "http://dbpedia.org/ontology/"
-    xmlns:yago = "http://dbpedia.org/class/yago/"
-	xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:rdfs = "http://www.w3.org/2000/01/rdf-schema#"
-	xmlns:iks = "http://www.iks-project.eu/#"
-	xmlns:fise = "http://fise.iks-project.eu/ontology/"
-	xmlns:foaf = "http://xmlns.com/foaf/0.1/"
-	xmlns:dc = "http://purl.org/dc/terms/"
-	xmlns:geo = "http://www.w3.org/2003/01/geo/wgs84_pos#"
-	xmlns:google = "http://rdf.data-vocabulary.org/#"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-    xmlns:rdfcal="http://www.w3.org/2002/12/cal#"
-    xmlns:demo="http://demo.palsuapp.info/"
-    xmlns:aair="http://xmlns.notu.be/aair#"
-    xmlns:atom="http://www.w3.org/2005/Atom"
-    xmlns:thr="http://purl.org/syndication/thread/1.0"
-    xmlns:activity="http://activitystrea.ms/spec/1.0/"
-    xmlns:media="http://purl.org/syndication/atommedia"
-    xmlns:pc="http://portablecontacts.net/schema/1.0"
-    xmlns:mgd="http://www.midgard-project.org/midgard2/9.03"
-    xmlns:dcterms="http://purl.org/dc/terms/"
-    xmlns:sioc="http://rdfs.org/sioc/ns#">
-	<head>
-        <title>Palsu App</title>
-        
-        <link type="text/css" rel="stylesheet" href="/styles/base.css">
-        <base href="/">
-
-        <script type="text/javascript" src="/browserify.js"></script>
-        <script type="text/javascript">
-            var jQuery = require('jquery-browserify');
-        </script>
-
-        <script src="/js/layout.js" type="text/javascript"></script>
-        <script src="/js/contentmanager.js" type="text/javascript"></script>
-        
-        <script src="/js/meetings.js" type="text/javascript"></script>
-    </head>
-    <body>
-
+<!DOCTYPE html> 
+<html version="HTML+RDFa 1.1" 
+      lang="en"
+      xmlns:doap="http://usefulinc.com/ns/doap#">
+  <head>
+    <title>Palsu &mdash; Online meeting tool</title>
+    <link rel="stylesheet" href="/styles/palsu.css" />
+    <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/browserify.js"></script>
+    <script type="text/javascript">
+      var jQuery = require('jquery-browserify');
+    </script>
+    <script src="/js/contentmanager.js" type="text/javascript"></script>
+    <script src="/js/meetings.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Palsu</h1>
         <div id="account" typeof="foaf:Person" about="#user">
-            <span class="avatar" rel="foaf:img">
-                <img width="40" src="#" alt="User Picture"/>
-            </span>
-            <p> 
-                Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></narv>
-            </p>
+          <span class="avatar" rel="foaf:img">
+            <img width="40" src="#" alt="User Picture"/>
+          </span>
+          <p> 
+            Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
+            <nav><a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
+          </p>
         </div>
+      </div>
+    </header>
 
-        <h1>Meetings in Palsu</h1>
-        <div id="main" class="meetings">
-            <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
-                <li about="" typeof="rdfcal:Vevent">
-                    <a href="" property="rdfcal:summary">Event title</a>
-                </li>
-            </ul>
-            <form>
-                <label>Add a meeting
-                    <input id="newevent" type="text" />
-                </label>
-                <button type="button" id="eventadd">Add</button>
-            </form>
-        </div>
-        
-
-    	<script type="text/javascript" defer>        
-    		(function(window,undefined){
-    			// Prepare
-    			var
-    				$ = window.jQuery,
-    				GENTICS = window.GENTICS,
-    				$body = $('body');
-
-    			// Bind to Aloha Ready Event
-    			$body.bind('aloha',function(){
-    				//$('#chat-input').aloha();
-    			});
-    		})(window);
-    	</script>
-
-
-    </body>
+    <article>
+      <h1>Meetings in Palsu</h1>
+      <div id="main" class="meetings">
+        <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
+          <li about="" typeof="rdfcal:Vevent">
+            <a href="" property="rdfcal:summary">Event title</a>
+          </li>
+        </ul>
+        <form>
+          <label>Add a meeting
+            <input id="newevent" type="text" />
+          </label>
+          <button type="button" id="eventadd">Add</button>
+        </form>
+      </div>
+    </article>
+  </body>
 </html>

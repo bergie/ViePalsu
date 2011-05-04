@@ -37,6 +37,10 @@ var dateComparator = function(item, collection) {
 jQuery(document).ready(function() {
 
     var socket = new io.Socket();
+    socket.on('connect', function() {
+        // Connected, send our username so server knows who is online
+        socket.send(jQuery('#account').attr('about'));
+    });
     socket.connect();
     socket.on('message', function(data){
         if (typeof data !== 'object') {
