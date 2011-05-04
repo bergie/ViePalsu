@@ -45,7 +45,7 @@ dateComparator = (item, collection) ->
     return itemIndex
 
 server = express.createServer()
-server.configure -> 
+server.configure ->
     # Our CSS files need the LessCSS compiler
     server.use express.compiler
         src: process.cwd()
@@ -57,7 +57,7 @@ server.configure ->
     server.use '/deps', express.static "#{process.cwd()}/deps"
     server.use browserify
         require: [ 'jquery-browserify' ]
-    
+
     server.use connect.cookieParser()
     server.use connect.bodyParser()
 
@@ -71,27 +71,29 @@ server.configure ->
     server.use auth [auth.Twitter
             consumerKey: cfg.twitter.key
             consumerSecret: cfg.twitter.secret]
-     
+
      server.set 'view options', { layout: false }
 
 jsdom.defaultDocumentFeatures =
-    FetchExternalResources: false, 
+    FetchExternalResources: false,
     ProcessExternalResources: false
 
 # Serve the home page
 server.get '/', (request, response) ->
-    if request.isAuthenticated() then return response.redirect '/dashboard' else return response.redirect '/signin'
+    if request.isAuthenticated()
+        return response.redirect '/dashboard'
+    response.sendfile "#{process.cwd()}/templates/welcome.html"
 
 server.get '/about', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/about.html"
 
 server.get '/signin', (request,response) ->
     if request.isAuthenticated() then return response.redirect '/dashboard'
-    
+
     request.authenticate ['twitter'], (error, authenticated) ->
         if request.isAuthenticated()
             jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+request.session.auth.user.username
-            
+
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
                     userData = JSON.parse(body)
@@ -122,7 +124,7 @@ server.all '/proxy', (request, response) ->
                 return response.send('Proxy Error: No response data.')
     else
         return response.send('Proxy Error: No "proxy_url" param set.')
-    
+
     return
 
 # Serve the list of meetings for /
@@ -139,7 +141,7 @@ server.get '/dashboard', (request, response) ->
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        
+
         if !calendar
             VIE.cleanup()
             # todo return error message
@@ -173,15 +175,15 @@ server.get '/meeting/:uuid', (request, response) ->
 
         # Write the Meeting identifier into the DOM
         jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
-        
+
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
-        
+
         # Clean up VIE internal state and send content out
         sendContent = (collection, error) ->
             VIE.cleanup()
             return response.send window.document.innerHTML
-            
+
         # Query for posts for this event
         getPosts = (event, callback) ->
             posts = event.get "sioc:container_of"
@@ -194,7 +196,7 @@ server.get '/meeting/:uuid', (request, response) ->
                     callback event
                 error:  (collection, error) ->
                     callback event
-        
+
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
             participants.predicate = "rdfcal:attendeeOf"
@@ -202,7 +204,7 @@ server.get '/meeting/:uuid', (request, response) ->
             return participants.fetch
                 success: sendContent
                 error: sendContent
-        
+
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.uuid
         calendar.fetch
@@ -224,7 +226,7 @@ server.post '^\\/proxy.*', (request, response) ->
 
     postHandler request, (content) ->
         requestData = JSON.parse(content)
-        
+
         req = ProxyRequest
             method: requestData.verb or "GET"
             uri: requestData.proxy_url
