@@ -1,77 +1,55 @@
 jQuery(document).ready(function() {
-    $("#rdfcal_startDate").datepicker({ dateFormat: 'yy-mm-dd' });
-    $("#rdfcal_targetDate").datepicker({ dateFormat: 'yy-mm-dd' });
     
-    var participants = jQuery(".persons li");
-    var values = [];
-    var options = $("#rdfcal_hasAgent");
-
-    participants.each(function() {
-        values.push([{'v': this.attributes[2].nodeValue, 'n': this.textContent}]);
-    });
+    // remove empty todos
+    jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
     
-    jQuery.each(values, function(index, item) {
-        options.append($("<option />").val(item[0].v).text(item[0].n));
-    });
+    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
+    console.log(eventCollection);
     
-    var eventId = jQuery('body').attr('about');
-    console.log('### eventId: ' + eventId);
-    var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:has_component');
-    console.log(taskCollection);
-    //*
-    taskCollection.bind('add', function(event, task_list, options) {
+    eventCollection.bind('add', function(event, calendar, options) {
         if (!options.fromServer) {
             event.save();
         }
     });
-
-    taskCollection.comparator = function(item) {
-        return dateComparator(item, taskCollection);
+    
+    eventCollection.comparator = function(item) {
+        return dateComparator(item, eventCollection);
     }
-
-    // Go through the tasks
-    taskCollection.forEach(function(task) {
-        if (typeof task.id !== 'string') {
-            taskCollection.remove(task);
-            jQuery('[typeof="rdfcal\\:Task][about=""]').remove()
+    
+    // Go through the meetings
+    eventCollection.forEach(function(event) {
+        console.log('foreach item ' + event.id);
+        
+        event.get('rdfcal:hasTask').forEach(function(task) {
+            console.log('status task ' + task.get('rdfcal:completed'));
+            console.log('status id ' + task.id);
+            
+            task.bind('change', function(event, calendar, options) {
+                // move to function
+                if (task.get('rdfcal:completed') == 1 && task.id) {
+                    jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
+                } else {
+                    jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
+                }
+            });
+            
+            // move to function
+            if (task.get('rdfcal:completed') == 1 && task.id) {
+                jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
+            } else {
+                jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
+            }
+        });
+        
+        if (typeof event.id !== 'string') {
+            eventCollection.remove(event);
+            jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove()
             return;
-        }
-        jQuery('[about="' + task.id + '"] a').attr('href', '/task/' + task.id);
-    });
-    //*/
-
-    jQuery('#taskadd').click(function() {
-        var rdfcal_name = jQuery('#rdfcal_name').attr('value');
-        var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
-        var rdfcal_hasAgentName = jQuery('#rdfcal_hasAgent option:selected').text();
-        var rdfcal_startDate = jQuery('#rdfcal_startDate').attr('value');
-        var rdfcal_targetDate = jQuery('#rdfcal_targetDate').attr('value');
-        if (jQuery('#rdfcal_completed').attr('checked')) {
-            var rdfcal_completed = 1
-        } else {
-            var rdfcal_completed = 0;
         }
         
-        if (!rdfcal_name && !rdfcal_hasAgent) {
-            console.log('Error: no rdfcal:name or rdfcal:hasAgent value');
-            return;
-        }
-
-        var date = new Date();
-        taskCollection.add({
-            'rdfcal:name': rdfcal_name,
-            'rdfcal:hasAgent': rdfcal_hasAgent,
-            'foaf:name': rdfcal_hasAgentName,
-            'rdfcal:startDate': rdfcal_startDate,
-            'rdfcal:targetDate': rdfcal_targetDate,
-            'rdfcal:completed': rdfcal_completed,
-            'dc:created': date.toISOString()
-        });
-
-        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + '.');
-
-        jQuery('#rdfcal_name').attr('value', '');
+        jQuery('[about="' + event.id + '"] > a').attr('href', '/meeting/' + event.id);
     });
+    
 
     jQuery('.task_complete_action').click(function() {
         if (this.attributes[2].nodeValue) {
@@ -80,8 +58,6 @@ jQuery(document).ready(function() {
             uuid = null;
         }
         console.log('### task complete: ' + uuid);
-                
-        //jQuery(this).removeClass('task_status_active');
         
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
@@ -93,19 +69,6 @@ jQuery(document).ready(function() {
             jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
             data.set({'rdfcal:completed':'1'});
         }
-        
-        /*
-        console.log(data.toJSONLD());
-        taskCollection.add({'rdfcal:completed':'1'});
-        
-        taskCollection.forEach(function(task) {
-            if (task.id == uuid) {
-                //taskCollection.remove(task);
-                //jQuery('[typeof="rdfcal\\:Task][about=""]').remove()
-                task.set({'rdfcal:completed':'1'})
-                return;
-            }
-            //jQuery('[about="' + task.id + '"] a').attr('href', '/task/' + task.id);
-        });*/
+        data.save();
     });
 });

@@ -34,6 +34,4 @@ jQuery(document).ready(function() {
         jQuery('#newevent').attr('value', '');
     });
 
-
-
 });

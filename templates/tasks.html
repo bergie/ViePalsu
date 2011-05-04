@@ -58,64 +58,20 @@
 
         <h1>Tasks in Palsu</h1>
         <div id="main" class="task_list main_tasks">
-            <h2>Meeting: <a href="/meeting/urn:uuid:046ef968-ce27-0aaf-4612-e3697d97f337">urn:uuid:046ef968-ce27-0aaf-4612-e3697d97f337</a></h2>
-            <ul class="tasks" typeof="rdfcal:Vevent" about="urn:uuid:046ef968-ce27-0aaf-4612-e3697d97f337" rel="rdfcal:has_component" rev="rdfcal:component">            
-                <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
-                    <i><span property="foaf:name">Agent</span><!--span property="rdfcal:hasAgent">Agent</span--></i> has to implement
-                    <br /><span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> [<span property="rdfcal:completed">x</span>]
-                </li>
-            </ul>
-            
-            <hr />
-            <h2>Meeting: urn:uuid:5c3f81cc-30b5-1375-e677-81c83d0961e7 / urn:uuid:c296520b-4447-1f67-f7c3-60b1c45c8047</h2>
-            <ul class="tasks" typeof="rdfcal:Vevent" about="urn:uuid:5c3f81cc-30b5-1375-e677-81c83d0961e7" rel="rdfcal:has_component" rev="rdfcal:component">
-                <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
-                    <i><span property="foaf:name">Agent</span><!--span property="rdfcal:hasAgent">Agent</span--></i> has to implement
-                    <br /><span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> [<span property="rdfcal:completed">x</span>]
-                </li>
-            </ul>
-
-            <!-- form>
-                
-                <hr />
-
-                <br />
-                <label for="rdfcal_name">Task</label>
-                <input type="text" id="rdfcal_name" name="rdfcal_name" value="" />
-
-                <label for="rdfcal_hasAgent">Agent</label>
-                <input type="text" id="rdfcal_hasAgent" name="rdfcal_hasAgent" value="http://twitter.com/rene_kapusta" />
-                <br />
-                <label for="rdfcal_startDate">Start</label>
-                <input type="text" id="rdfcal_startDate" name="rdfcal_startDate" value="2011-04-10" />
-
-                <label for="rdfcal_targetDate">End</label>
-                <input type="text" id="rdfcal_targetDate" name="rdfcal_targetDate" value="2011-04-12" />
-                <br />
-                <label for="rdfcal_completed">Completed</label>
-                <input type="checkbox" id="rdfcal_completed" name="rdfcal_completed" value="1" />
-                <br /><br />
-                <input id="taskadd" type="button" value="Add Task" />
-
-            </form -->
-        
-        </div>
-
-        <!-- h1>Meetings in Palsu</h1>
-        <div id="main" class="meetings">
             <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
-                <li about="" typeof="rdfcal:Vevent">
+                <li typeof="rdfcal:Vevent" about="">
                     <a href="" property="rdfcal:summary">Event title</a>
+                    
+                    <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
+                        <li class="task_complete_action" about="" typeof="rdfcal:Task">
+                            <i><span property="foaf:name">Agent</span></i> has to implement
+                            <br /><span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> [<span property="rdfcal:completed">x</span>]
+                        </li>
+                    </ul>
+                    
                 </li>
             </ul>
-            <form>
-                <label>Add a meeting
-                    <input id="newevent" type="text" />
-                </label>
-                <button type="button" id="eventadd">Add</button>
-            </form>
-        
-        </div -->
+        </div>
 
     	<script type="text/javascript" defer>        
     		(function(window,undefined){

@@ -48,7 +48,7 @@ jQuery(document).ready(function() {
         var inverseProperties = {
             'sioc:has_container': 'sioc:container_of',
             'rdfcal:attendeeOf': 'rdfcal:attendee',
-            'rdfcal:taskItemOf': 'rdfcal:taskItem',
+            'rdfcal:taskOf': 'rdfcal:hasTask',
             'rdfcal:component': 'rdfcal:has_component'
         };
         

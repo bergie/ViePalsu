@@ -1,0 +1,14 @@
+{
+"name": "Palsu App",
+"version": "0.0.1",
+"description": "Palsu meeting tool -- http://palsu.me",
+"main": "package.js",
+"keywords": [
+    "IKS project",
+    "VIE"
+    ],
+"repository" : {
+    "type" : "git",
+    "url" : "https://github.com/bergie/ViePalsu.git"
+    } 
+}

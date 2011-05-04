@@ -36,6 +36,31 @@ writeUser = (user, jQuery) ->
         alt: "Picture of " + user.name
     })
 
+fetchTasksForEvent = (event, callback) ->
+    # add tasks
+    console.log 'fetchTasksForEvent: ' + event.id
+    #console.log event
+    if not event.id then return
+
+    events = event.get "rdfcal:hasTask"
+    
+    if not events
+        console.log "Issue getting task collection for event " + event.id
+        return callback()
+    
+    events.predicate = 'rdfcal:taskOf'
+    events.object = event.id
+    events.comparator = (item) ->
+        return dateComparator item, events
+    return events.fetch
+        success: (taskCollection) ->
+            console.log "Got task collection " + taskCollection.length
+            #console.log 'success taskcollection', taskCollection
+            callback()
+        error: ->
+            console.log "Failed to get task collection"
+            callback()
+
 updateUserSession = (request, userData) ->
     if !request.session.auth.user then return false
     request.session.auth.user.image = userData.profile_image_url
@@ -137,7 +162,6 @@ server.get '/oauth-signin', (request,response) ->
                     updateUserSession request, userData
                     return response.redirect '/dashboard'
                 else
-                    # write info message about error (fetch twitter user data)
                     console.log 'redirect to dashboard'
                     return response.redirect '/dashboard'
         
@@ -148,9 +172,6 @@ server.get '/oauth-signin', (request,response) ->
         if request.isAuthenticated() and provider == 'linkedin'
             console.log 'is linkedin'
             return response.redirect '/dashboard'
-        
-        #console.log 'Error on signin'
-        #return response.redirect '/signin?error'
 
     return
 
@@ -174,83 +195,43 @@ server.get '/tasks', (request, response) ->
 
         writeUser request.session.auth.user, jQ
 
-        VIE.RDFaEntities.getInstances jQ "*"
-        
-        # meeting 1
-        task_list = VIE.EntityManager.getBySubject 'urn:uuid:046ef968-ce27-0aaf-4612-e3697d97f337'
-        #task_list = VIE.EntityManager.getByType 'rdfcal:Task'
-        #console.log task_list
-        events = task_list.get 'rdfcal:has_component'
-        events.predicate = "rdfcal:component"
-        events.object = task_list.id
-        events.comparator = (item) ->
-            return dateComparator item, events
-        return events.fetch
-            success: (taskCollection) ->
-                VIE.cleanup()
-                console.log 'success taskcollection'
-                return response.send window.document.innerHTML
-        
-        #return response.send window.document.innerHTML
-        
-        ### meeting 2
-        task_list = VIE.EntityManager.getBySubject 'urn:uuid:5c3f81cc-30b5-1375-e677-81c83d0961e7'
-        events = task_list.get 'rdfcal:has_component'
-        events.predicate = "rdfcal:component"
-        events.object = task_list.id
-        events.comparator = (item) ->
-            return dateComparator item, events
-        return events.fetch
-            success: (taskCollection) ->
-                VIE.cleanup()
-        ###
-        
-        ###
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
+        
+        # meeting list
         # Get the Calendar object
-        # get all meetings
-        # get all tasks per meeting
-        # calendar: urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66
-        #task_list = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        #task_list = VIE.EntityManager.getBySubject 'urn:uuid:c296520b-4447-1f67-f7c3-60b1c45c8047'
-        #task_list = VIE.EntityManager.getBySubject 'urn:uuid:5c3f81cc-30b5-1375-e677-81c83d0961e7'
-
-        task_events = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        console.log 'task events list: '
-        console.log task_events
-        task_list = task_events
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
         
-        # ##
-        #task_list = VIE.EntityManager.getBySubject 'urn:uuid:5c3f81cc-30b5-1375-e677-81c83d0961e7'
-        console.log 'task list: ' + task_list
-        
-        if !task_list
+        if !calendar
             VIE.cleanup()
             # todo return error message
-            console.error "Error loading tasks."
+            console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
-
+        
         # Query for events that have the calendar as component
-        events = task_list.get 'rdfcal:has_component'
-        events.predicate = "rdfcal:component"
-        events.object = task_list.id
+        events = calendar.get 'rdfcal:has_component'
+        events.predicate = 'rdfcal:component'
+        events.object = calendar.id
         events.comparator = (item) ->
             return dateComparator item, events
         return events.fetch
-            success: (taskCollection) ->
-                VIE.cleanup()
-                return response.send window.document.innerHTML
+            success: (eventCollection) ->
+                fetched = 0
+                
+                eventCollection.each (event) ->
+                    console.log 'loop eventCollection', eventCollection.length
+                    fetchTasksForEvent event, ->
+                        fetched++
+                        if fetched is eventCollection.length
+                            # Send stuff
+                            VIE.cleanup()
+                            return response.send window.document.innerHTML
+            
             error: (collection, error) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
-        # ##
-        
-        VIE.cleanup()
-        ###
         
         return response.send window.document.innerHTML
-
 
 # Serve the list of meetings for /
 server.get '/dashboard', (request, response) ->
@@ -270,11 +251,11 @@ server.get '/dashboard', (request, response) ->
         if !calendar
             VIE.cleanup()
             # todo return error message
-            console.error "Error loading calendar."
+            console.error "Error: loading calendar for dashboard"
             return response.send window.document.innerHTML
 
         # Query for events that have the calendar as component
-        events = calendar.get 'rdfcal:has_component'
+        events = calendar.get "rdfcal:has_component"
         events.predicate = "rdfcal:component"
         events.object = calendar.id
         events.comparator = (item) ->
@@ -315,7 +296,7 @@ server.get '/meeting/:uuid', (request, response) ->
             return true
             
         # Query for posts for this event
-        # @todo callbacks as array
+        # @todo callbacks as array or something like that...
         getPosts = (event, callback, callback2) ->
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
@@ -341,8 +322,8 @@ server.get '/meeting/:uuid', (request, response) ->
                 error: sendContent
 
         getTasks = (event) ->
-            task_list = event.get "rdfcal:has_component"
-            task_list.predicate = "rdfcal:component"
+            task_list = event.get "rdfcal:hasTask"
+            task_list.predicate = "rdfcal:taskOf"
             task_list.object = event.id
             return task_list.fetch
                 success: sendContent2
@@ -361,8 +342,6 @@ server.get '/meeting/:uuid', (request, response) ->
 # Proxy VIE-2 cross-site requests
 #server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
-    console.log 'PROXY'
-    #requestData = request.body
 
     proxiedRequest =
         method: requestData.verb or "GET"
