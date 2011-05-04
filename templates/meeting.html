@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="/styles/palsu.css" />
     <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
     <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css" />
+    <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
     <script type="text/javascript" src="/browserify.js"></script>
     <script type="text/javascript">
       var jQuery = require('jquery-browserify');
@@ -94,42 +95,34 @@
         </div>
       </div>
       <div id="chat-input">
-        <div></div>
+        <div class="ui-widget-content"></div>
         <button>Send</button>
       </div>
     </article>
-    <aside>
-      <div id="agenda">
-        <h2>Agenda</h2>
-        <section property="mgd:agenda">
-          <p>
-            Write the meeting agenda here.
-          </p>
-        </section>
+    <aside id="sidebar">
+      <h2><a href="#">Agenda</a></h2>
+      <div property="mgd:agenda">
+        <p>
+          Write the meeting agenda here.
+        </p>
       </div>
-
+      <h2><a href="#">Participants</a></h2>
       <div>
-        <h2>Participants</h2>
-        <div>
-          <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-            <li about="#" typeof="foaf:Person" property="foaf:name">Example User</li>
-          </ul>
-        </div>
+        <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
+          <li about="#" typeof="foaf:Person" property="foaf:name">Example User</li>
+        </ul>
       </div>
+      <h2><a href="#">Tasks</a></h2>
+      <div></div>
+      <h2><a href="#">Mentions</a></h2>
       <div>
-        <h2>Tasks</h2>
-        <div></div>
-      </div>
-      <div>
-        <h2>Mentions</h2>
-        <div>
-          <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
-          <ul class="persons"></ul>
-        </div>
+        <button onclick='analyzeText($("#chat-history"), this);'>Get Participants</button>
+        <ul class="persons"></ul>
       </div>
     </aside>
 
-    <script type="text/javascript" defer>        
+    <script type="text/javascript" defer>
+      jQuery("#sidebar").accordion();
       (function(window,undefined){
       // Prepare
       var
