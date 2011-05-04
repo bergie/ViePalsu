@@ -153,7 +153,7 @@ body.welcome footer {
     float: left;
     margin: 0px;
     padding: 1em;
-    height: 70%;
+    min-height: 70%;
 }
 
 #chat-input button {
