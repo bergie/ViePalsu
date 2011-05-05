@@ -22,7 +22,8 @@ if process.argv.length > 2
 
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
-session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
+session_store = new RedisStore
+    maxAge: 24 * 60 * 60 * 1000
 
 writeUser = (user, jQuery) ->
     # Write user data
@@ -43,11 +44,11 @@ fetchTasksForEvent = (event, callback) ->
     if not event.id then return
 
     events = event.get "rdfcal:hasTask"
-    
+
     if not events
         console.log "Issue getting task collection for event " + event.id
         return callback()
-    
+
     events.predicate = 'rdfcal:taskOf'
     events.object = event.id
     events.comparator = (item) ->
@@ -96,13 +97,13 @@ server.configure ->
     # oAuth with twitter
     unless cfg.twitter.key
         console.error "Error: No Twitter ConsumerKey, check your configuration.json"
-    unless cfg.linkedin.key
-        console.error "Error: No LinkedIn ConsumerKey, check your configuration.json"
+#    unless cfg.linkedin.key
+#        console.error "Error: No LinkedIn ConsumerKey, check your configuration.json"
 
     server.use connect.session
         secret: 'vie palsu app'
         store: session_store
-    
+
     server.set 'view options', { layout: false }
 
     server.use auth [auth.Twitter
@@ -130,7 +131,7 @@ jsdom.defaultDocumentFeatures =
 # Serve the home page
 server.get '/', (request, response) ->
     if request.isAuthenticated()
-        return response.redirect '/meetings'
+        return response.redirect '/m'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
 server.get '/oauth-signin', (request,response) ->
@@ -139,7 +140,7 @@ server.get '/oauth-signin', (request,response) ->
     if !provider then provider = null
     console.log 'provider: ' + provider
 
-    if request.isAuthenticated() then return response.redirect '/meetings'    
+    if request.isAuthenticated() then return response.redirect '/m'
 
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
@@ -156,18 +157,18 @@ server.get '/oauth-signin', (request,response) ->
                     userData.homepage = userData.url
                     console.log userData
                     updateUserSession request, userData
-                    return response.redirect '/meetings'
+                    return response.redirect '/m'
                 else
                     console.log 'redirect to dashboard'
-                    return response.redirect '/meetings'
+                    return response.redirect '/m'
 
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
-            return response.redirect '/meetings'
+            return response.redirect '/m'
 
         if request.isAuthenticated() and provider == 'linkedin'
             console.log 'is linkedin'
-            return response.redirect '/meetings'
+            return response.redirect '/m'
 
     return
 
@@ -193,17 +194,17 @@ server.get '/tasks', (request, response) ->
 
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
-        
+
         # meeting list
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        
+
         if !calendar
             VIE.cleanup()
             # todo return error message
             console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
-        
+
         # Query for events that have the calendar as component
         events = calendar.get 'rdfcal:has_component'
         events.predicate = 'rdfcal:component'
@@ -213,7 +214,7 @@ server.get '/tasks', (request, response) ->
         return events.fetch
             success: (eventCollection) ->
                 fetched = 0
-                
+
                 eventCollection.each (event) ->
                     console.log 'loop eventCollection', eventCollection.length
                     fetchTasksForEvent event, ->
@@ -222,15 +223,15 @@ server.get '/tasks', (request, response) ->
                             # Send stuff
                             VIE.cleanup()
                             return response.send window.document.innerHTML
-            
+
             error: (collection, error) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
-        
+
         return response.send window.document.innerHTML
 
 # Serve the list of meetings for /
-server.get '/meetings', (request, response) ->
+server.get '/m', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
     return fs.readFile "#{process.cwd()}/templates/meetings.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -266,9 +267,9 @@ server.get '/meetings', (request, response) ->
     return
 
 
-server.get '/meeting/:uuid', (request, response) ->
+server.get "/m/:id", (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
-    console.log('open meeting: ' + request.params.uuid + ' - '+ request.session.auth.user.username );
+    console.log "open meeting: #{request.params.id} - #{request.session.auth.user.username}"
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
@@ -276,8 +277,12 @@ server.get '/meeting/:uuid', (request, response) ->
 
         writeUser request.session.auth.user, jQ
 
+        if request.params.id.substr(0, 4) != "urn:"
+            # Local identifier, convert to full URI
+            request.params.id = "http://#{cfg.hostname}:#{cfg.port}/m/#{request.params.id}"
+
         # Write the Meeting identifier into the DOM
-        jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.uuid);
+        jQ('[typeof="rdfcal\\:Vevent"]').attr('about', request.params.id);
 
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
@@ -287,11 +292,11 @@ server.get '/meeting/:uuid', (request, response) ->
             VIE.cleanup()
             console.log 'send content'
             return response.send window.document.innerHTML
-                
+
         sendContent2 = (collection, error) ->
             #VIE.cleanup()
             return true
-            
+
         # Query for posts for this event
         # @todo callbacks as array or something like that...
         getPosts = (event, callback, callback2) ->
@@ -331,7 +336,7 @@ server.get '/meeting/:uuid', (request, response) ->
                 #error: console.log task_list
 
         # Get the Meeting object
-        calendar = VIE.EntityManager.getBySubject request.params.uuid
+        calendar = VIE.EntityManager.getBySubject request.params.id
         calendar.fetch
             success: (event) ->
                 getPosts event, getTasks, getParticipants
@@ -412,7 +417,7 @@ socket.on 'connection', (client) ->
 
     client.on 'disconnect', ->
         if not client.userInstance then return
-        
+
         # Mark user as offline and notify other users
         client.userInstance.set
             'iks:online': 0
