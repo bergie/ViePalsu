@@ -181,7 +181,7 @@ server.get '/signout', (request, response) ->
     updateUserSession request, userData
 
     request.session.destroy();
-    response.redirect '/about'
+    response.redirect '/'
 
 server.get '/tasks', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
