@@ -1,24 +1,28 @@
-jQuery(function() {
+//jQuery(function() {
+jQuery(document).ready(function() {    
     
-    /*
-    $.VIE2.connectors['stanbol'].options({
- 	    "proxy_url" : "/proxy",
- 	    "enhancer_url" : "http://stanbol.iksfordrupal.net:9000/engines/",
- 	    "entityhub_url" : "http://stanbol.iksfordrupal.net:9000/entityhub/"
-    });
-    */
+    if ($.VIE2.connectors['stanbol']) {
+        $.VIE2.connectors['stanbol'].options({
+        	    "proxy_url" : "/proxy",
+        	    "enhancer_url" : "http://stanbol.iksfordrupal.net/engines/",
+        	    "entityhub_url" : "http://stanbol.iksfordrupal.net/entityhub/"
+        });
+    }
     
-    $.VIE2.connectors['dbpedia'].options({
-        "proxy_url" : "/proxy"
-    });
+    if ($.VIE2.connectors['dbpedia']) {
+        $.VIE2.connectors['dbpedia'].options({
+            "proxy_url" : "/proxy"
+        });
+    }
     
-    $.VIE2.connectors['semantictweet'].options({
-        "proxy_url" : "/proxy"
-    });
-    
+    if ($.VIE2.connectors['semantictweet']) {
+        $.VIE2.connectors['semantictweet'].options({
+            "proxy_url" : "/proxy"
+        });
+    }
                
     $.VIE2.Backbone['person']['collection'].bind("add", function (p) {
-        
+        new AgentView({id: 'agent-' + PseudoGuid.GetNew(), model: p});
         new PersonView({id: 'person-' + PseudoGuid.GetNew(), model: p});
     });
     
@@ -54,20 +58,55 @@ jQuery(function() {
     
     var AgentView = Backbone.View.extend({
         
-        tagName: 'b',
+        tagName: 'li',
         
         initialize: function() {
             _.bindAll(this, "render");
           this.model.bind('change', this.render);
+          $('.mentions').append($(this.el));
+          this.render();
         },
         
         render: function() {
             var name = this.model.get("foaf:name");
             
-            if (name && name[0]) {
-                name = name[0].value;
+            if (name) {
+                if (typeof name === 'string') {
+                    name = name;
+                } else if ($.isArray(name)) {
+                    name = name[0];
+                } else {
+                    name = "???";
+                }    
             } else {
-                name = "???";
+                 name = "???";
+            }
+            $(this.el).text(name);
+          return this;
+        }
+    });
+    
+    var Agent2View = Backbone.View.extend({
+                
+        initialize: function() {
+            _.bindAll(this, "render");
+          this.model.bind('change', this.render);
+          this.render();
+        },
+        
+        render: function() {
+            var name = this.model.get("foaf:name");
+            
+            if (name) {
+                if (typeof name === 'string') {
+                    name = name;
+                } else if ($.isArray(name)) {
+                    name = name[0];
+                } else {
+                    name = "???";
+                }    
+            } else {
+                 name = "???";
             }
             $(this.el).text(name);
           return this;
@@ -84,20 +123,19 @@ jQuery(function() {
         },
         
         render: function() {
-            var agentUri = (this.model.get("rdfcal:hasAgent"))? this.model.get("rdfcal:hasAgent")[0].toString() : "";
-            var agentName = "";
+            var agentModel = (this.model.get("rdfcal:hasAgent"))? this.model.get("rdfcal:hasAgent")[0] : undefined;
+            var agentSpan = $("<span>");
             
-            var agentModel = $.VIE2.Backbone['person']['collection'].get(agentUri);
-            var agentView = new AgentView({id: 'agent-' + PseudoGuid.GetNew(), model: agentModel})
+            var agentView = new Agent2View({id: 'agent-' + PseudoGuid.GetNew(), model: agentModel, el: agentSpan})
             .render();
             
-            var name = (this.model.get("rdfcal:name"))? this.model.get("rdfcal:name")[0].value : "";
-            var startDate = (this.model.get("rdfcal:startDate"))? this.model.get("rdfcal:startDate")[0].value : "";
-            var targetDate = (this.model.get("rdfcal:targetDate"))? this.model.get("rdfcal:targetDate")[0].value : "";
-
+            var name = (this.model.get("rdfcal:name"))? this.model.get("rdfcal:name")[0] : "";
+            var startDate = (this.model.get("rdfcal:startDate").length)? this.model.get("rdfcal:startDate")[0] : "";
+            var targetDate = (this.model.get("rdfcal:targetDate").length)? this.model.get("rdfcal:targetDate")[0] : "";
+            
             $(this.el)
-            .append($(agentView.el))
-            .append($("<span> needs to <i>" + name + "</i> before " + targetDate + "!"));
+            .append(agentSpan)
+            .append($("<span> needs to <i>" + name + "</i> before " + targetDate + "!</span>"));
             return this;
         },
     });
@@ -117,17 +155,13 @@ function analyzeText (elem, button) {
 };
             
 function annotateAsTask (elem, agent, todo, targetDate, startDate) {
-    var x = $.rdf.blank('[]');
-    elem.vie2().vie2('annotate',
-        [agent + ' a foaf:Person']);
-    elem.vie2().vie2('annotate',
-      [
-      x + ' a rdfcal:Task',
-      x + ' rdfcal:hasAgent ' + ((agent === '' || agent === undefined)? '[]' : agent),
-      x + ' rdfcal:name ' + ((todo === '' || todo === undefined)? '' : todo),
-      x + ' rdfcal:startDate ' + ((startDate === '' || startDate === undefined)? '\"now\"' : startDate), //TODO: figure out how to write proper date
-      x + ' rdfcal:targetDate ' + ((targetDate === '' || targetDate === undefined)? '\"tonight\"' : targetDate) //TODO: figure out how to write proper date
-      ]);
+    $.VIE2.registerBackboneModel({
+        id : $.rdf.blank('[]'), 
+        a : ['rdfcal:Task'],
+        'rdfcal:hasAgent' : ((agent === '' || agent === undefined)? '[]' : agent.replace(/&lt;/, "<").replace(/&gt;/, ">")),
+        'rdfcal:name' : ((todo === '' || todo === undefined)? '' : todo),
+        'rdfcal:targetDate' : ((targetDate === '' || targetDate === undefined)? '' : targetDate),
+    });
 };
 
 
@@ -135,3 +169,4 @@ function addName () {
     $(document).vie2().vie2('annotate',
       '<http://dbpedia.org/resource/Barack_Obama> foaf:name "B B Obama"');
 };
+

@@ -43,7 +43,6 @@ GENTICS.Aloha.Log = Class.extend({
 		if (typeof GENTICS.Aloha.settings.logHistory === 'undefined' || !GENTICS.Aloha.settings.logHistory) {
 			GENTICS.Aloha.settings.logHistory = {};
 		}
-		// set the default values for the loghistory
 		if (!GENTICS.Aloha.settings.logHistory.maxEntries) {
 			GENTICS.Aloha.settings.logHistory.maxEntries = 100;
 		}

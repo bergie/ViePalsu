@@ -42,6 +42,12 @@ ViePalsu.DiscussionManager = {
         GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
             if (ViePalsu.DiscussionManager.chatInput.html() === '') {
                 ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
+            } else {
+                $('.message').vie2().vie2('analyze', function (status) {
+                    if (status === 'ok') {
+                        console.log("Success!");
+                    }
+                });
             }
         });
     },
@@ -137,6 +143,12 @@ jQuery(document).ready(function() {
                     if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
                         // There were changes, save
                         modelInstance.save();
+                        //use VIE^2 to analyze the text
+                        $('.message').vie2().vie2('analyze', function (status) {
+                            if (status === 'ok') {
+                                console.log("Success 2!");
+                            }
+                        });
                     }
                 });
             });

@@ -10,6 +10,7 @@ sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
 require 'socket.io-connect'
+require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
 browserify = require 'browserify'
@@ -21,12 +22,11 @@ if process.argv.length > 2
 
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
-#user.username = 'guest'
-
 session_store = new RedisStore({ maxAge: 24 * 60 * 60 * 1000})
 
 writeUser = (user, jQuery) ->
     # Write user data
+    #console.log user
     jQuery('#account [property="foaf\\:nick"]').text(user.username)
     jQuery('#account').attr('about', 'http://twitter.com/' + user.username)
     jQuery('#account [property="foaf\\:name"]').text(user.name)
@@ -35,6 +35,37 @@ writeUser = (user, jQuery) ->
         title: "Picture of " + user.name,
         alt: "Picture of " + user.name
     })
+
+fetchTasksForEvent = (event, callback) ->
+    # add tasks
+    console.log 'fetchTasksForEvent: ' + event.id
+    #console.log event
+    if not event.id then return
+
+    events = event.get "rdfcal:hasTask"
+    
+    if not events
+        console.log "Issue getting task collection for event " + event.id
+        return callback()
+    
+    events.predicate = 'rdfcal:taskOf'
+    events.object = event.id
+    events.comparator = (item) ->
+        return dateComparator item, events
+    return events.fetch
+        success: (taskCollection) ->
+            console.log "Got task collection " + taskCollection.length
+            #console.log 'success taskcollection', taskCollection
+            callback()
+        error: ->
+            console.log "Failed to get task collection"
+            callback()
+
+updateUserSession = (request, userData) ->
+    if !request.session.auth.user then return false
+    request.session.auth.user.image = userData.profile_image_url
+    request.session.auth.user.homepage = userData.url
+    request.session.auth.user.name = userData.name
 
 dateComparator = (item, collection) ->
     itemDate = new Date item.get "dc:created"
@@ -46,6 +77,7 @@ dateComparator = (item, collection) ->
 
 server = express.createServer()
 server.configure ->
+
     # Our CSS files need the LessCSS compiler
     server.use express.compiler
         src: process.cwd()
@@ -64,15 +96,32 @@ server.configure ->
     # oAuth with twitter
     unless cfg.twitter.key
         console.error "Error: No Twitter ConsumerKey, check your configuration.json"
+    unless cfg.linkedin.key
+        console.error "Error: No LinkedIn ConsumerKey, check your configuration.json"
 
     server.use connect.session
         secret: 'vie palsu app'
         store: session_store
+    
+    server.set 'view options', { layout: false }
+
     server.use auth [auth.Twitter
             consumerKey: cfg.twitter.key
             consumerSecret: cfg.twitter.secret]
 
-     server.set 'view options', { layout: false }
+###
+    server.use auth [auth.Twitter
+            consumerKey: cfg.twitter.key
+            consumerSecret: cfg.twitter.secret]
+    server.use auth [auth.Facebook
+            appId: cfg.facebook.key
+            appSecret: cfg.facebook.secret
+            scope: "email"
+            callback: "http://palsu.me/oauth-signin"]
+    server.use auth [auth.Linkedin
+            consumerKey: cfg.linkedin.key
+            consumerSecret: cfg.linkedin.secret]
+###
 
 jsdom.defaultDocumentFeatures =
     FetchExternalResources: false,
@@ -81,53 +130,109 @@ jsdom.defaultDocumentFeatures =
 # Serve the home page
 server.get '/', (request, response) ->
     if request.isAuthenticated()
-        return response.redirect '/dashboard'
+        return response.redirect '/meetings'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
-server.get '/signin', (request,response) ->
-    if request.isAuthenticated() then return response.redirect '/dashboard'
+server.get '/oauth-signin', (request,response) ->
 
-    request.authenticate ['twitter'], (error, authenticated) ->
-        if request.isAuthenticated()
+    provider = request.param('p')
+    if !provider then provider = null
+    console.log 'provider: ' + provider
+
+    if request.isAuthenticated() then return response.redirect '/meetings'    
+
+    request.authenticate [provider], (error, authenticated) ->
+        # move to switch...
+        console.log 'auth: ' + authenticated
+
+        if request.isAuthenticated() and provider == 'twitter'
+            console.log 'is twitter'
             jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+request.session.auth.user.username
 
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
                     userData = JSON.parse(body)
-                    request.session.auth.user.image = userData.profile_image_url
-                    request.session.auth.user.homepage = userData.url
-                    request.session.auth.user.name = userData.name
-                    return response.redirect '/dashboard'
+                    userData.image = userData.profile_image_url
+                    userData.homepage = userData.url
+                    console.log userData
+                    updateUserSession request, userData
+                    return response.redirect '/meetings'
                 else
-                    # write info message about error
-                    return response.redirect '/'
-        else
-            #console.log 'Error on signin'
+                    console.log 'redirect to dashboard'
+                    return response.redirect '/meetings'
+
+        if request.isAuthenticated() and provider == 'facebook'
+            console.log 'is facebook'
+            return response.redirect '/meetings'
+
+        if request.isAuthenticated() and provider == 'linkedin'
+            console.log 'is linkedin'
+            return response.redirect '/meetings'
+
     return
 
 server.get '/signout', (request, response) ->
-    request.session.auth.user.username = 'guest'
+    userData = {}
+    userData.username = 'guest'
+    userData.image = null
+    userData.homepage = null
+    userData.name = null
+    updateUserSession request, userData
+
     request.session.destroy();
-    response.redirect '/'
+    response.redirect '/about'
 
-# todo implement other proxy server
-server.all '/proxy', (request, response) ->
-    if request.param("proxy_url")
-        url = unescape request.param("proxy_url")
-        ProxyRequest {uri:url}, (error, ProxyResponse, body) ->
-            if !error and ProxyResponse.statusCode == 200
-                return response.send(body)
-            else
-                return response.send('Proxy Error: No response data.')
-    else
-        return response.send('Proxy Error: No "proxy_url" param set.')
+server.get '/tasks', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
 
-    return
+        writeUser request.session.auth.user, jQ
+
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances jQ "*"
+        
+        # meeting list
+        # Get the Calendar object
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
+        
+        if !calendar
+            VIE.cleanup()
+            # todo return error message
+            console.error "Error: loading calendar for task list"
+            return response.send window.document.innerHTML
+        
+        # Query for events that have the calendar as component
+        events = calendar.get 'rdfcal:has_component'
+        events.predicate = 'rdfcal:component'
+        events.object = calendar.id
+        events.comparator = (item) ->
+            return dateComparator item, events
+        return events.fetch
+            success: (eventCollection) ->
+                fetched = 0
+                
+                eventCollection.each (event) ->
+                    console.log 'loop eventCollection', eventCollection.length
+                    fetchTasksForEvent event, ->
+                        fetched++
+                        if fetched is eventCollection.length
+                            # Send stuff
+                            VIE.cleanup()
+                            return response.send window.document.innerHTML
+            
+            error: (collection, error) ->
+                VIE.cleanup()
+                return response.send window.document.innerHTML
+        
+        return response.send window.document.innerHTML
 
 # Serve the list of meetings for /
-server.get '/dashboard', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/signin'
-    return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
+server.get '/meetings', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/meetings.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
@@ -142,11 +247,11 @@ server.get '/dashboard', (request, response) ->
         if !calendar
             VIE.cleanup()
             # todo return error message
-            console.error "Error loading calendar."
+            console.error "Error: loading calendar for dashboard"
             return response.send window.document.innerHTML
 
         # Query for events that have the calendar as component
-        events = calendar.get 'rdfcal:has_component'
+        events = calendar.get "rdfcal:has_component"
         events.predicate = "rdfcal:component"
         events.object = calendar.id
         events.comparator = (item) ->
@@ -160,8 +265,9 @@ server.get '/dashboard', (request, response) ->
                 return response.send window.document.innerHTML
     return
 
+
 server.get '/meeting/:uuid', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/signin'
+    if !request.isAuthenticated() then return response.redirect '/'
     console.log('open meeting: ' + request.params.uuid + ' - '+ request.session.auth.user.username );
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -179,10 +285,17 @@ server.get '/meeting/:uuid', (request, response) ->
         # Clean up VIE internal state and send content out
         sendContent = (collection, error) ->
             VIE.cleanup()
+            console.log 'send content'
             return response.send window.document.innerHTML
-
+                
+        sendContent2 = (collection, error) ->
+            #VIE.cleanup()
+            return true
+            
         # Query for posts for this event
-        getPosts = (event, callback) ->
+        # @todo callbacks as array or something like that...
+        getPosts = (event, callback, callback2) ->
+            #console.log event
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
             posts.object = event.id
@@ -191,48 +304,80 @@ server.get '/meeting/:uuid', (request, response) ->
             return posts.fetch
                 success: (collection) ->
                     callback event
+                    callback2 event
                 error:  (collection, error) ->
+                    #console.log collection
+                    #console.log error
                     callback event
+                    callback2 event
 
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
+            console.log '### participants list: '
+            #console.log participants
             participants.predicate = "rdfcal:attendeeOf"
             participants.object = event.id
             return participants.fetch
                 success: sendContent
                 error: sendContent
 
+        getTasks = (event) ->
+            task_list = event.get "rdfcal:hasTask"
+            task_list.predicate = "rdfcal:taskOf"
+            task_list.object = event.id
+            return task_list.fetch
+                success: sendContent2
+                error: sendContent2
+                #error: console.log task_list
+
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.uuid
         calendar.fetch
             success: (event) ->
-                getPosts event, getParticipants
+                getPosts event, getTasks, getParticipants
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error
 
+
 # Proxy VIE-2 cross-site requests
-server.post '^\\/proxy.*', (request, response) ->
-    postHandler = (request, callback) ->
-        content = "";
-        request.addListener "data", (chunk) ->
-            content = "#{content}#{chunk}"
+#server.post '^\\/proxy.*', (request, response) ->
+server.post '/proxy', (request, response) ->
 
-	    request.addListener "end", ->
-	        callback content
+    proxiedRequest =
+        method: requestData.verb or "GET"
+        uri: requestData.proxy_url
+        data: requestData.content
+        headers:
+            "Accept": requestData.format or "text/plain"
 
-    postHandler request, (content) ->
-        requestData = JSON.parse(content)
+    return req = ProxyRequest
+        method: requestData.verb or "GET"
+        uri: requestData.proxy_url
+        data: requestData.content
+        headers:
+            "Accept": requestData.format or "text/plain"
+    , (error, resp, body) ->
+        console.log proxiedRequest
+        console.log body
+        return response.send body
 
-        req = ProxyRequest
-            method: requestData.verb or "GET"
-            uri: requestData.proxy_url
-            body: requestData.content
-            headers:
-                "Accept": requestData.format or "text/plain"
-        , (error, resp, body) ->
-            response.send body
+###
+server.all '/proxy', (request, response) ->
+    if request.param("proxy_url")
+        url = unescape request.param("proxy_url")
+        ProxyRequest {uri:url}, (error, ProxyResponse, body) ->
+            if !error and ProxyResponse.statusCode == 200
+                return response.send(body)
+            else
+                return response.send('Proxy Error: No response data.')
+    else
+        return response.send('Proxy Error: No "proxy_url" param set.')
 
+    return
+###
+
+# start server
 server.listen(cfg.port)
 
 # ## Handling sockets
@@ -266,6 +411,8 @@ socket.on 'connection', (client) ->
                 clientObject.send data
 
     client.on 'disconnect', ->
+        if not client.userInstance then return
+        
         # Mark user as offline and notify other users
         client.userInstance.set
             'iks:online': 0

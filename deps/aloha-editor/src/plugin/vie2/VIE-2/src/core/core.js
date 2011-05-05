@@ -267,15 +267,17 @@ jQuery.VIE2.addToGlobalContext = function (uri, prop, values) {
     	jQuery.VIE2.log("warn", "$.VIE2.core#addToGlobalContext()", "No values specified, returning without action!");
     	return;
     }
-    if (!jQuery.isArray(values)) {
-        jQuery.VIE2.addToGlobalContext(uri, prop, [values]);
+    if (jQuery.isArray(values)) {
+        for (var i = 0; i < values.length; i++) {
+            var triple = jQuery.rdf.triple(uri, prop, values[i], {namespaces: jQuery.VIE2.namespaces});
+            jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
+            jQuery.VIE2.globalContext.add(triple);
+        }
+    } else {
+            var triple = jQuery.rdf.triple(uri, prop, values, {namespaces: jQuery.VIE2.namespaces});
+            jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
+            jQuery.VIE2.globalContext.add(triple);
     }
-    
-    jQuery.each(values, function (i, v) {
-        var triple = jQuery.rdf.triple(uri, prop, v, {namespaces: jQuery.VIE2.namespaces});
-        jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Adding new triple: '" + triple + "'.");
-        jQuery.VIE2.globalContext.add(triple);
-    });
     jQuery.VIE2.log("info", "$.VIE2.core#addToGlobalContext()", "Global context holds now " + jQuery.VIE2.globalContext.databank.triples().length + " triples!");
 };
 
@@ -491,6 +493,22 @@ jQuery.VIE2.registerBackboneModel = function (entity) {
     //check whether we already have this entity registered
     if (VIE.EntityManager.getBySubject(entity["id"]) !== undefined) {
         $.VIE2.log("info", "$.VIE2.registerBackboneModel()", "Entity " + entity["id"] + " already registered, no need to add it.");
+        jQuery.each(jQuery.VIE2.Backbone, function (i, e) {
+           	var belongsHere = false;
+           	jQuery.each(e['a'], function () {
+           		if (jQuery.inArray(this.toString(), entity["a"]) !== -1) {
+           			belongsHere = true;
+           			return false;
+           		}
+           	});
+           		if (belongsHere && e['collection'].indexOf(VIE.EntityManager.getBySubject(entity["id"])) === -1) {
+           		    
+            		e['collection'].add(VIE.EntityManager.getBySubject(entity["id"]));
+           		    
+       		    }
+           	
+        });
+           	
         return;
     }
     

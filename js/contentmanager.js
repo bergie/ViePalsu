@@ -6,9 +6,6 @@ document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/d
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/aloha.js" id="aloha-script-include" data-plugins="format,abbr,link,list,link"></script>');
 document.write('<link href="' + GENTICS_Aloha_base + '/aloha.css" id="aloha-style-include" rel="stylesheet">');
 
-//document.write('<script type="text/javascript" src="/deps/aloha-editor/src/plugin/link/extra/linklist.js"></script>');
-//document.write('<script type="text/javascript" src="/deps/aloha-editor/src/plugin/link/extra/delicious.js"></script>');
-
 // We need VIE
 document.write('<script type="text/javascript" src="/js/underscore-min.js"></script>');
 document.write('<script type="text/javascript" src="/js/backbone-min.js"></script>');
@@ -55,6 +52,7 @@ jQuery(document).ready(function() {
         var inverseProperties = {
             'sioc:has_container': 'sioc:container_of',
             'rdfcal:attendeeOf': 'rdfcal:attendee',
+            'rdfcal:taskOf': 'rdfcal:hasTask',
             'rdfcal:component': 'rdfcal:has_component'
         };
         

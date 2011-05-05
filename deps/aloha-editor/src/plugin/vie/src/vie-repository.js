@@ -28,16 +28,17 @@ GENTICS.Aloha.Repositories.vie.query = function(p, callback) {
 	var entities = VIE.EntityManager.getByType(that.settings.type);
 	if (!entities)
 	{
-	    console.log(entities);
 	    callback.call(that, []);
 	    return;
 	}
 	
 	callback.call(that, _.map(entities, function(item) {
         return {
-            name: item.get(that.settings.labelpredicate),
+            //name: item.get(that.settings.labelpredicate),
+            name: item.id,
             url: item.id,
-            type: item.a
+            info: item.get(that.settings.labelpredicate),
+            type: that.settings.type
         };
     }));
 };

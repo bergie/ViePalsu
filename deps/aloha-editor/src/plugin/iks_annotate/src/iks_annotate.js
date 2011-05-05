@@ -24,7 +24,10 @@ eu.iksproject.AnnotationPlugin.config = ['iks_annotate'];
 /**
  * the defined object types to be used for this instance
  */
-eu.iksproject.AnnotationPlugin.objectTypeFilter = ['person'];
+eu.iksproject.AnnotationPlugin.objectTypeFilter = ['foaf:Person'];
+
+eu.iksproject.AnnotationPlugin.onHrefChange = null;
+
 
 /**
  * Initialize the plugin
@@ -82,7 +85,8 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
     	'width':320,
     	'valueField': 'url'
     });
-    this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
+    this.iks_annotateField.setTemplate('<span><b>{url}</b></span>');
+    //this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
     this.iks_annotateField.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
 
     // add the input field for iks_annotate
@@ -93,6 +97,31 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
         1
     );
 
+    /*this.browser = new GENTICS.Aloha.ui.Browser();
+    this.browser.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
+    this.browser.onSelect = function( item ) {
+    	// set href Value
+    	that.iks_annotateField.setItem( item );
+		// call hrefChange
+    	//that.hrefChange();
+    };
+    this.repositoryButton = new GENTICS.Aloha.ui.Button({
+        'iconClass' : 'GENTICS_button_big GENTICS_button_tree',
+        'size' : 'large',
+        'onclick' : function () {
+			that.browser.show();
+		},
+        'tooltip' : this.i18n('button.addlink.tooltip'),
+        'toggle' : false
+    });
+
+    // COMMENT IN AND TEST THE BROWSER
+    GENTICS.Aloha.FloatingMenu.addButton(
+        this.getUID('iks_annotate'),
+        this.repositoryButton,
+        this.i18n('floatingmenu.tab.iks_annotate'),
+        1
+    );*/
 };
 
 /**
@@ -101,6 +130,28 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
  */
 eu.iksproject.AnnotationPlugin.bindInteractions = function () {
     var that = this;
+
+        // update link object when src changes
+        this.iks_annotateField.addListener('keyup', function(obj, event) {
+        	// TODO this event is never fired. Why?
+        	// if the user presses ESC we do a rough check if he has entered a link or searched for something
+    	    if (event.keyCode == 27) {
+    	    	var curval = that.iks_annotateField.getQueryValue();
+    	    	if (
+    	    		curval[0] == '/' || // local link
+    	    		curval.match(/^.*\.([a-z]){2,4}$/i) || // local file with extension
+    	    		curval[0] == '#' || // inner document link
+    	    		curval.match(/^htt.*/i)  // external link
+    	    	) {
+    	    		// could be a link better leave it as it is
+    	    	} else {
+    	    		// the user searched for something and aborted restore original value
+    //	    		that.iks_annotateField.setValue(that.iks_annotateField.getValue());
+    	    	}
+    	    }
+        	that.iks_annotateChange();
+        });
+
 
     // on blur check if iks_annotate title is empty. If so remove the a tag
     this.iks_annotateField.addListener('blur', function(obj, event) {
@@ -143,6 +194,7 @@ eu.iksproject.AnnotationPlugin.subscribeEvents = function () {
 	
     // add the event handler for selection change
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
+
         if (GENTICS.Aloha.activeEditable) {
         	// show/hide the button according to the configuration
         	var config = that.getEditableConfig(GENTICS.Aloha.activeEditable.obj);
@@ -168,6 +220,7 @@ eu.iksproject.AnnotationPlugin.subscribeEvents = function () {
         		that.formatIksAnnotateButton.setPressed(true);
         		GENTICS.Aloha.FloatingMenu.setScope(that.getUID('iks_annotate'));
         		that.iks_annotateField.setTargetObject(foundMarkup, 'about');
+        		//that.iks_annotateField.setTargetObject(that.iks_annotateField.getQueryValue(), 'about');
         	} else {
         		// no iks_annotate found
         		that.formatIksAnnotateButton.setPressed(false);
@@ -263,7 +316,7 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
     }
     range.select();
     this.iks_annotateField.focus();
-//    this.iks_annotateChange();
+    this.iks_annotateChange();
 };
 
 /**
@@ -281,6 +334,30 @@ eu.iksproject.AnnotationPlugin.removeIksAnnotate = function () {
         // select the (possibly modified) range
         range.select();
     }
+};
+
+
+/**
+ * Updates the link object depending on the src field
+ */
+eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
+	// For now hard coded attribute handling with regex.
+	// Avoid creating the target attribute, if it's unnecessary, so
+	// that XSS scanners (AntiSamy) don't complain.
+	if (this.target !== '') {
+		this.iks_annotateField.setAttribute('about', this.target, this.targetregex, this.iks_annotateField.getQueryValue());
+	}
+	this.iks_annotateField.setAttribute('class', this.cssclass, this.cssclassregex, this.iks_annotateField.getQueryValue());
+	if ( typeof this.onHrefChange == 'function' ) {
+		this.onHrefChange.call(this, this.iks_annotateField.getTargetObject(),  this.iks_annotateField.getQueryValue(), this.iks_annotateField.getItem() )
+	}
+	GENTICS.Aloha.EventRegistry.trigger(
+			new GENTICS.Aloha.Event('iks_annotateChange', GENTICS.Aloha, {
+				'obj' : this.iks_annotateField.getTargetObject(),
+				'about': this.iks_annotateField.getQueryValue(), // href
+				'item': this.iks_annotateField.getItem()
+			})
+	);
 };
 
 /**
