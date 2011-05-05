@@ -14,5 +14,6 @@
         "key": "",
         "secret": ""
     },
+    "hostname": "localhost",
     "port": 8002
 }
