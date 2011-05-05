@@ -90,14 +90,21 @@ jQuery(document).ready(function() {
     });
 
     jQuery('.task_complete_action').click(function() {
-        if (this.attributes[2].nodeValue) {
-            uuid = this.attributes[2].nodeValue;
-        } else {
-            uuid = null;
+        
+        var uuid = false;
+        
+        if (jQuery(this).attr('about')) {
+            uuid = jQuery(this).attr('about');
         }
+        
         console.log('### task complete: ' + uuid);
         
         var data = VIE.EntityManager.getBySubject(uuid);
+        
+        if (!data) {
+            console.log('### ERROR task complete');
+        }
+        
         var complete_status = data.get('rdfcal:completed');
         console.log(complete_status);
         if (complete_status == 1) {
