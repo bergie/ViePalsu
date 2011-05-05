@@ -45,5 +45,16 @@
         </form>
       </div>
     </article>
+    
+    <script type="text/javascript" defer>
+        // js errors without this
+        (function(window,undefined){
+            var
+            $ = window.jQuery,
+            GENTICS = window.GENTICS,
+            $body = $('body');
+            $body.bind('aloha',function(){});
+            })(window);
+    </script>
   </body>
 </html>

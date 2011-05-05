@@ -130,12 +130,8 @@ jsdom.defaultDocumentFeatures =
 # Serve the home page
 server.get '/', (request, response) ->
     if request.isAuthenticated()
-        return response.redirect '/dashboard'
+        return response.redirect '/meetings'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
-
-
-server.get '/signin', (request, response) ->
-    response.sendfile "#{process.cwd()}/templates/signin.html"
 
 server.get '/oauth-signin', (request,response) ->
 
@@ -143,7 +139,7 @@ server.get '/oauth-signin', (request,response) ->
     if !provider then provider = null
     console.log 'provider: ' + provider
 
-    if request.isAuthenticated() then return response.redirect '/dashboard'    
+    if request.isAuthenticated() then return response.redirect '/meetings'    
 
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
@@ -160,18 +156,18 @@ server.get '/oauth-signin', (request,response) ->
                     userData.homepage = userData.url
                     console.log userData
                     updateUserSession request, userData
-                    return response.redirect '/dashboard'
+                    return response.redirect '/meetings'
                 else
                     console.log 'redirect to dashboard'
-                    return response.redirect '/dashboard'
+                    return response.redirect '/meetings'
 
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
-            return response.redirect '/dashboard'
+            return response.redirect '/meetings'
 
         if request.isAuthenticated() and provider == 'linkedin'
             console.log 'is linkedin'
-            return response.redirect '/dashboard'
+            return response.redirect '/meetings'
 
     return
 
@@ -187,7 +183,7 @@ server.get '/signout', (request, response) ->
     response.redirect '/about'
 
 server.get '/tasks', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/signin'
+    if !request.isAuthenticated() then return response.redirect '/'
     return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
@@ -234,9 +230,9 @@ server.get '/tasks', (request, response) ->
         return response.send window.document.innerHTML
 
 # Serve the list of meetings for /
-server.get '/dashboard', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/signin'
-    return fs.readFile "#{process.cwd()}/templates/index.html", "utf-8", (err, data) ->
+server.get '/meetings', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/meetings.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
         window = document.createWindow()
         jQ = jQuery.create window
@@ -269,8 +265,9 @@ server.get '/dashboard', (request, response) ->
                 return response.send window.document.innerHTML
     return
 
+
 server.get '/meeting/:uuid', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/signin'
+    if !request.isAuthenticated() then return response.redirect '/'
     console.log('open meeting: ' + request.params.uuid + ' - '+ request.session.auth.user.username );
     return fs.readFile "#{process.cwd()}/templates/meeting.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -288,15 +285,17 @@ server.get '/meeting/:uuid', (request, response) ->
         # Clean up VIE internal state and send content out
         sendContent = (collection, error) ->
             VIE.cleanup()
+            console.log 'send content'
             return response.send window.document.innerHTML
                 
         sendContent2 = (collection, error) ->
-            VIE.cleanup()
+            #VIE.cleanup()
             return true
             
         # Query for posts for this event
         # @todo callbacks as array or something like that...
         getPosts = (event, callback, callback2) ->
+            #console.log event
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
             posts.object = event.id
@@ -307,6 +306,8 @@ server.get '/meeting/:uuid', (request, response) ->
                     callback event
                     callback2 event
                 error:  (collection, error) ->
+                    #console.log collection
+                    #console.log error
                     callback event
                     callback2 event
 
@@ -327,6 +328,7 @@ server.get '/meeting/:uuid', (request, response) ->
             return task_list.fetch
                 success: sendContent2
                 error: sendContent2
+                #error: console.log task_list
 
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.uuid
@@ -336,6 +338,7 @@ server.get '/meeting/:uuid', (request, response) ->
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error
+
 
 # Proxy VIE-2 cross-site requests
 #server.post '^\\/proxy.*', (request, response) ->
@@ -408,6 +411,8 @@ socket.on 'connection', (client) ->
                 clientObject.send data
 
     client.on 'disconnect', ->
+        if not client.userInstance then return
+        
         # Mark user as offline and notify other users
         client.userInstance.set
             'iks:online': 0

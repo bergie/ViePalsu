@@ -929,8 +929,12 @@
                     jsonld[propertyName] = propertyName;
                 }
 
-                // Before writing to DOM we check that the value has actually changed.
+                /*/ Before writing to DOM we check that the value has actually changed.
                 if (VIE.RDFa._readPropertyValue(propertyName, propertyElement) !== jsonld[propertyName]) {
+                    VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
+                }*/ 
+                
+                if (VIE.RDFa._readPropertyValue(propertyName, propertyElement) !== jsonld[propertyName] && jQuery('.aloha-placeholder', propertyElement).length === 0) {
                     VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
                 }
             });
