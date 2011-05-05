@@ -43,11 +43,11 @@ fetchTasksForEvent = (event, callback) ->
     if not event.id then return
 
     events = event.get "rdfcal:hasTask"
-    
+
     if not events
         console.log "Issue getting task collection for event " + event.id
         return callback()
-    
+
     events.predicate = 'rdfcal:taskOf'
     events.object = event.id
     events.comparator = (item) ->
@@ -96,13 +96,13 @@ server.configure ->
     # oAuth with twitter
     unless cfg.twitter.key
         console.error "Error: No Twitter ConsumerKey, check your configuration.json"
-    unless cfg.linkedin.key
-        console.error "Error: No LinkedIn ConsumerKey, check your configuration.json"
+#    unless cfg.linkedin.key
+#        console.error "Error: No LinkedIn ConsumerKey, check your configuration.json"
 
     server.use connect.session
         secret: 'vie palsu app'
         store: session_store
-    
+
     server.set 'view options', { layout: false }
 
     server.use auth [auth.Twitter
@@ -139,7 +139,7 @@ server.get '/oauth-signin', (request,response) ->
     if !provider then provider = null
     console.log 'provider: ' + provider
 
-    if request.isAuthenticated() then return response.redirect '/meetings'    
+    if request.isAuthenticated() then return response.redirect '/meetings'
 
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
@@ -193,17 +193,17 @@ server.get '/tasks', (request, response) ->
 
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
-        
+
         # meeting list
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-        
+
         if !calendar
             VIE.cleanup()
             # todo return error message
             console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
-        
+
         # Query for events that have the calendar as component
         events = calendar.get 'rdfcal:has_component'
         events.predicate = 'rdfcal:component'
@@ -213,7 +213,7 @@ server.get '/tasks', (request, response) ->
         return events.fetch
             success: (eventCollection) ->
                 fetched = 0
-                
+
                 eventCollection.each (event) ->
                     console.log 'loop eventCollection', eventCollection.length
                     fetchTasksForEvent event, ->
@@ -222,11 +222,11 @@ server.get '/tasks', (request, response) ->
                             # Send stuff
                             VIE.cleanup()
                             return response.send window.document.innerHTML
-            
+
             error: (collection, error) ->
                 VIE.cleanup()
                 return response.send window.document.innerHTML
-        
+
         return response.send window.document.innerHTML
 
 # Serve the list of meetings for /
@@ -287,11 +287,11 @@ server.get '/meeting/:uuid', (request, response) ->
             VIE.cleanup()
             console.log 'send content'
             return response.send window.document.innerHTML
-                
+
         sendContent2 = (collection, error) ->
             #VIE.cleanup()
             return true
-            
+
         # Query for posts for this event
         # @todo callbacks as array or something like that...
         getPosts = (event, callback, callback2) ->
@@ -412,7 +412,7 @@ socket.on 'connection', (client) ->
 
     client.on 'disconnect', ->
         if not client.userInstance then return
-        
+
         # Mark user as offline and notify other users
         client.userInstance.set
             'iks:online': 0
