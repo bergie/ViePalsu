@@ -1,29 +1,40 @@
+# required 3rd party libs
 express = require 'express'
 io = require 'socket.io'
 jQuery = require 'jquery'
-_ = require("underscore")._
+_ = require('underscore')._
 Backbone = require 'backbone'
-connect = require 'connect'
-VIE = require '../js/vie.js'
-auth = require 'connect-auth'
 sys = require 'sys'
-require './vie-redis.coffee'
-RedisStore = require 'connect-redis'
-require 'socket.io-connect'
-require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
-browserify = require 'browserify'
 ProxyRequest = require 'request'
+browserify = require 'browserify'
 
-configFile = "configuration.json"
+# Authentication with LinkedIn oAuth
+connect = require 'connect'
+auth = require 'connect-auth'
+RedisStore = require 'connect-redis'
+require '../js/auth/auth.strategies/linkedin.js'
+
+# VIE and VIE Redis Store
+VIE = require '../js/vie.js'
+require './vie-redis.coffee'
+
+# default configuration
+configFile = 'configuration.json'
+
+# copy default configuration to myapp.local.json and run:
+# $ coffee nodejs/palsu.coffee myapp.local.json
 if process.argv.length > 2
     configFile = process.argv[2]
-
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
+# data store configuration
 session_store = new RedisStore
     maxAge: 24 * 60 * 60 * 1000
+
+
+# helper functions
 
 writeUser = (user, jQuery) ->
     # Write user data
@@ -135,9 +146,9 @@ server.get '/', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
 server.get '/oauth-signin', (request,response) ->
-
     provider = request.param('p')
-    if !provider then provider = null
+    # @set default config? cfg.oauth.default_provider
+    if !provider then provider = 'twitter'
     console.log 'provider: ' + provider
 
     if request.isAuthenticated() then return response.redirect '/m'
@@ -183,7 +194,7 @@ server.get '/signout', (request, response) ->
     request.session.destroy();
     response.redirect '/'
 
-server.get '/tasks', (request, response) ->
+server.get '/t', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
     return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data
@@ -197,7 +208,7 @@ server.get '/tasks', (request, response) ->
 
         # meeting list
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
+        calendar = VIE.EntityManager.getBySubject 'm'
 
         if !calendar
             VIE.cleanup()
@@ -243,7 +254,7 @@ server.get '/m', (request, response) ->
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
+        calendar = VIE.EntityManager.getBySubject 'm'
 
         if !calendar
             VIE.cleanup()

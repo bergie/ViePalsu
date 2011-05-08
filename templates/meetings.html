@@ -13,7 +13,7 @@
     <script src="/js/contentmanager.js" type="text/javascript"></script>
     <script src="/js/meetings.js" type="text/javascript"></script>
   </head>
-  <body>
+  <body class="meetings">
     <header>
       <div>
         <h1>Palsu</h1>
@@ -23,7 +23,7 @@
           </span>
           <p> 
             Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-            <nav><a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
+            <nav><a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
           </p>
         </div>
       </div>
@@ -32,19 +32,39 @@
     <article>
       <h1>Meetings in Palsu</h1>
       <div id="main" class="meetings">
-        <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
+        <ul typeof="rdfcal:Vcalendar" about="m" rel="rdfcal:has_component" rev="rdfcal:component">
           <li about="" typeof="rdfcal:Vevent">
-            <a href="" property="rdfcal:summary">Event title</a>
+            <h2><a href="" property="rdfcal:summary">Event title</a></h2>
+            <div property="mgd:agenda">
+              <p>meeting agenda text</p>
+            </div>
           </li>
         </ul>
-        <form>
-          <label>Add a meeting
+      </div>
+    </article>
+    
+    <aside>
+      <div>
+          <h3>Add new Meetings</h3>
+          <p>Add a new public/private meeting to your agenda.</p>
+          <p>Invite your contacts to join a meeting at the meeting page or just tell them the URL of a meeting.</p>
+          <br />
+      <form>
+          <label><strong>Meeting title</strong><br />
             <input id="newevent" type="text" />
           </label>
           <button type="button" id="eventadd">Add</button>
-        </form>
+          <br />
+          <label>is a private meeting
+            <input id="private" type="checkbox" disabled/>
+          </label>
+      </form>
       </div>
-    </article>
+    </aside>
+    
+    <footer>
+        &nbsp;
+    </footer>
     
     <script type="text/javascript" defer>
         // js errors without this

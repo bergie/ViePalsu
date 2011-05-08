@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
     // remove empty todos
     jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
     
-    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
+    var eventCollection = VIE.EntityManager.getBySubject('m').get('rdfcal:has_component');
     console.log(eventCollection);
     
     eventCollection.bind('add', function(event, calendar, options) {
@@ -47,7 +47,12 @@ jQuery(document).ready(function() {
             return;
         }
         
-        jQuery('[about="' + event.id + '"] > a').attr('href', '/meeting/' + event.id);
+        event.url = event.id;
+        if (event.id.substr(0, 4) === 'urn:') {
+            event.url = '/m/' + encodeURIComponent(event.id);
+        }
+
+        jQuery('[about="' + event.id + '"] a').attr('href', event.url);
     });
     
 
