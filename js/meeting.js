@@ -15,9 +15,16 @@ jQuery(document).ready(function() {
     });
     
     var eventId = jQuery('body').attr('about');
-    console.log('### eventId: ' + eventId);
+    console.log('#1 eventId: ' + eventId);
+    console.log('agenda', jQuery('[property="mgd\\:agenda"]'));
+
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
     console.log(taskCollection);
+    
+    
+    if (jQuery('property="mgd\\:agenda"').text()) {
+        var text = 'Write the meeting agenda here.';
+    }
 
     taskCollection.bind('add', function(event, task_list, options) {
         if (!options.fromServer) {
