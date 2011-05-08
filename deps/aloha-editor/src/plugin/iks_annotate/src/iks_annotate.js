@@ -83,10 +83,10 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
     
     this.iks_annotateField = new GENTICS.Aloha.ui.AttributeField({
     	'width':320,
-    	'valueField': 'url'
+    	'valueField': 'url',
+    	'displayField': 'name'
     });
-    this.iks_annotateField.setTemplate('<span><b>{url}</b></span>');
-    //this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
+    this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
     this.iks_annotateField.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
 
     // add the input field for iks_annotate
@@ -97,31 +97,6 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
         1
     );
 
-    /*this.browser = new GENTICS.Aloha.ui.Browser();
-    this.browser.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
-    this.browser.onSelect = function( item ) {
-    	// set href Value
-    	that.iks_annotateField.setItem( item );
-		// call hrefChange
-    	//that.hrefChange();
-    };
-    this.repositoryButton = new GENTICS.Aloha.ui.Button({
-        'iconClass' : 'GENTICS_button_big GENTICS_button_tree',
-        'size' : 'large',
-        'onclick' : function () {
-			that.browser.show();
-		},
-        'tooltip' : this.i18n('button.addlink.tooltip'),
-        'toggle' : false
-    });
-
-    // COMMENT IN AND TEST THE BROWSER
-    GENTICS.Aloha.FloatingMenu.addButton(
-        this.getUID('iks_annotate'),
-        this.repositoryButton,
-        this.i18n('floatingmenu.tab.iks_annotate'),
-        1
-    );*/
 };
 
 /**
@@ -297,7 +272,7 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
     if ( range.isCollapsed() ) {
         // insert a abbr with text here
         var iks_annotateText = this.i18n('newiks_annotate.defaulttext');
-        var newIksAnnotate = jQuery('<span title="a">' + iks_annotateText + '</span>');
+        var newIksAnnotate = jQuery('<span>' + iks_annotateText + '</span>');
         GENTICS.Utils.Dom.insertIntoDOM(newIksAnnotate, range, jQuery(GENTICS.Aloha.activeEditable.obj));
         range.startContainer = range.endContainer = newIksAnnotate.contents().get(0);
         range.startOffset = 0;
@@ -310,7 +285,7 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
 		    'about': '',
 		    'typeof': 'foaf:Person',
 		    'property': 'foaf:name',
-		    'style': ''
+		    'class': 'annotation_person'
 		});
         GENTICS.Utils.Dom.addMarkup(range, newIksAnnotate, false);
     }
@@ -347,7 +322,7 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 	if (this.target !== '') {
 		this.iks_annotateField.setAttribute('about', this.target, this.targetregex, this.iks_annotateField.getQueryValue());
 	}
-	this.iks_annotateField.setAttribute('class', this.cssclass, this.cssclassregex, this.iks_annotateField.getQueryValue());
+	//this.iks_annotateField.setAttribute('class', this.cssclass, this.cssclassregex, this.iks_annotateField.getQueryValue());
 	if ( typeof this.onHrefChange == 'function' ) {
 		this.onHrefChange.call(this, this.iks_annotateField.getTargetObject(),  this.iks_annotateField.getQueryValue(), this.iks_annotateField.getItem() )
 	}

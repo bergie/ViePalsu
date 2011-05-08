@@ -29,7 +29,6 @@
 	<head>
         <title>Palsu App</title>
         
-        <link rel="stylesheet" href="/styles/palsu.css" />
         <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
         <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css">
@@ -48,30 +47,33 @@
 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
 
-		<!-- VIE^2 -->
+		<!-- VIE^2 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
-		
+		-->
 		
 		<!-- Connector plug-ins 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
-		-->
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
 		
-		<!-- Mapping plug-ins -->
+		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
+		-->
+		<!-- Mapping plug-ins 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
+        -->
         
-        <!-- -->
+        <!-- 
 		<script src="/js/palsu.js" type="text/javascript"></script>
-		
+		-->
         <script src="/js/meeting.js" type="text/javascript"></script>
+
+        <link rel="stylesheet" href="/styles/palsu.css" />
 
     </head>
     
@@ -134,16 +136,14 @@
             </div>
             
             <h2><a href="#">Tasks</a></h2>
-            <div>
                 <div>
                     <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
                         <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
-                            <i><span property="foaf:name">Agent</span></i> has to implement
-                            <br /><span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
+                            <i><span property="foaf:name">Agent</span></i>: <span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
                         </li>
                     </ul>
-                </div>
-
+                
+                <!--
                 <br />
                 <br />
 
@@ -162,7 +162,7 @@
                 <br />
                 <input id="taskadd" type="button" value="Add Task" />
                 <br />
-
+                -->
             </div>
             
             <h2><a href="#">Mentions</a></h2>
