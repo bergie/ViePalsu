@@ -148,8 +148,9 @@ server.get '/oauth-signin', (request,response) ->
 
         if request.isAuthenticated() and provider == 'twitter'
             console.log 'is twitter'
+            # get user data
             jsonUrl = "https://api.twitter.com/1/users/show.json?screen_name="+request.session.auth.user.username
-
+            
             ProxyRequest {uri:jsonUrl}, (error, ProxyResponse, body) ->
                 if !error and ProxyResponse.statusCode == 200
                     userData = JSON.parse(body)
@@ -161,6 +162,10 @@ server.get '/oauth-signin', (request,response) ->
                 else
                     console.log 'redirect to dashboard'
                     return response.redirect '/m'
+
+            # get friends data
+            #jsonUrl = "https://api.twitter.com/1/friends/ids.json?user_id="+request.session.auth.user.id
+            # return data: user id array -- [14871683,6125262,2187,936891,22187510,...]
 
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
@@ -181,7 +186,7 @@ server.get '/signout', (request, response) ->
     updateUserSession request, userData
 
     request.session.destroy();
-    response.redirect '/about'
+    response.redirect '/'
 
 server.get '/t', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
@@ -348,7 +353,7 @@ server.get "/m/:id", (request, response) ->
 # Proxy VIE-2 cross-site requests
 #server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
-
+    
     proxiedRequest =
         method: requestData.verb or "GET"
         uri: requestData.proxy_url
@@ -368,7 +373,7 @@ server.post '/proxy', (request, response) ->
         return response.send body
 
 ###
-server.all '/proxy', (request, response) ->
+server.get '/proxy', (request, response) ->
     if request.param("proxy_url")
         url = unescape request.param("proxy_url")
         ProxyRequest {uri:url}, (error, ProxyResponse, body) ->

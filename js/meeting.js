@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
     var participants = jQuery(".persons li");
     var values = [];
     var options = $("#rdfcal_hasAgent");
-
+    
     participants.each(function() {
         values.push([{'v': this.attributes[2].nodeValue, 'n': this.textContent}]);
     });

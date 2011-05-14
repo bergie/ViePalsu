@@ -159,6 +159,17 @@ Ext.ux.AlohaAttributeField = Ext.extend(Ext.form.ComboBox, {
 	getItem: function( ) {
 		return this.resourceItem;
 	},
+	cleanItem: function() {
+	    this.resourceItem = null;
+	    return this.resourceItem;
+	},
+	// @palsu
+	setText: function (text) {
+	    if ( this.targetObject) {
+	        jQuery(this.targetObject).text(text);
+        }
+	},
+	
 	// Private hack to allow attribute setting by regex
 	setAttribute: function (attr, value, regex, reference) {
 		if ( this.targetObject) {
@@ -332,6 +343,19 @@ GENTICS.Aloha.ui.AttributeField = GENTICS.Aloha.ui.Button.extend({
 			if (this.extButton) {
 				this.extButton.setAttribute(attr, value, regex, reference);
 			}
+	},
+
+	// @palsu
+	setText: function (text) {
+        if (this.extButton) {
+            this.extButton.setText(text);
+        }
+	},
+	
+	cleanItem: function () {
+        if (this.extButton) {
+            this.extButton.cleanItem();
+        }
 	},
 
 	/**

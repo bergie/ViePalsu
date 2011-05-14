@@ -31,28 +31,30 @@
 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
 
-		<!-- VIE^2 -->
+		<!-- VIE^2 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
-		
+		-->
 		
 		<!-- Connector plug-ins 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
-		-->
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
+		-->
 		
-		<!-- Mapping plug-ins -->
+		<!-- Mapping plug-ins 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
+        -->
         
-        <!-- -->
+        <!-- 
 		<script src="/js/palsu.js" type="text/javascript"></script>
+		-->
 		
         <script src="/js/meeting.js" type="text/javascript"></script>
 
@@ -146,7 +148,7 @@
                 -->
             </div>
             
-            <h2><a href="#">Participants</a></h2>
+            <h2><a href="#">Mentions</a></h2>
             <div>
                 <ul class="mentions"></ul>
             </div>
@@ -160,11 +162,17 @@
 			var
 				$ = window.jQuery,
 				GENTICS = window.GENTICS,
-				$body = $('body');
+				$body = $('body'),
+				friendListData = [];
+				
+                /*friendListData = [
+            	    { name: 'Palsu App', url:'http://palsu.me', type:'foaf:Person' },
+            	    { name: 'IKS Project', url:'http://iks-project.eu', type:'foaf:Person' }
+            	]*/
 	
 			// Customise
 			GENTICS.Aloha.settings = {
-				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': true},
+				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
 				errorhandling : false,
 				"i18n": {
 					// let the system detect the users language
@@ -172,11 +180,12 @@
 					//"acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
 				},
 				"repositories": {
-					"com.gentics.aloha.repositories.LinkList": {
-						data: [
+					"linklist": {
+					    data: friendListData
+						/*data: [
                     	    { name: 'PalsuApp', url:'http://PalsuApp.info', type:'foaf:Person' },
                     	    { name: 'IKS Project', url:'http://iks-project.eu', type:'foaf:Person' }
-						]
+						]*/
 					}
 				},
 				"plugins": {

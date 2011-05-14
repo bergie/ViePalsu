@@ -83,10 +83,10 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
     
     this.iks_annotateField = new GENTICS.Aloha.ui.AttributeField({
     	'width':320,
-    	'valueField': 'url'
+    	'valueField': 'url',
+    	'displayField': 'name'
     });
-    this.iks_annotateField.setTemplate('<span><b>{url}</b></span>');
-    //this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
+    this.iks_annotateField.setTemplate('<span><b>{name}</b><br/>{url}</span>');
     this.iks_annotateField.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
 
     // add the input field for iks_annotate
@@ -96,32 +96,6 @@ eu.iksproject.AnnotationPlugin.createButtons = function () {
         this.i18n('floatingmenu.tab.iks_annotate'),
         1
     );
-
-    /*this.browser = new GENTICS.Aloha.ui.Browser();
-    this.browser.setObjectTypeFilter(eu.iksproject.AnnotationPlugin.objectTypeFilter);
-    this.browser.onSelect = function( item ) {
-    	// set href Value
-    	that.iks_annotateField.setItem( item );
-		// call hrefChange
-    	//that.hrefChange();
-    };
-    this.repositoryButton = new GENTICS.Aloha.ui.Button({
-        'iconClass' : 'GENTICS_button_big GENTICS_button_tree',
-        'size' : 'large',
-        'onclick' : function () {
-			that.browser.show();
-		},
-        'tooltip' : this.i18n('button.addlink.tooltip'),
-        'toggle' : false
-    });
-
-    // COMMENT IN AND TEST THE BROWSER
-    GENTICS.Aloha.FloatingMenu.addButton(
-        this.getUID('iks_annotate'),
-        this.repositoryButton,
-        this.i18n('floatingmenu.tab.iks_annotate'),
-        1
-    );*/
 };
 
 /**
@@ -146,7 +120,7 @@ eu.iksproject.AnnotationPlugin.bindInteractions = function () {
     	    		// could be a link better leave it as it is
     	    	} else {
     	    		// the user searched for something and aborted restore original value
-    //	    		that.iks_annotateField.setValue(that.iks_annotateField.getValue());
+    	    		//that.iks_annotateField.setValue(that.iks_annotateField.getValue());
     	    	}
     	    }
         	that.iks_annotateChange();
@@ -219,8 +193,10 @@ eu.iksproject.AnnotationPlugin.subscribeEvents = function () {
         		that.insertIksAnnotateButton.hide();
         		that.formatIksAnnotateButton.setPressed(true);
         		GENTICS.Aloha.FloatingMenu.setScope(that.getUID('iks_annotate'));
-        		that.iks_annotateField.setTargetObject(foundMarkup, 'about');
-        		//that.iks_annotateField.setTargetObject(that.iks_annotateField.getQueryValue(), 'about');
+        		//that.iks_annotateField.setTargetObject(foundMarkup, 'about');
+        		that.iks_annotateField.setTargetObject(foundMarkup, 'content');
+        		//that.iks_annotateField.setTargetObject(that.iks_annotateField.getQueryValue(), 'content');
+        		//that.iks_annotateField.setTargetObject('asdf', 'about');
         	} else {
         		// no iks_annotate found
         		that.formatIksAnnotateButton.setPressed(false);
@@ -280,9 +256,9 @@ eu.iksproject.AnnotationPlugin.formatIksAnnotate = function () {
 eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
     
     // do not insert a abbr in a abbr
-    //if ( this.findIksAnnotateMarkup( range ) ) {
-    //    return;
-    //}
+    if ( this.findIksAnnotateMarkup( range ) ) {
+        return;
+    }
     
     // activate floating menu tab
     GENTICS.Aloha.FloatingMenu.userActivatedTab = this.i18n('floatingmenu.tab.iks_annotate');
@@ -295,22 +271,24 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
         GENTICS.Utils.Dom.extendToWord(range);
     }
     if ( range.isCollapsed() ) {
-        // insert a abbr with text here
-        var iks_annotateText = this.i18n('newiks_annotate.defaulttext');
-        var newIksAnnotate = jQuery('<span title="a">' + iks_annotateText + '</span>');
+        // insert pseudo text here... or remove
+        /*var iks_annotateText = this.i18n('newiks_annotate.defaulttext');
+        var newIksAnnotate = jQuery('<span>' + iks_annotateText + '</span>');
         GENTICS.Utils.Dom.insertIntoDOM(newIksAnnotate, range, jQuery(GENTICS.Aloha.activeEditable.obj));
         range.startContainer = range.endContainer = newIksAnnotate.contents().get(0);
         range.startOffset = 0;
-        range.endOffset = iks_annotateText.length;
+        range.endOffset = iks_annotateText.length;*/
     } else {
         //var newIksAnnotate = jQuery('<span title="b"></span>');
         var about_hash = PseudoGuid.GetNew();
         var newIksAnnotate = jQuery('<span />').attr({
-            'id': 'rdfa_' + about_hash + '',
+            'id': about_hash,
 		    'about': '',
 		    'typeof': 'foaf:Person',
 		    'property': 'foaf:name',
-		    'style': ''
+		    'class': 'annotation_person',
+		    'style': '',
+		    'content': ''
 		});
         GENTICS.Utils.Dom.addMarkup(range, newIksAnnotate, false);
     }
@@ -341,23 +319,26 @@ eu.iksproject.AnnotationPlugin.removeIksAnnotate = function () {
  * Updates the link object depending on the src field
  */
 eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
-	// For now hard coded attribute handling with regex.
-	// Avoid creating the target attribute, if it's unnecessary, so
-	// that XSS scanners (AntiSamy) don't complain.
-	if (this.target !== '') {
-		this.iks_annotateField.setAttribute('about', this.target, this.targetregex, this.iks_annotateField.getQueryValue());
+    
+	var item = this.iks_annotateField.getItem();
+
+	if (item && item.url && item.name) {
+	    this.iks_annotateField.setAttribute('about', item.url);
+	    this.iks_annotateField.setText(item.name);
+	    // cleanup old resourceItem
+	    this.iks_annotateField.cleanItem();
+	} else {
+	    
 	}
-	this.iks_annotateField.setAttribute('class', this.cssclass, this.cssclassregex, this.iks_annotateField.getQueryValue());
-	if ( typeof this.onHrefChange == 'function' ) {
-		this.onHrefChange.call(this, this.iks_annotateField.getTargetObject(),  this.iks_annotateField.getQueryValue(), this.iks_annotateField.getItem() )
-	}
-	GENTICS.Aloha.EventRegistry.trigger(
+	
+	/*GENTICS.Aloha.EventRegistry.trigger(
 			new GENTICS.Aloha.Event('iks_annotateChange', GENTICS.Aloha, {
 				'obj' : this.iks_annotateField.getTargetObject(),
-				'about': this.iks_annotateField.getQueryValue(), // href
+				'about': this.iks_annotateField.getQueryValue(),
 				'item': this.iks_annotateField.getItem()
 			})
-	);
+	);*/
+	
 };
 
 /**
@@ -369,3 +350,14 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 eu.iksproject.AnnotationPlugin.makeClean = function (obj) {
 // nothing to do...
 };
+
+
+var PseudoGuid = new (function() {
+    this.empty = "RDFa-00000000-0000-0000-0000-000000000000";
+    this.GetNew = function() {
+        var fC = function() {
+                return (((1 + Math.random()) * 0x10000)|0).toString(16).substring(1).toUpperCase();
+        }
+        return ("RDFa-" + fC() + fC() + "-" + fC() + "-" + fC() + "-" + fC() + "-" + fC() + fC() + fC());
+    };
+})();
