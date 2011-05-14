@@ -1,33 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html version="HTML+RDFa 1.1" 
+<html version="HTML+RDFa 1.1"
       lang="en"
-      xml:lang="en"
-      xmlns:dbpedia="http://dbpedia.org/resource/"
-      xmlns:dbprop="http://dbpedia.org/property/"
-      xmlns:dbonto="http://dbpedia.org/ontology/"
-      xmlns:yago="http://dbpedia.org/class/yago/"
-      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-      xmlns:iks="http://www.iks-project.eu/#"
-      xmlns:fise="http://fise.iks-project.eu/ontology/"
-      xmlns:foaf="http://xmlns.com/foaf/0.1/"
-      xmlns:dc="http://purl.org/dc/terms/"
-      xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
-      xmlns:google="http://rdf.data-vocabulary.org/#"
-      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-      xmlns:rdfcal="http://www.w3.org/2002/12/cal#"
-      xmlns:demo="http://demo.palsuapp.info/"
-      xmlns:aair="http://xmlns.notu.be/aair#"
-      xmlns:atom="http://www.w3.org/2005/Atom"
-      xmlns:thr="http://purl.org/syndication/thread/1.0"
-      xmlns:activity="http://activitystrea.ms/spec/1.0/"
-      xmlns:media="http://purl.org/syndication/atommedia"
-      xmlns:pc="http://portablecontacts.net/schema/1.0"
-      xmlns:dcterms="http://purl.org/dc/terms/"
-      xmlns:sioc="http://rdfs.org/sioc/ns#">
-	<head>
-        <title>Palsu App</title>
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:doap="http://usefulinc.com/ns/doap#"
+      xmlns:sioc="http://rdfs.org/sioc/ns#"
+      xmlns:iks = "http://www.iks-project.eu/#"
+      xmlns:fise = "http://fise.iks-project.eu/ontology/"
+      xmlns:foaf = "http://xmlns.com/foaf/0.1/"
+      xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
+  <head>
+        <title>Palsu &mdash; Online meeting tool</title>
         
         <link rel="stylesheet" href="/styles/palsu.css" />
         <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
@@ -86,7 +69,7 @@
               </span>
               <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/m">Meetings</a> &middot; <a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>
+                <nav><a href="/m">Meetings</a> &middot; <a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>
               </p>
             </div>
           </div>
@@ -109,7 +92,7 @@
             </div>
         </div>
         <div id="chat-input">
-            <div></div>
+            <div class="ui-widget-content"></div>
             <button>Send</button>
         </div>
         </article>
@@ -126,28 +109,25 @@
             <h2><a href="#">Participants</a></h2>
             <div>
               <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-                <li about="#" typeof="foaf:Person" property="foaf:name">
+                <li about="#" typeof="foaf:Person" content="0">
                   <span property="foaf:name">Example User</span>
                   <span property="iks:online" content="0"></span>
                 </li>
-                <!-- li about="#" typeof="foaf:Person" property="foaf:name">Example User</li -->
               </ul>
             </div>
             
             <h2><a href="#">Tasks</a></h2>
             <div>
-                <div>
-                    <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
-                        <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
-                            <i><span property="foaf:name">Agent</span></i> has to implement
-                            <br /><span property="rdfcal:name">Task description</span> until <span property="rdfcal:targetDate">yy-mm-dd</span> [<span property="rdfcal:completed">x</span>]
-                        </li>
-                    </ul>
-                </div>
+                <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
+                    <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
+                        <i><span property="foaf:name">Agent</span></i> has to implement
+                        <br /><span property="rdfcal:name">Task description</span> by <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
+                    </li>
+                </ul>
 
+                <!-- 
                 <br />
                 <br />
-
                 <label for="rdfcal_name">Task</label>
                 <input type="text" id="rdfcal_name" name="rdfcal_name" size="77" value="" />
                 <br />
@@ -163,7 +143,7 @@
                 <br />
                 <input id="taskadd" type="button" value="Add Task" />
                 <br />
-
+                -->
             </div>
             
             <h2><a href="#">Participants</a></h2>

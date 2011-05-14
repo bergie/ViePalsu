@@ -40,7 +40,7 @@ header #account {
     right: 1em;
     top: 1em;
     font-size: smaller;
-    width: 200px;
+    width: 300px;
 }
 header #account img {
     float: left;
@@ -49,6 +49,7 @@ header #account img {
 header #account .fullname {
     display: none;
 }
+
 
 article {
     padding-left: 2em;

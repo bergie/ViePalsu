@@ -183,7 +183,7 @@ server.get '/signout', (request, response) ->
     request.session.destroy();
     response.redirect '/about'
 
-server.get '/tasks', (request, response) ->
+server.get '/t', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
     return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data

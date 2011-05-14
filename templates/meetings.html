@@ -1,7 +1,14 @@
-<!DOCTYPE html> 
-<html version="HTML+RDFa 1.1" 
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html version="HTML+RDFa 1.1"
       lang="en"
-      xmlns:doap="http://usefulinc.com/ns/doap#">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:doap="http://usefulinc.com/ns/doap#"
+      xmlns:sioc="http://rdfs.org/sioc/ns#"
+      xmlns:iks = "http://www.iks-project.eu/#"
+      xmlns:fise = "http://fise.iks-project.eu/ontology/"
+      xmlns:foaf = "http://xmlns.com/foaf/0.1/"
+      xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
   <head>
     <title>Palsu &mdash; Online meeting tool</title>
     <link rel="stylesheet" href="/styles/palsu.css" />
@@ -16,14 +23,14 @@
   <body class="meetings">
     <header>
       <div>
-        <h1>Palsu</h1>
+        <h1>Palsu &mdash; Online meeting tool</h1>
         <div id="account" typeof="foaf:Person" about="#user">
           <span class="avatar" rel="foaf:img">
             <img width="40" src="#" alt="User Picture"/>
           </span>
           <p> 
-            Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-            <nav><a href="/tasks">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
+            Hello, <span property="foaf:nick" id="username">username</span><span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
+            <nav><a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
           </p>
         </div>
       </div>
@@ -43,11 +50,12 @@
     <aside>
       <div>
           <h3>Add new Meetings</h3>
+          
           <br />
           <p>Add a new public/private meeting to your agenda.</p>
           <p>Invite your contacts to join a meeting at the meeting page or just tell them the URL of a meeting.</p>
           <br />
-      <form>
+          
           <label><strong>Meeting title</strong><br />
             <input id="newevent" type="text" />
           </label>
@@ -56,7 +64,6 @@
           <label>is a private meeting
             <input id="private" type="checkbox" disabled/>
           </label>
-      </form>
       </div>
     </aside>
     

@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
             return;
         }
         
-        jQuery('[about="' + event.id + '"] > a').attr('href', '/meeting/' + event.id);
+        jQuery('[about="' + event.id + '"] > a').attr('href', event.id);
     });
     
 
