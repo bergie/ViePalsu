@@ -1,40 +1,29 @@
-# required 3rd party libs
 express = require 'express'
 io = require 'socket.io'
 jQuery = require 'jquery'
-_ = require('underscore')._
+_ = require("underscore")._
 Backbone = require 'backbone'
+connect = require 'connect'
+VIE = require '../js/vie.js'
+auth = require 'connect-auth'
 sys = require 'sys'
+require './vie-redis.coffee'
+RedisStore = require 'connect-redis'
+require 'socket.io-connect'
+require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
-ProxyRequest = require 'request'
 browserify = require 'browserify'
+ProxyRequest = require 'request'
 
-# Authentication with LinkedIn oAuth
-connect = require 'connect'
-auth = require 'connect-auth'
-RedisStore = require 'connect-redis'
-require '../js/auth/auth.strategies/linkedin.js'
-
-# VIE and VIE Redis Store
-VIE = require '../js/vie.js'
-require './vie-redis.coffee'
-
-# default configuration
-configFile = 'configuration.json'
-
-# copy default configuration to myapp.local.json and run:
-# $ coffee nodejs/palsu.coffee myapp.local.json
+configFile = "configuration.json"
 if process.argv.length > 2
     configFile = process.argv[2]
+
 cfg = JSON.parse fs.readFileSync "#{process.cwd()}/#{configFile}", "utf-8"
 
-# data store configuration
 session_store = new RedisStore
     maxAge: 24 * 60 * 60 * 1000
-
-
-# helper functions
 
 writeUser = (user, jQuery) ->
     # Write user data
@@ -146,9 +135,9 @@ server.get '/', (request, response) ->
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
 server.get '/oauth-signin', (request,response) ->
+
     provider = request.param('p')
-    # @set default config? cfg.oauth.default_provider
-    if !provider then provider = 'twitter'
+    if !provider then provider = null
     console.log 'provider: ' + provider
 
     if request.isAuthenticated() then return response.redirect '/m'
@@ -192,9 +181,9 @@ server.get '/signout', (request, response) ->
     updateUserSession request, userData
 
     request.session.destroy();
-    response.redirect '/'
+    response.redirect '/about'
 
-server.get '/t', (request, response) ->
+server.get '/tasks', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
     return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
         document = jsdom.jsdom data

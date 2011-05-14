@@ -119,8 +119,7 @@ Ext.ux.AlohaAttributeField = Ext.extend(Ext.form.ComboBox, {
 			if ( target && target.context.style && target.context.style['background-color'] ) {
 				target.attr('data-original-background-color', target.context.style['background-color']);
 			}
-			// @annotation stuff hack
-			//target.css('background-color','Highlight');
+			target.css('background-color','Highlight');
 		},
 		'blur': function(obj, event) {
 		// remove the highlighting and restore original color if was set before
@@ -152,7 +151,6 @@ Ext.ux.AlohaAttributeField = Ext.extend(Ext.form.ComboBox, {
 		// TODO split display field by '.' and get corresponding attribute, because it could be a properties attribute.
 		var v = item[displayField];
 			this.setValue( v );
-			
 		this.setAttribute(this.targetAttribute, item[this.valueField]);
 		// call the repository marker
 		GENTICS.Aloha.RepositoryManager.markObject(this.targetObject, item);

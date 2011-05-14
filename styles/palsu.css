@@ -40,7 +40,7 @@ header #account {
     right: 1em;
     top: 1em;
     font-size: smaller;
-    width: 300px;
+    width: 200px;
 }
 header #account img {
     float: left;
@@ -72,11 +72,7 @@ aside.ui-accordion div {
     height: 40%;
 }
 
-body.welcome aside img {
-    display: block;
-}
-
-body.welcome article, body.meetings article {
+body.welcome article {
     padding-left: 2em;
     float: left;
     width: 25em;
@@ -98,21 +94,11 @@ body.welcome aside {
     border-radius: 8px;
 }
 
-body.meetings aside {
+body.welcome aside img {
     display: block;
-    float: left;
-    width: 350px;
-    height: 200px;
-    padding: 1em;
-    margin-left: 3em;
-    -moz-box-shadow: 3px 3px 4px #babdd6;
-    -webkit-box-shadow: 3px 3px 4px #babdd6;
-    box-shadow: 3px 3px 4px #babdd6;
-    border-radius: 8px;
 }
 
-
-body.welcome footer, body.meetings footer {
+body.welcome footer {
     display: block;
     clear: left;
     padding-top: 6em;
@@ -191,13 +177,13 @@ aside .persons span[property="iks:online"][content="1"] {
 ::-webkit-scrollbar {
     width: 12px;
 }
-
+ 
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 10px;
     border-radius: 8px;
 }
-
+ 
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 8px;
@@ -216,33 +202,4 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_complete_action {
     cursor:pointer;
-}
-
-.annotation_person {
-    background-color: #CCFF99;
-}
-
-.annotation_task {
-    background-color: #99ffff;
-}
-
-#newevent {
-    font-size: 20px;
-}
-
-#eventadd {
-    font-size: 20px;
-}
-
-article li[typeof="rdfcal:Vevent"] {
-    margin: 3px 0 0 0;
-}
-
-#account p {
-    margin: 5px 0 5px 0;
-    font-weight: bold;
-}
-
-#account span[property="foaf:nick"] {
-    font-style: italic;
 }

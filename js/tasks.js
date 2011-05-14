@@ -47,12 +47,7 @@ jQuery(document).ready(function() {
             return;
         }
         
-        event.url = event.id;
-        if (event.id.substr(0, 4) === 'urn:') {
-            event.url = '/m/' + encodeURIComponent(event.id);
-        }
-
-        jQuery('[about="' + event.id + '"] a').attr('href', event.url);
+        jQuery('[about="' + event.id + '"] > a').attr('href', '/meeting/' + event.id);
     });
     
 

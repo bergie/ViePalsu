@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
          new TaskView({id: 'task-' + PseudoGuid.GetNew(), model: t});
     });
     
-    /*var PersonView = Backbone.View.extend({
+    var PersonView = Backbone.View.extend({
         tagName: 'li',
         
         initialize: function() {
@@ -54,7 +54,7 @@ jQuery(document).ready(function() {
             }
           return this;
         }
-    });*/
+    });
     
     var AgentView = Backbone.View.extend({
         

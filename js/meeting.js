@@ -2,12 +2,6 @@ jQuery(document).ready(function() {
     $("#rdfcal_startDate").datepicker({ dateFormat: 'yy-mm-dd' });
     $("#rdfcal_targetDate").datepicker({ dateFormat: 'yy-mm-dd' });
     
-    // remove example participant
-    jQuery('.persons [typeof="foaf\\:Person][about=""]').remove();
-
-    // remove example task
-    jQuery('.tasks [typeof="rdfcal\\:Task][about=""]').remove();
-    
     var participants = jQuery(".persons li");
     var values = [];
     var options = $("#rdfcal_hasAgent");
@@ -21,16 +15,9 @@ jQuery(document).ready(function() {
     });
     
     var eventId = jQuery('body').attr('about');
-    //console.log('#1 eventId: ' + eventId);
-    //console.log('agenda', jQuery('[property="mgd\\:agenda"]'));
-
+    console.log('### eventId: ' + eventId);
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
-    //console.log(taskCollection);
-    
-    
-    if (jQuery('property="mgd\\:agenda"').text()) {
-        var text = 'Write the meeting agenda here.';
-    }
+    console.log(taskCollection);
 
     taskCollection.bind('add', function(event, task_list, options) {
         if (!options.fromServer) {
@@ -44,8 +31,7 @@ jQuery(document).ready(function() {
 
     // Go through the tasks
     taskCollection.forEach(function(task) {
-        //if (typeof task.id !== 'string') {
-        if (task.id.length < 1) {
+        if (typeof task.id !== 'string') {
             taskCollection.remove(task);
             jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove();
             return;
@@ -60,14 +46,6 @@ jQuery(document).ready(function() {
             }
         });
         
-        console.log(jQuery('[about="' + task.id + '"]'));
-        console.log('task', task);
-        console.log('t id', task.id);
-        console.log('completed', task.get('rdfcal:completed'));
-        console.log('rdfcal:hasAgent', task.get('rdfcal:hasAgent'));
-        console.log('rdfcal:name', task.get('rdfcal:name'));
-        console.log('rdfcal:targetDate', task.get('rdfcal:targetDate'));
-        
         // move to function
         if (task.get('rdfcal:completed') == 1 && task.id) {
             jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
@@ -75,7 +53,7 @@ jQuery(document).ready(function() {
             jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
         }
     });
-    
+
     jQuery('#taskadd').click(function() {
         var rdfcal_name = jQuery('#rdfcal_name').attr('value');
         var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
@@ -98,7 +76,7 @@ jQuery(document).ready(function() {
             'rdfcal:name': rdfcal_name,
             'rdfcal:hasAgent': rdfcal_hasAgent,
             'foaf:name': rdfcal_hasAgentName,
-            'rdfcal:startDate': date.toISOString(),
+            'rdfcal:startDate': rdfcal_startDate,
             'rdfcal:targetDate': rdfcal_targetDate,
             'rdfcal:completed': rdfcal_completed,
             'dc:created': date.toISOString()
@@ -112,32 +90,22 @@ jQuery(document).ready(function() {
     });
 
     jQuery('.task_complete_action').click(function() {
-        
-        var uuid = false;
-        
-        if (jQuery(this).attr('about')) {
-            uuid = jQuery(this).attr('about');
+        if (this.attributes[2].nodeValue) {
+            uuid = this.attributes[2].nodeValue;
+        } else {
+            uuid = null;
         }
-        
         console.log('### task complete: ' + uuid);
         
         var data = VIE.EntityManager.getBySubject(uuid);
-        console.log('task data', data);
-        
-        if (!data) {
-            console.log('### ERROR task complete');
-        }
-        
         var complete_status = data.get('rdfcal:completed');
-        console.log('complete_status', complete_status);
+        console.log(complete_status);
         if (complete_status == 1) {
             jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
             data.set({'rdfcal:completed':'0'});
-            console.log('set completed satus to 1');
         } else {
             jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
             data.set({'rdfcal:completed':'1'});
-            console.log('set completed satus to 1');
         }
         data.save();
     });

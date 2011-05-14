@@ -64,7 +64,6 @@ jQuery.fn.between = function(content, offset) {
 jQuery.fn.removeCss = function( cssName ) {
 	return jQuery(this).each(function(){
 		// Prepare
-				
 		var
 			$el = jQuery(this),
 			oldstyle = $el.attr('style'),

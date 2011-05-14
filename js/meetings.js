@@ -1,4 +1,5 @@
 jQuery(document).ready(function() {
+    
     var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
     eventCollection.bind('add', function(event, calendar, options) {
         if (options.fromServer) {
@@ -9,6 +10,7 @@ jQuery(document).ready(function() {
             // Make the link work
             jQuery('[about="' + event.id + '"] a').attr('href', event.id);
         }
+
         event.save();
     });
     
@@ -23,17 +25,13 @@ jQuery(document).ready(function() {
             jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove()
             return;
         }
-                
+
         event.url = event.id;
         if (event.id.substr(0, 4) === 'urn:') {
             event.url = '/m/' + encodeURIComponent(event.id);
         }
-        jQuery('[about="' + event.id + '"] a').attr('href', event.url);
 
-        if (event.attributes['mgd:agenda'] == 'mgd:agenda') {
-            jQuery('[about="' + event.id + '"] div[property="mgd\\:agenda"]').remove();
-            return;
-        }
+        jQuery('[about="' + event.id + '"] a').attr('href', event.url);
     });
 
     jQuery('#eventadd').click(function() {
@@ -43,12 +41,11 @@ jQuery(document).ready(function() {
         }
         var date = new Date();
         eventCollection.add({
-            'mgd:agenda': 'Write your agenda here.',
             'rdfcal:summary': eventTitle,
             'dc:created': date.toISOString(),
             'id': window.location.href + '/' + eventCollection.length
         });
-        console.log('add new event: ' + window.location.href + '/' + eventCollection.length);
         jQuery('#newevent').attr('value', '');
     });
+
 });
