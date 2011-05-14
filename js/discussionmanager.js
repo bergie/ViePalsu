@@ -81,7 +81,7 @@ ViePalsu.DiscussionManager = {
             window.setTimeout(function() {
                 jQuery('[typeof="sioc:Post"]').each(function() {
                     ViePalsu.DiscussionManager.updateDate(this);
-                });	  
+                });
             }, 20);
             
             if (!options.fromServer) {

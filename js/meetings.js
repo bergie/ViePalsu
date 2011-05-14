@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-    var eventCollection = VIE.EntityManager.getBySubject('m').get('rdfcal:has_component');
+    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
     eventCollection.bind('add', function(event, calendar, options) {
         if (options.fromServer) {
             return;
@@ -43,11 +43,12 @@ jQuery(document).ready(function() {
         }
         var date = new Date();
         eventCollection.add({
-            'mgd:agenda': '',
+            'mgd:agenda': 'Write your agenda here.',
             'rdfcal:summary': eventTitle,
             'dc:created': date.toISOString(),
             'id': window.location.href + '/' + eventCollection.length
         });
+        console.log('add new event: ' + window.location.href + '/' + eventCollection.length);
         jQuery('#newevent').attr('value', '');
     });
 });

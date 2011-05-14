@@ -208,7 +208,7 @@ server.get '/t', (request, response) ->
 
         # meeting list
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject 'm'
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
 
         if !calendar
             VIE.cleanup()
@@ -254,7 +254,7 @@ server.get '/m', (request, response) ->
         # Find RDFa entities and load them
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject 'm'
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
 
         if !calendar
             VIE.cleanup()

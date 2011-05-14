@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
     // remove empty todos
     jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
     
-    var eventCollection = VIE.EntityManager.getBySubject('m').get('rdfcal:has_component');
+    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
     console.log(eventCollection);
     
     eventCollection.bind('add', function(event, calendar, options) {

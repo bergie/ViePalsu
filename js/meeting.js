@@ -2,6 +2,12 @@ jQuery(document).ready(function() {
     $("#rdfcal_startDate").datepicker({ dateFormat: 'yy-mm-dd' });
     $("#rdfcal_targetDate").datepicker({ dateFormat: 'yy-mm-dd' });
     
+    // remove example participant
+    jQuery('.persons [typeof="foaf\\:Person][about=""]').remove();
+
+    // remove example task
+    jQuery('.tasks [typeof="rdfcal\\:Task][about=""]').remove();
+    
     var participants = jQuery(".persons li");
     var values = [];
     var options = $("#rdfcal_hasAgent");
@@ -15,11 +21,11 @@ jQuery(document).ready(function() {
     });
     
     var eventId = jQuery('body').attr('about');
-    console.log('#1 eventId: ' + eventId);
-    console.log('agenda', jQuery('[property="mgd\\:agenda"]'));
+    //console.log('#1 eventId: ' + eventId);
+    //console.log('agenda', jQuery('[property="mgd\\:agenda"]'));
 
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
-    console.log(taskCollection);
+    //console.log(taskCollection);
     
     
     if (jQuery('property="mgd\\:agenda"').text()) {
@@ -69,7 +75,7 @@ jQuery(document).ready(function() {
             jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
         }
     });
-
+    
     jQuery('#taskadd').click(function() {
         var rdfcal_name = jQuery('#rdfcal_name').attr('value');
         var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');

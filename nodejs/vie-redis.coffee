@@ -37,7 +37,7 @@ Backbone.sync = (method, model, success, error) ->
         if model instanceof VIE.RDFEntityCollection
             if model.predicate and model.object
                 console.log "Retrieving #{model.predicate} connected to #{model.object}"
-                return redisClient.smembers "#{model.predicate}-#{model.object}", (err, subjects) ->
+                return redisClient.smembers "#{model.predicate} - #{model.object}", (err, subjects) ->
                     if err
                         console.log err
                         return error err
