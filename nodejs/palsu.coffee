@@ -278,8 +278,10 @@ server.get "/m/:id", (request, response) ->
 
         writeUser request.session.auth.user, jQ
 
-        if request.params.id.substr(0, 4) != "urn:"
+        if request.params.id.substr(0, 4) != "urn:" and cfg.port == 80
             # Local identifier, convert to full URI
+            request.params.id = "http://#{cfg.hostname}/m/#{request.params.id}"
+        else if request.params.id.substr(0, 4) != "urn:"
             request.params.id = "http://#{cfg.hostname}:#{cfg.port}/m/#{request.params.id}"
 
         # Write the Meeting identifier into the DOM
