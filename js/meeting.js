@@ -45,18 +45,21 @@ jQuery(document).ready(function() {
                     uuid = jQuery(this).attr('about');
                 }
 
-                console.log('### task complete: ' + uuid);
+                console.log('### task complete 2: ' + uuid);
 
                 var data = VIE.EntityManager.getBySubject(uuid);
                 var complete_status = data.get('rdfcal:completed');
                 console.log(complete_status);
                 if (complete_status == 1) {
-                    jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+                    //jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+                    jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
                     data.set({'rdfcal:completed':'0'});
                 } else {
-                    jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+                    //jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+                    jQuery('[about="' + uuid + '"]').addClass('task_status_completed').removeClass('task_status_active');
                     data.set({'rdfcal:completed':'1'});
                 }
+                
                 data.save();
             });
         }
@@ -144,16 +147,18 @@ jQuery(document).ready(function() {
             uuid = jQuery(this).attr('about');
         }
 
-        console.log('### task complete: ' + uuid);
+        console.log('### task complete 1: ' + uuid);
         
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
         console.log(complete_status);
         if (complete_status == 1) {
-            jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+            //jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+            jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
             data.set({'rdfcal:completed':'0'});
         } else {
-            jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+            //jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+            jQuery('[about="' + uuid + '"]').addClass('task_status_completed').removeClass('task_status_active');
             data.set({'rdfcal:completed':'1'});
         }
         data.save();

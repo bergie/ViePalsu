@@ -1,13 +1,5 @@
 {
-"button.person.tooltip":"Annotate Person",
-"floatingmenu.tab.iks_annotate":"Annotations",
-"floatingmenu.tab.iks_annotate_task":"Annotations",
-"floatingmenu.tab.iks_annotate_label":"IKS Annotate label",
-"floatingmenu.tab.iks_annotate_resource":"IKS Annotate resource",
-"newiks_annotate.defaulttext":"http://palsuapp.info/#username",
-"button.task.tooltip":"Annotate Task",
-"floatingmenu.tab.iks_annotate_task_person":"Annotations",
-"floatingmenu.tab.iks_annotate_task_label":"IKS Annotate label",
-"floatingmenu.tab.iks_annotate_task_resource":"IKS Annotate resource",
-"newiks_annotate_task.defaulttext":"http://palsuapp.info/#task"
+"button.task.tooltip":"Annotate a task",
+"floatingmenu.tab.iks_annotate_task":"Annotate Task",
+"newiks_annotate.defaulttext":"http://palsu.me/#username"
 }

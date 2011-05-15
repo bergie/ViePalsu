@@ -26,8 +26,6 @@ eu.iksproject.AnnotationPlugin.config = ['iks_annotate'];
  */
 eu.iksproject.AnnotationPlugin.objectTypeFilter = ['foaf:Person'];
 
-eu.iksproject.AnnotationPlugin.onHrefChange = null;
-
 
 /**
  * Initialize the plugin

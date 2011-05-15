@@ -38,6 +38,7 @@ jQuery(document).ready(function() {
                 } else {
                     jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
                 }
+                
             });
             
             // move to function
