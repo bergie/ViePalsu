@@ -72,6 +72,7 @@ jQuery(document).ready(function() {
         }
 
         var date = new Date();
+        var urlId = window.location.protocol + "//" + window.location.host + "/t/" + taskCollection.length;
         taskCollection.add({
             'rdfcal:name': rdfcal_name,
             'rdfcal:hasAgent': rdfcal_hasAgent,
@@ -79,10 +80,11 @@ jQuery(document).ready(function() {
             'rdfcal:startDate': rdfcal_startDate,
             'rdfcal:targetDate': rdfcal_targetDate,
             'rdfcal:completed': rdfcal_completed,
-            'dc:created': date.toISOString()
+            'dc:created': date.toISOString(),
+            'id': urlId
         });
 
-        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + '.');
+        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' with id ' + urlId + '.');
 
         jQuery('#rdfcal_name').attr('value', '');
         jQuery('#rdfcal_startDate').attr('value', '');
@@ -90,11 +92,12 @@ jQuery(document).ready(function() {
     });
 
     jQuery('.task_complete_action').click(function() {
-        if (this.attributes[2].nodeValue) {
-            uuid = this.attributes[2].nodeValue;
-        } else {
-            uuid = null;
+        var uuid = false;
+        
+        if (jQuery(this).attr('about')) {
+            uuid = jQuery(this).attr('about');
         }
+
         console.log('### task complete: ' + uuid);
         
         var data = VIE.EntityManager.getBySubject(uuid);

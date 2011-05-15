@@ -268,6 +268,46 @@ server.get '/m', (request, response) ->
     return
 
 
+server.get "/t/:id", (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    console.log "open task: #{request.params.id} - #{request.session.auth.user.username}"
+    return fs.readFile "#{process.cwd()}/templates/task.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+
+        writeUser request.session.auth.user, jQ
+
+        if request.params.id.substr(0, 4) != "urn:" and cfg.port == 80
+            # Local identifier, convert to full URI
+            request.params.id = "http://#{cfg.hostname}/t/#{request.params.id}"
+        else if request.params.id.substr(0, 4) != "urn:"
+            request.params.id = "http://#{cfg.hostname}:#{cfg.port}/t/#{request.params.id}"
+
+        # Write the Task identifier into the DOM
+        jQ('[typeof="rdfcal\\:Task"]').attr('about', request.params.id);
+
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances jQ "*"
+
+        # Clean up VIE internal state and send content out
+        sendContent = (collection, error) ->
+            VIE.cleanup()
+            console.log 'send content'
+            return response.send window.document.innerHTML
+
+        console.log 'fetch task with id', request.params.id
+        # Get the Meeting object
+        calendar = VIE.EntityManager.getBySubject request.params.id
+        calendar.fetch
+            success: (event) ->
+                sendContent event
+                console.log 'success fetch task'
+            error: (event, error) ->
+                VIE.cleanup()
+                return response.send error
+
+
 server.get "/m/:id", (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
     console.log "open meeting: #{request.params.id} - #{request.session.auth.user.username}"
