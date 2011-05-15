@@ -70,7 +70,8 @@ jQuery.fn.removeCss = function( cssName ) {
 			style = jQuery.grep(
 				oldstyle.split(';'),
 				function(curStyleAttr) {
-					if (curStyleAttrName[0]) {
+				    var curStyleAttrName = curStyleAttr;
+					if (curStyleAttrName && curStyleAttrName[0]) {
 						if ( curStyleAttrName[0].toUpperCase().trim().indexOf(cssName.toUpperCase()) == -1) {
 							return curStyleAttr;
 						}

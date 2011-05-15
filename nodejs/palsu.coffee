@@ -163,10 +163,6 @@ server.get '/oauth-signin', (request,response) ->
                     console.log 'redirect to dashboard'
                     return response.redirect '/m'
 
-            # get friends data
-            #jsonUrl = "https://api.twitter.com/1/friends/ids.json?user_id="+request.session.auth.user.id
-            # return data: user id array -- [14871683,6125262,2187,936891,22187510,...]
-
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
             return response.redirect '/m'
@@ -372,7 +368,7 @@ server.post '/proxy', (request, response) ->
         console.log body
         return response.send body
 
-###
+# simple get proxy
 server.get '/proxy', (request, response) ->
     if request.param("proxy_url")
         url = unescape request.param("proxy_url")
@@ -385,7 +381,6 @@ server.get '/proxy', (request, response) ->
         return response.send('Proxy Error: No "proxy_url" param set.')
 
     return
-###
 
 # start server
 server.listen(cfg.port)

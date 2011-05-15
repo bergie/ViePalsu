@@ -103,6 +103,7 @@ ViePalsu.DiscussionManager = {
         });
         
         // Remove placeholder
+        // @todo move to other location -- bug: create new meeting; open it for the first time --> example user is in autosuggest for person annotation
         jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
 
         attendees.bind('add', function(person, attendees, options) {

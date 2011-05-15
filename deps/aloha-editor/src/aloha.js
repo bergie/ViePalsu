@@ -69,13 +69,12 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
     
     // palsu, vie^2, iks annotate, ...
 	includes.push('plugin/iks_annotate/src/iks_annotate.js');
-	//includes.push('plugin/iks_annotate/src/iks_friends_repository.js');
-	//includes.push('plugin/iks_annotate/src/iks_annotate_task.js');
+	includes.push('plugin/iks_annotate/src/iks_friends_repository.js');
+	//includes.push('plugin/iks_annotate_task/src/iks_annotate_task.js');
 	
 	includes.push('plugin/vie/src/vie-repository.js');
-	includes.push('plugin/link/extra/linklist.js')
-	//includes.push('plugin/link/extra/delicious.js')
-	
+	includes.push('plugin/link/extra/linklist.js');
+	//includes.push('plugin/link/extra/delicious.js');
 
 	// Insert Scripts
 	var value, url, scriptEl, appendEl = document.head;
