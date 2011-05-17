@@ -5,8 +5,9 @@ jQuery(document).ready(function() {
     var participants = jQuery(".persons li");
     var values = [];
     var options = $("#rdfcal_hasAgent");
-
+    
     participants.each(function() {
+        // @todo use jquery here 
         values.push([{'v': this.attributes[2].nodeValue, 'n': this.textContent}]);
     });
     
@@ -19,10 +20,51 @@ jQuery(document).ready(function() {
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
     console.log(taskCollection);
 
-    taskCollection.bind('add', function(event, task_list, options) {
-        if (!options.fromServer) {
-            event.save();
+    taskCollection.bind('add', function(task, task_list, options) {
+        if (options.fromServer) {
+            return;
         }
+        console.log('task id after add', task.id);
+        if (task.id) {
+            // Make the link work
+            jQuery('[about="' + task.id + '"] a').attr('href', task.id);
+            
+            // move to function
+            console.log('complete status', task.get('rdfcal:completed'));
+            if (task.get('rdfcal:completed') == 1 && task.id) {
+                jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
+            } else {
+                jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
+            }
+            
+            // move to function
+            jQuery('[about="' + task.id + '"]').click(function() {
+                var uuid = false;
+
+                if (jQuery(this).attr('about')) {
+                    uuid = jQuery(this).attr('about');
+                }
+
+                console.log('### task complete 2: ' + uuid);
+
+                var data = VIE.EntityManager.getBySubject(uuid);
+                var complete_status = data.get('rdfcal:completed');
+                console.log(complete_status);
+                if (complete_status == 1) {
+                    //jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+                    jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
+                    data.set({'rdfcal:completed':'0'});
+                } else {
+                    //jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+                    jQuery('[about="' + uuid + '"]').addClass('task_status_completed').removeClass('task_status_active');
+                    data.set({'rdfcal:completed':'1'});
+                }
+                
+                data.save();
+            });
+        }
+
+        task.save();
     });
 
     taskCollection.comparator = function(item) {
@@ -52,6 +94,11 @@ jQuery(document).ready(function() {
         } else {
             jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
         }
+        
+        if (task.id) {
+            // Make the link work
+            jQuery('[about="' + task.id + '"] a').attr('href', task.id);
+        }
     });
 
     jQuery('#taskadd').click(function() {
@@ -72,6 +119,8 @@ jQuery(document).ready(function() {
         }
 
         var date = new Date();
+        // not working with /t/N -- taskCollection.length is per meeting
+        var urlId = window.location.protocol + "//" + window.location.host + "/t/" + taskCollection.length + location.pathname.replace(/\//g, '');
         taskCollection.add({
             'rdfcal:name': rdfcal_name,
             'rdfcal:hasAgent': rdfcal_hasAgent,
@@ -79,32 +128,37 @@ jQuery(document).ready(function() {
             'rdfcal:startDate': rdfcal_startDate,
             'rdfcal:targetDate': rdfcal_targetDate,
             'rdfcal:completed': rdfcal_completed,
-            'dc:created': date.toISOString()
+            'dc:created': date.toISOString(),
+            'id': urlId
         });
 
-        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + '.');
+        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' with id ' + urlId + '.');
 
         jQuery('#rdfcal_name').attr('value', '');
         jQuery('#rdfcal_startDate').attr('value', '');
         jQuery('#rdfcal_targetDate').attr('value', '');
     });
 
+    // move to function -- see bind add for taskcollection
     jQuery('.task_complete_action').click(function() {
-        if (this.attributes[2].nodeValue) {
-            uuid = this.attributes[2].nodeValue;
-        } else {
-            uuid = null;
+        var uuid = false;
+        
+        if (jQuery(this).attr('about')) {
+            uuid = jQuery(this).attr('about');
         }
-        console.log('### task complete: ' + uuid);
+
+        console.log('### task complete 1: ' + uuid);
         
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
         console.log(complete_status);
         if (complete_status == 1) {
-            jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+            //jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
+            jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
             data.set({'rdfcal:completed':'0'});
         } else {
-            jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+            //jQuery(this).addClass('task_status_completed').removeClass('task_status_active');
+            jQuery('[about="' + uuid + '"]').addClass('task_status_completed').removeClass('task_status_active');
             data.set({'rdfcal:completed':'1'});
         }
         data.save();

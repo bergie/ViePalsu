@@ -4,12 +4,19 @@ jQuery(document).ready(function() {
     jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
     
     var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
-    console.log(eventCollection);
+    console.log('event collection', eventCollection);
     
     eventCollection.bind('add', function(event, calendar, options) {
-        if (!options.fromServer) {
-            event.save();
+        if (options.fromServer) {
+            return;
         }
+
+        if (event.id) {
+            // Make the link work
+            jQuery('[about="' + event.id + '"] a').attr('href', event.id);
+        }
+
+        event.save();
     });
     
     eventCollection.comparator = function(item) {
@@ -31,6 +38,7 @@ jQuery(document).ready(function() {
                 } else {
                     jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
                 }
+                
             });
             
             // move to function
@@ -39,6 +47,19 @@ jQuery(document).ready(function() {
             } else {
                 jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
             }
+
+            /*if (typeof task.id !== 'string') {
+                eventCollection.remove(event);
+                jQuery('[typeof="rdfcal\\:Task][about=""]').remove()
+                return;
+            }
+
+            task.url = task.id;
+            if (task.id.substr(0, 4) === 'urn:') {
+                task.url = '/t/' + encodeURIComponent(task.id);
+            }
+            console.log('task url', task.url);
+            jQuery('[about="' + task.id + '"] a').attr('href', task.url);*/
         });
         
         if (typeof event.id !== 'string') {
@@ -47,15 +68,21 @@ jQuery(document).ready(function() {
             return;
         }
         
-        jQuery('[about="' + event.id + '"] > a').attr('href', '/meeting/' + event.id);
+        event.url = event.id;
+        if (event.id.substr(0, 4) === 'urn:') {
+            event.url = '/m/' + encodeURIComponent(event.id);
+        }
+
+        jQuery('[about="' + event.id + '"] a').attr('href', event.url);
+        
     });
     
 
     jQuery('.task_complete_action').click(function() {
-        if (this.attributes[2].nodeValue) {
-            uuid = this.attributes[2].nodeValue;
-        } else {
-            uuid = null;
+        var uuid = false;
+        
+        if (jQuery(this).attr('about')) {
+            uuid = jQuery(this).attr('about');
         }
         console.log('### task complete: ' + uuid);
         

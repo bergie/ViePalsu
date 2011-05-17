@@ -34,8 +34,7 @@ GENTICS.Aloha.Repositories.vie.query = function(p, callback) {
 	
 	callback.call(that, _.map(entities, function(item) {
         return {
-            //name: item.get(that.settings.labelpredicate),
-            name: item.id,
+            name: item.get(that.settings.labelpredicate),
             url: item.id,
             info: item.get(that.settings.labelpredicate),
             type: that.settings.type

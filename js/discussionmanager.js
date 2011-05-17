@@ -43,11 +43,11 @@ ViePalsu.DiscussionManager = {
             if (ViePalsu.DiscussionManager.chatInput.html() === '') {
                 ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
             } else {
-                $('.message').vie2().vie2('analyze', function (status) {
+                /*$('.message').vie2().vie2('analyze', function (status) {
                     if (status === 'ok') {
                         console.log("Success!");
                     }
-                });
+                });*/
             }
         });
     },
@@ -103,6 +103,7 @@ ViePalsu.DiscussionManager = {
         });
         
         // Remove placeholder
+        // @todo move to other location -- bug: create new meeting; open it for the first time --> example user is in autosuggest for person annotation
         jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
 
         attendees.bind('add', function(person, attendees, options) {
@@ -144,11 +145,11 @@ jQuery(document).ready(function() {
                         // There were changes, save
                         modelInstance.save();
                         //use VIE^2 to analyze the text
-                        $('.message').vie2().vie2('analyze', function (status) {
+                        /*$('.message').vie2().vie2('analyze', function (status) {
                             if (status === 'ok') {
                                 console.log("Success 2!");
                             }
-                        });
+                        });*/
                     }
                 });
             });

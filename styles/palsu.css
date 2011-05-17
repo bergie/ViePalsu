@@ -40,15 +40,15 @@ header #account {
     right: 1em;
     top: 1em;
     font-size: smaller;
-    width: 200px;
+    width: 300px;
 }
 header #account img {
     float: left;
     margin-right: 1em;
 }
 header #account .fullname {
-    display: none;
 }
+
 
 article {
     padding-left: 2em;
@@ -72,7 +72,7 @@ aside.ui-accordion div {
     height: 40%;
 }
 
-body.welcome article {
+body.welcome article, body.meetings article {
     padding-left: 2em;
     float: left;
     width: 25em;
@@ -98,7 +98,20 @@ body.welcome aside img {
     display: block;
 }
 
-body.welcome footer {
+body.meetings aside {
+    display: block;
+    float: left;
+    width: 350px;
+    height: 200px;
+    padding: 1em;
+    margin-left: 3em;
+    -moz-box-shadow: 3px 3px 4px #babdd6;
+    -webkit-box-shadow: 3px 3px 4px #babdd6;
+    box-shadow: 3px 3px 4px #babdd6;
+    border-radius: 8px;
+}
+
+body.welcome footer, body.meetings footer {
     display: block;
     clear: left;
     padding-top: 6em;
@@ -202,4 +215,33 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_complete_action {
     cursor:pointer;
+}
+
+.annotation_person {
+    background-color: #CCFF99;
+}
+
+.annotation_task {
+    background-color: #99ffff;
+}
+
+#newevent {
+    font-size: 20px;
+}
+
+#eventadd {
+    font-size: 20px;
+}
+
+article li[typeof="rdfcal:Vevent"] {
+    margin: 3px 0 0 0;
+}
+
+#account p {
+    margin: 5px 0 5px 0;
+    font-weight: bold;
+}
+
+#account span[property="foaf:nick"] {
+    font-style: italic;
 }

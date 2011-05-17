@@ -77,6 +77,7 @@ jQuery(document).ready(function() {
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
+		// executed 2 times?!
 		console.log(method, json);
 		socket.send(json);
     };
