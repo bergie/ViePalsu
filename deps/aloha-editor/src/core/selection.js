@@ -494,7 +494,6 @@
 			return false;
 		},
 
-
 		/**
 		 * standard method, to compare attributes of one dom obj and one markup obj (jQuery)
 		 * @param domobj domobject to compare with markup
@@ -712,7 +711,6 @@
 
 			return true;
 		},
-
 		/**
 		 * method used to remove/split markup from a "markup2markup" selection
 		 * @param relevantMarkupObjectsAtSelectionStart JS Array of dom objects, which are parents to the rangeObject.startContainer

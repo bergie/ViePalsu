@@ -31,6 +31,9 @@ eu.iksproject.AnnotationTaskPlugin.objectTypeFilter = ['foaf:Person'];
  */
 eu.iksproject.AnnotationTaskPlugin.init = function () {
     
+    // add reference to the create layer object
+	this.createLayer = new eu.iksproject.AnnotationTaskPlugin.CreateLayer();
+		
     this.createButtons();
     this.subscribeEvents();
     this.bindInteractions();
@@ -93,39 +96,23 @@ eu.iksproject.AnnotationTaskPlugin.createButtons = function () {
         this.i18n('floatingmenu.tab.iks_annotate_task'),
         1
     );
-
-    /*    
-    this.removeLinkButton = new GENTICS.Aloha.ui.Button({
+  
+    this.datePickerButton = new GENTICS.Aloha.ui.Button({
         // TODO use another icon here
-        'iconClass' : 'GENTICS_button GENTICS_button_a_remove',
+        'iconClass' : 'GENTICS_button GENTICS_button_datepicker',
         'size' : 'small',
-        'onclick' : function () { this.datepicker({ dateFormat: 'yy-mm-dd' }) },
-        'tooltip' : this.i18n('button.removelink.tooltip')
+        'onclick' : function (element, event) {
+            eu.iksproject.AnnotationTaskPlugin.createDialog(element.btnEl.dom);
+        },
+        'tooltip' : this.i18n('button.datePicker.tooltip'),
     });
     // add a button for removing the currently set link
     GENTICS.Aloha.FloatingMenu.addButton(
         this.getUID('iks_annotate_task'),
-        this.removeLinkButton,
+        this.datePickerButton,
         this.i18n('floatingmenu.tab.iks_annotate_task'),
         1
     );
-    */
-
-    /*this.iks_annotateFieldDate = new GENTICS.Aloha.ui.AttributeField({
-    	'width':320,
-    	'valueField': 'url',
-    	'displayField': 'name'
-    });
-    this.iks_annotateFieldDate.setTemplate('<span><b>{name}</b><br/>{url}</span>');
-    this.iks_annotateFieldDate.setObjectTypeFilter(eu.iksproject.AnnotationTaskPlugin.objectTypeFilter);
-
-    // add the input field for iks_annotate
-    GENTICS.Aloha.FloatingMenu.addButton(
-        this.getUID('iks_annotate_task'),
-        this.iks_annotateFieldDate,
-        this.i18n('floatingmenu.tab.iks_annotate_task'),
-        1
-    );*/
 };
 
 /**
@@ -353,28 +340,36 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
 	var item = this.iks_annotateFieldTask.getItem();
     console.log('lookup item', item);
     
-	if (item && item.url && item.name) {
+    var rdfcal_targetDate = jQuery('#rdfcal_targetDate').val();
+    
+    
+	if (item && item.url && item.name && rdfcal_targetDate) {
 	    /*var rdfcal_name = jQuery('#rdfcal_name').attr('value');
              var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
              var rdfcal_hasAgentName = jQuery('#rdfcal_hasAgent option:selected').text();
              var rdfcal_startDate = jQuery('#rdfcal_startDate').attr('value');
              var rdfcal_targetDate = jQuery('#rdfcal_targetDate').attr('value');
             */
+        var range = GENTICS.Aloha.Selection.getRangeObject();
+        console.log('range', range);
         
-        var foundMarkup = this.findIksAnnotateMarkupTask();
+        var foundMarkup = this.findIksAnnotateMarkupTask(range);
         var date = new Date();
         var date_str = date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear();
         
          var eventId = jQuery('body').attr('about');
          var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
          
-         var rdfcal_name = jQuery(foundMarkup).text();
+         var rdfcal_name = range.startContainer.nodeValue;
+         //var rdfcal_name = jQuery(foundMarkup).text();
          //var rdfcal_name = 'found markup';
          var rdfcal_hasAgent = item.url;
          var rdfcal_hasAgentName = item.name;
          var rdfcal_startDate = date_str;
-         var rdfcal_targetDate = date_str;
+         //var rdfcal_targetDate = date_str;
          var rdfcal_completed = 0;
+
+         console.log('target date', rdfcal_targetDate);
 
          if (!rdfcal_name && !rdfcal_hasAgent) {
              console.log('Error: no rdfcal:name or rdfcal:hasAgent value');
@@ -383,7 +378,7 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
 
          
          var urlId = window.location.protocol + "//" + window.location.host + "/t/" + taskCollection.length + location.pathname.replace(/\//g, '');
-          console.log('annotateFieldTask', this.iks_annotateFieldTask);
+          //console.log('annotateFieldTask', this.iks_annotateFieldTask);
   	    // write task data
   	    this.iks_annotateFieldTask.setAttribute('about', urlId);
   	    this.iks_annotateFieldTask.setAttribute('style', '');
@@ -404,6 +399,9 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
 	    
 	    // cleanup old resourceItem
 	    this.iks_annotateFieldTask.cleanItem();
+	    
+	    // reset date
+	    jQuery('#rdfcal_targetDate').val('');
 	} else {
 	    
 	}
@@ -438,3 +436,202 @@ var PseudoGuid = new (function() {
         return ("RDFa-" + fC() + fC() + "-" + fC() + "-" + fC() + "-" + fC() + "-" + fC() + fC() + fC());
     };
 })();
+
+
+// borrowed code from table plugin...
+
+/**
+ * This function adds the createDialog to the calling element
+ *
+ * @param callingElement
+ *            The element, which was clicked. It's needed to set the right
+ *            position to the create-table-dialog.
+ */
+eu.iksproject.AnnotationTaskPlugin.createDialog = function(callingElement) {
+	// set the calling element to the layer the calling element mostly will be
+	// the element which was clicked on it is used to position the createLayer
+	this.createLayer.set('target', callingElement);
+
+	// show the createLayer
+	this.createLayer.show();
+
+};
+
+/**
+ * Dummy initialize of the CreateLayer object
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer = function(){};
+
+/* -- ATTRIBUTES -- */
+/**
+ * Internal configuration of the create-table panel
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.parameters = {
+	elemId: 'GENTICS_Aloha_Datepicker_createLayer', // id of the create-table panel
+	className: 'GENTICS_Datepicker_Createdialog',   // class-name of the create-table panel
+	numX: 10,	         // Number of cols in the create-layer
+	numY: 10,            // Number of rows in the create-layer vertically
+	layer: undefined,    // Attribute holding the create-layer
+	target: undefined    // the clicktarget which was clicked on (mostly the button of the floatingmenu)
+};
+
+/**
+ * The configuration-object for the implementer of the plugin. All keys of
+ * the "parameters" object could be overwritten within this object and will
+ * simply be used instead.
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.config = new Object();
+
+/**
+ * Flag wether the CreateLayer is currently visble or not
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.visible = false;
+/* -- END ATTRIBUTES -- */
+
+
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.create = function () {
+	var that = this;
+	var layer = jQuery('<div>Date: </div>');
+	layer.id = this.get('elemId');
+	layer.addClass(this.get('className'));
+    
+    //var $dp = $("<input id='datepicker_value' type='text' />").hide().datepicker().appendTo('body');
+    var $dp = $("<input id='rdfcal_targetDate' type='text' />").datepicker({ dateFormat: 'dd/mm/yy' });
+    
+    /*$("a").button().click(function(e) {
+        if ($dp.datepicker('widget').is(':hidden')) {
+            $dp.datepicker("show").datepicker("widget").show().position({
+                my: "left top",
+                at: "right top",
+                of: this
+            });
+        } else {
+            $dp.hide();
+        }
+
+        e.preventDefault();
+    });*/
+    
+	//var table = jQuery('<p>hello</p>');
+	//layer.append(table);
+	layer.append($dp);
+
+	// set attributes
+	this.set('layer', layer);
+	this.setPosition();
+
+	// stop bubbling the click on the create-dialog up to the body event
+	layer.bind('click', function(e) {
+		e.stopPropagation();
+	}).mousedown(function(e) {
+		e.stopPropagation();
+	});
+	
+	layer.bind('click', function(e) {
+        if ($dp.datepicker('widget').is(':hidden')) {
+            $dp.datepicker("show").datepicker("widget").show().position({
+                my: "left top",
+                at: "right top",
+                of: this
+            });
+        } /*else {
+            $dp.hide();
+        }*/
+
+        e.preventDefault();
+    });
+
+	// append layer to body and
+	// hide the create layer if user clicks anywhere in the body
+    jQuery('body').append(layer).bind('click', function(e) {
+		if (e.target != that.get('target') && that.visible) {
+			that.hide();
+			eu.iksproject.AnnotationTaskPlugin.iks_annotateChange();
+		}
+	});
+};
+
+/**
+ * Sets the "left" and "top" style-attributes according to the clicked target-button
+ *
+ *  @return void
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.setPosition = function() {
+	var targetObj = jQuery(this.get('target'));
+	var pos = targetObj.offset();
+	this.get('layer').css('left', pos.left + 'px');
+	this.get('layer').css('top', (pos.top + targetObj.height()) + 'px');
+};
+
+
+/**
+ * This function checks if there is an create-table-layer. If no layer exists, it creates one and puts it into the configuration.
+ * If the layer was already created it sets the position of the panel and shows it.
+ *
+ * @return void
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.show = function(){
+	var layer = this.get('layer');
+
+	// create the panel if the layer doesn't exist
+	if (layer == null) {
+		this.create();
+	}else {
+		// or reposition, cleanup and show the layer
+		this.setPosition(layer);
+		layer.show();
+	}
+	this.visible = true;
+};
+
+/**
+ * Hides the create-table panel width the jQuery-method hide()
+ *
+ * @see jQuery().hide()
+ * @return void
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.hide = function() {
+	this.get('layer').hide();
+	this.visible = false;
+};
+
+/**
+ * The "get"-method returns the value of the given key. First it searches in the
+ * config for the property. If there is no property with the given name in the
+ * "config"-object it returns the entry associated with in the parameters-object
+ *
+ * @param property
+ * @return void
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.get = function(property) {
+	// return param from the config
+	if (this.config[property]) {
+		return this.config[property];
+	}
+	// if config-param was not found return param from the parameters-object
+	if (this.parameters[property]) {
+		return this.parameters[property];
+	}
+	return undefined;
+};
+
+/**
+ * The "set"-method takes a key and a value. It checks if there is a key-value
+ * pair in the config-object. If so it saves the data in the config-object. If
+ * not it saves the data in the parameters-object.
+ *
+ * @param key
+ *            the key which should be set
+ * @param value
+ *            the value which should be set for the associated key
+ */
+eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.set = function (key, value) {
+	// if the key already exists in the config-object, set it to the config-object
+	if (this.config[key]) {
+		this.config[key] = value;
+
+	// otherwise "add" it to the parameters-object
+	}else{
+		this.parameters[key] = value;
+	}
+};

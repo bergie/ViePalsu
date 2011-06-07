@@ -9,7 +9,7 @@ auth = require 'connect-auth'
 sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
-require 'socket.io-connect'
+#require 'socket.io-connect'
 require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
@@ -145,6 +145,7 @@ server.get '/oauth-signin', (request,response) ->
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
         console.log 'auth: ' + authenticated
+        console.log request.session.auth
 
         if request.isAuthenticated() and provider == 'twitter'
             console.log 'is twitter'
@@ -296,8 +297,9 @@ server.get "/t/:id", (request, response) ->
             console.log 'send content'
             return response.send window.document.innerHTML
 
-        console.log 'fetch task with id', request.params.id
         # Get the Meeting object
+        console.log 'fetch task with id', request.params.id
+
         calendar = VIE.EntityManager.getBySubject request.params.id
         calendar.fetch
             success: (event) ->

@@ -321,7 +321,11 @@ button.GENTICS_button_addPerson {
 }
 
 button.GENTICS_button_addEvent {
-	background-position: -208px 0 !important;
+	background: url('/static/icons/time_add.png') no-repeat !important;
+}
+
+button.GENTICS_button_datepicker {
+	background: url('/static/icons/date.png') no-repeat !important;
 }
 
 button.GENTICS_button_abbr {

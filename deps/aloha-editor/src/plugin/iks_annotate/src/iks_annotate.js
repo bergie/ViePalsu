@@ -220,12 +220,22 @@ eu.iksproject.AnnotationPlugin.findIksAnnotateMarkup = function ( range ) {
 	if ( typeof range == 'undefined' ) {
         var range = GENTICS.Aloha.Selection.getRangeObject();   
     }
+    
+    /*
+    console.log('range:', range);
+    if (GENTICS.Aloha.Selection.standardTextLevelSemanticsComparator(range, jQuery('<span typeof="foaf:Person"></span>'))) {
+        console.log('found markup');
+    } else {
+        console.log('markup not found');
+    }
+    */
+    
 	if ( GENTICS.Aloha.activeEditable ) {
 	    return range.findMarkup(function() {
 	        return this.nodeName.toLowerCase() == 'span';
 	    }, GENTICS.Aloha.activeEditable.obj);
 	} else {
-		return null;
+	    return null;
 	}
 };
 

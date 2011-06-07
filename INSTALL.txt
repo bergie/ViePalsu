@@ -1,0 +1,18 @@
+install npm modules:
+express, socket.io, underscore, backbone, connect, connect-auth, connect-redis, jsdom, browserify, request, jquery
+
+install redis-server
+
+install Palsu
+git clone git://github.com/bergie/ViePalsu.git
+
+cd ViePalsu
+create config file
+
+start redis
+coffee nodejs/palsu.coffee configfile.json
+
+
+===
+Authentication via Twitter API
+--> 

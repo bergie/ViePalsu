@@ -15,6 +15,7 @@ document.write('<script type="text/javascript" src="/js/vie-aloha.js"></script>'
 // And we need Socket.IO
 document.write('<script type="text/javascript" src="/socket.io/socket.io.js"></script>');
 
+/*
 var dateComparator = function(item, collection) {
     var itemIndex = 0;
     var itemDate = item.get('dc:created');
@@ -33,6 +34,7 @@ var dateComparator = function(item, collection) {
     });
     return itemIndex;
 };
+*/
 
 jQuery(document).ready(function() {
 
@@ -42,7 +44,8 @@ jQuery(document).ready(function() {
         socket.send(jQuery('#account').attr('about'));
     });
     socket.connect();
-    socket.on('message', function(data){
+    
+    /*socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
             console.log("Got", data);
@@ -72,8 +75,9 @@ jQuery(document).ready(function() {
                 }
             });
         });
-    });
+    });*/
 
+    
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
@@ -82,5 +86,5 @@ jQuery(document).ready(function() {
 		socket.send(json);
     };
 
-    VIE.RDFaEntities.getInstances();
+    //VIE.RDFaEntities.getInstances();
 });
