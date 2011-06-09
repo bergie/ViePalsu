@@ -121,39 +121,24 @@
             <h2><a href="#">Tasks</a></h2>
             <div>
                 <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
-                    <li class="task_complete_action task_status_active" about="" typeof="rdfcal:Task">
+                    <li about="" typeof="rdfcal:Task">
+                        <span class="task_complete_action">
                         <i><span property="foaf:name">Agent</span></i>:
                         <br /><span property="rdfcal:name">Task description</span> by <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
-                        
-                        <a href="">Edit</a>
+                        </span>
+                        <a class="small_action" href="">Edit</a>
                     </li>
                     
                 </ul>
-
-                <!-- 
-                <br />
-                <br />
-                <label for="rdfcal_name">Task</label>
-                <input type="text" id="rdfcal_name" name="rdfcal_name" size="77" value="" />
-                <br />
-                <label for="rdfcal_hasAgent">For</label>
-                <select id="rdfcal_hasAgent" name="rdfcal_hasAgent"></select>
-
-                <label for="rdfcal_startDate">Start Date</label>
-                <input type="text" id="rdfcal_startDate" name="rdfcal_startDate" value="" size="11"  />
-
-                <label for="rdfcal_targetDate">Target Date</label>
-                <input type="text" id="rdfcal_targetDate" name="rdfcal_targetDate" value="" size="11"  />
-                <br />
-                <br />
-                <input id="taskadd" type="button" value="Add Task" />
-                <br />
-                -->
             </div>
             
             <h2><a href="#">Mentions</a></h2>
             <div>
-                <ul class="mentions"></ul>
+                <ul class="mentions" rel="rdfcal:hasMention" rev="rdfcal:mentionOf">
+                    <li about="" typeof="rdfcal:Mention">
+                        <span property="foaf:name">Agent</span>
+                    </li>
+                </ul>
             </div>
         </aside>
 

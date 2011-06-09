@@ -53,6 +53,7 @@ jQuery(document).ready(function() {
             'sioc:has_container': 'sioc:container_of',
             'rdfcal:attendeeOf': 'rdfcal:attendee',
             'rdfcal:taskOf': 'rdfcal:hasTask',
+            'rdfcal:mentionOf': 'rdfcal:hasMention',
             'rdfcal:component': 'rdfcal:has_component'
         };
         

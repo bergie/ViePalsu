@@ -344,7 +344,7 @@ server.get "/m/:id", (request, response) ->
 
         # Query for posts for this event
         # @todo callbacks as array or something like that...
-        getPosts = (event, callback, callback2) ->
+        getPosts = (event, callback, callback2, callback3) ->
             #console.log event
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
@@ -355,11 +355,13 @@ server.get "/m/:id", (request, response) ->
                 success: (collection) ->
                     callback event
                     callback2 event
+                    callback3 event
                 error:  (collection, error) ->
                     #console.log collection
                     #console.log error
                     callback event
                     callback2 event
+                    callback3 event
 
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
@@ -380,11 +382,25 @@ server.get "/m/:id", (request, response) ->
                 error: sendContent2
                 #error: console.log task_list
 
+        getMentions = (event) ->
+            mention_list = event.get "rdfcal:hasMention"
+            #console.log '### mentions list'
+            #console.log mention_list
+
+            mention_list.predicate = "rdfcal:mentionOf"
+            mention_list.object = event.id
+            return mention_list.fetch
+                success: sendContent2
+                error: sendContent2
+                #error: console.log task_list
+
+
+
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.id
         calendar.fetch
             success: (event) ->
-                getPosts event, getTasks, getParticipants
+                getPosts event, getTasks, getMentions, getParticipants
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error

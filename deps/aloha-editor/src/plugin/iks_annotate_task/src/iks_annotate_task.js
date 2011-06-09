@@ -306,7 +306,6 @@ eu.iksproject.AnnotationTaskPlugin.insertIksAnnotate = function ( extendToWord )
 		    'content': ''
 		});
 		
-		
         GENTICS.Utils.Dom.addMarkup(range, newIksAnnotate, false);
     }
     range.select();
@@ -342,7 +341,6 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
     
     var rdfcal_targetDate = jQuery('#rdfcal_targetDate').val();
     
-    
 	if (item && item.url && item.name && rdfcal_targetDate) {
 	    /*var rdfcal_name = jQuery('#rdfcal_name').attr('value');
              var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
@@ -351,9 +349,10 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
              var rdfcal_targetDate = jQuery('#rdfcal_targetDate').attr('value');
             */
         var range = GENTICS.Aloha.Selection.getRangeObject();
-        console.log('range', range);
         
-        var foundMarkup = this.findIksAnnotateMarkupTask(range);
+        //console.log('range', range);
+        
+        //var foundMarkup = this.findIksAnnotateMarkupTask(range);
         var date = new Date();
         var date_str = date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear();
         
@@ -369,15 +368,17 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
          //var rdfcal_targetDate = date_str;
          var rdfcal_completed = 0;
 
-         console.log('target date', rdfcal_targetDate);
+         console.log('set target date', rdfcal_targetDate);
 
          if (!rdfcal_name && !rdfcal_hasAgent) {
              console.log('Error: no rdfcal:name or rdfcal:hasAgent value');
              return;
          }
-
          
          var urlId = window.location.protocol + "//" + window.location.host + "/t/" + taskCollection.length + location.pathname.replace(/\//g, '');
+         
+         //console.log('url ID', urlId);
+         
           //console.log('annotateFieldTask', this.iks_annotateFieldTask);
   	    // write task data
   	    this.iks_annotateFieldTask.setAttribute('about', urlId);
@@ -395,13 +396,13 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
          });
 
 
-         console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' and ID ' + urlId);
+         console.log('iks annotate OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' and ID ' + urlId);
 	    
 	    // cleanup old resourceItem
 	    this.iks_annotateFieldTask.cleanItem();
 	    
 	    // reset date
-	    jQuery('#rdfcal_targetDate').val('');
+	    //jQuery('#rdfcal_targetDate').val('');
 	} else {
 	    
 	}
@@ -491,7 +492,7 @@ eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.visible = false;
 
 eu.iksproject.AnnotationTaskPlugin.CreateLayer.prototype.create = function () {
 	var that = this;
-	var layer = jQuery('<div>Date: </div>');
+	var layer = jQuery('<div>Target date: </div>');
 	layer.id = this.get('elemId');
 	layer.addClass(this.get('className'));
     

@@ -1,3 +1,13 @@
 span[typeof="foaf:Person"] {
 	background-color: yellow;
 }
+
+.GENTICS_Datepicker_Createdialog {
+	z-index: 99999;
+	position: absolute;
+	background-color: #F0F0F0;
+	border: 1px solid #cccccc;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+}

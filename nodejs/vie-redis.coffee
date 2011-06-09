@@ -19,7 +19,8 @@ Backbone.sync = (method, model, success, error) ->
             # Generate UUID as the URI of the object
             model.id = "urn:uuid:#{toUUID()}"
             console.log "Anonymous entity, saving with URI #{model.id}"
-
+        
+        #console.log "backbone update debug", model.toJSONLD()
         for predicate, object of model.toJSONLD()
             if predicate is "@"
                 continue

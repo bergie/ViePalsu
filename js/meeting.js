@@ -18,19 +18,23 @@ jQuery(document).ready(function() {
     var eventId = jQuery('body').attr('about');
     console.log('### eventId: ' + eventId);
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
-    console.log(taskCollection);
+    console.log('taskCollection', taskCollection);
+    var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
+    console.log('mentionCollection', mentionCollection);
 
+    // task added via aloha
     taskCollection.bind('add', function(task, task_list, options) {
         if (options.fromServer) {
             return;
         }
         console.log('task id after add', task.id);
+        console.log('task data', task);
         if (task.id) {
             // Make the link work
             jQuery('[about="' + task.id + '"] a').attr('href', task.id);
             
             // move to function
-            console.log('complete status', task.get('rdfcal:completed'));
+            console.log('### complete status', task.get('rdfcal:completed'));
             if (task.get('rdfcal:completed') == 1 && task.id) {
                 jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
             } else {
@@ -75,7 +79,8 @@ jQuery(document).ready(function() {
     taskCollection.forEach(function(task) {
         if (typeof task.id !== 'string') {
             taskCollection.remove(task);
-            jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove();
+            //jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove();
+            jQuery('[typeof="rdfcal\\:Mention][about=""]').remove();
             return;
         }
         
@@ -101,7 +106,18 @@ jQuery(document).ready(function() {
         }
     });
 
-    jQuery('#taskadd').click(function() {
+
+    // Go through the tasks and remove empty template
+    mentionCollection.forEach(function(mention) {
+        if (typeof mention.id !== 'string') {
+            mentionCollection.remove(mention);
+            jQuery('[typeof="rdfcal\\:Mention][about=""]').remove();
+            //return;
+        }
+        
+    });
+    
+    /*jQuery('#taskadd').click(function() {
         var rdfcal_name = jQuery('#rdfcal_name').attr('value');
         var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
         var rdfcal_hasAgentName = jQuery('#rdfcal_hasAgent option:selected').text();
@@ -132,19 +148,20 @@ jQuery(document).ready(function() {
             'id': urlId
         });
 
-        console.log('OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' with id ' + urlId + '.');
+        console.log('meeting.js OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' with id ' + urlId + '.');
 
         jQuery('#rdfcal_name').attr('value', '');
         jQuery('#rdfcal_startDate').attr('value', '');
         jQuery('#rdfcal_targetDate').attr('value', '');
     });
-
+    */
+    
     // move to function -- see bind add for taskcollection
     jQuery('.task_complete_action').click(function() {
         var uuid = false;
         
-        if (jQuery(this).attr('about')) {
-            uuid = jQuery(this).attr('about');
+        if (jQuery(this).parent().attr('about')) {
+            uuid = jQuery(this).parent().attr('about');
         }
 
         console.log('### task complete 1: ' + uuid);
@@ -152,6 +169,8 @@ jQuery(document).ready(function() {
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
         console.log(complete_status);
+        console.log(jQuery('[about="' + uuid + '"]'));
+
         if (complete_status == 1) {
             //jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
             jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');

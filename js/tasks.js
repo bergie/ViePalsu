@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
         
         event.get('rdfcal:hasTask').forEach(function(task) {
             console.log('status task ' + task.get('rdfcal:completed'));
-            console.log('status id ' + task.id);
+            console.log('status id ', task.id);
             
             task.bind('change', function(event, calendar, options) {
                 // move to function

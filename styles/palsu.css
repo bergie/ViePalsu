@@ -205,7 +205,6 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_status_completed {
     color: green;
-    text-decoration:line-through;
     list-style-image: url('/static/icons/tick.png');
 }
 
@@ -215,6 +214,10 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_complete_action {
     cursor:pointer;
+}
+
+.small_action {
+    font-size: small;
 }
 
 .annotation_person {

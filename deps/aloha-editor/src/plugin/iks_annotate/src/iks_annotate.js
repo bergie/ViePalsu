@@ -333,6 +333,25 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 	if (item && item.url && item.name) {
 	    this.iks_annotateField.setAttribute('about', item.url);
 	    this.iks_annotateField.setText(item.name);
+	    
+	    
+	    // add to mentions
+	    var eventId = jQuery('body').attr('about');
+        var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
+        
+        var urlId = window.location.protocol + "//" + window.location.host + "/e/" + mentionCollection.length + location.pathname.replace(/\//g, '');
+        var date = new Date();
+        
+        mentionCollection.add({
+            'rdfcal:hasAgent': item.url,
+            'foaf:name': item.name,
+            'dc:created': date.toISOString(),
+            'id': urlId
+        });
+        
+	    console.log('iks annotate OK: added mention of person ' + item.name + ' with ID ' + urlId);
+        
+	    
 	    // cleanup old resourceItem
 	    this.iks_annotateField.cleanItem();
 	} else {
