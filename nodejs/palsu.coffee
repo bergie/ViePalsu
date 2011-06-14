@@ -10,7 +10,7 @@ sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
 #require 'socket.io-connect'
-require '../js/auth/auth.strategies/linkedin.js'
+#require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
 browserify = require 'browserify'
@@ -232,6 +232,57 @@ server.get '/t', (request, response) ->
 
         return response.send window.document.innerHTML
 
+
+server.get '/t/my', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+
+        writeUser request.session.auth.user, jQ
+
+        # Find RDFa entities and load them
+        VIE.RDFaEntities.getInstances jQ "*"
+
+        # meeting list
+        # Get the Calendar object
+        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
+
+        if !calendar
+            VIE.cleanup()
+            # todo return error message
+            console.error "Error: loading calendar for task list"
+            return response.send window.document.innerHTML
+
+        # Query for events that have the calendar as component
+        events = calendar.get 'rdfcal:has_component'
+        events.predicate = 'rdfcal:component'
+        events.object = calendar.id
+        events.comparator = (item) ->
+            return dateComparator item, events
+        return events.fetch
+            success: (eventCollection) ->
+                fetched = 0
+
+                eventCollection.each (event) ->
+                    console.log 'loop eventCollection', eventCollection.length
+                    fetchTasksForEvent event, ->
+                        fetched++
+                        if fetched is eventCollection.length
+                            # Send stuff
+                            VIE.cleanup()
+                            return response.send window.document.innerHTML
+
+            error: (collection, error) ->
+                VIE.cleanup()
+                return response.send window.document.innerHTML
+
+        return response.send window.document.innerHTML
+
+
+
+
 # Serve the list of meetings for /
 server.get '/m', (request, response) ->
     if !request.isAuthenticated() then return response.redirect '/'
@@ -410,22 +461,43 @@ server.get "/m/:id", (request, response) ->
 #server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
     
+    #console.log 'req', request
+    #console.log 'resp', response
+    requestData = request
+    
+    if !requestData.proxy_url
+        #requestData.proxy_url = 'http://evo42.local:8001/proxy';
+        requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+    
+    if !requestData.content
+        requestData.content = "George Walker Bush (born July 6, 1946) is an American politician who served as the 43rd President of the United States from 2001 to 2009. Before that he was the 46th Governor of Texas, serving from 1995 to 2000."
+    
+    if !requestData.verb
+        requestData.verb = "POST"
+    
+    if !requestData.format
+        requestData.format = "text/plain"
+    
     proxiedRequest =
-        method: requestData.verb or "GET"
+        #method: requestData.verb or "GET"
+        method: "POST"
         uri: requestData.proxy_url
-        data: requestData.content
+        body: requestData.content
         headers:
             "Accept": requestData.format or "text/plain"
 
     return req = ProxyRequest
-        method: requestData.verb or "GET"
+        #method: requestData.verb or "GET"
+        method: "POST"
         uri: requestData.proxy_url
-        data: requestData.content
+        body: requestData.content
         headers:
             "Accept": requestData.format or "text/plain"
     , (error, resp, body) ->
-        console.log proxiedRequest
-        console.log body
+        console.log 'proxiedRequest', proxiedRequest
+        console.log 'proxy body', body
+        console.log 'error', error
+        console.log 'resp', resp
         return response.send body
 
 # simple get proxy

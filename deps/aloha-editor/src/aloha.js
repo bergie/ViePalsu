@@ -76,6 +76,14 @@ window.GENTICS_Aloha_base = window.GENTICS_Aloha_base || false;
 	includes.push('plugin/link/extra/linklist.js');
 	//includes.push('plugin/link/extra/delicious.js');
 
+    // fise annotations plugin
+	includes.push('plugin/annotations/src/annotations.js');
+	includes.push('plugin/annotations/src/lib/annotationservicemanager.js');
+	includes.push('plugin/annotations/src/lib/annotationservice.js');
+	//includes.push('plugin/annotations/src/lib/annotationwritermanager.js');
+	//includes.push('plugin/annotations/src/lib/annotationwriter.js');
+	includes.push('plugin/annotations/src/service/fise.js');
+
 	// Insert Scripts
 	var value, url, scriptEl, appendEl = document.head;
 	for ( i=0,n=includes.length; i<n; ++i ) {

@@ -191,10 +191,8 @@ eu.iksproject.AnnotationPlugin.subscribeEvents = function () {
         		that.insertIksAnnotateButton.hide();
         		that.formatIksAnnotateButton.setPressed(true);
         		GENTICS.Aloha.FloatingMenu.setScope(that.getUID('iks_annotate'));
-        		//that.iks_annotateField.setTargetObject(foundMarkup, 'about');
-        		that.iks_annotateField.setTargetObject(foundMarkup, 'content');
-        		//that.iks_annotateField.setTargetObject(that.iks_annotateField.getQueryValue(), 'content');
-        		//that.iks_annotateField.setTargetObject('asdf', 'about');
+        		that.iks_annotateField.setTargetObject(foundMarkup, 'about');
+        		//that.iks_annotateField.setTargetObject(foundMarkup, 'content');
         	} else {
         		// no iks_annotate found
         		that.formatIksAnnotateButton.setPressed(false);
@@ -329,9 +327,12 @@ eu.iksproject.AnnotationPlugin.removeIksAnnotate = function () {
 eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
     
 	var item = this.iks_annotateField.getItem();
-
-	if (item && item.url && item.name) {
+    var r = new RegExp('http://', 'i');
+    
+    // @todo check for url value
+	if (item && item.url && item.url.match(r) && item.name) {
 	    this.iks_annotateField.setAttribute('about', item.url);
+	    this.iks_annotateField.setAttribute('content', item.name);
 	    this.iks_annotateField.setText(item.name);
 	    
 	    

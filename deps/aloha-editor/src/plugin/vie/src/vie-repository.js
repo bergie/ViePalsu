@@ -34,19 +34,27 @@ GENTICS.Aloha.Repositories.vie.query = function(p, callback) {
 	    return;
 	}
 	
-	callback.call(that, _.map(entities, function(item) {
-	    console.log('lookup item', item);
-	    if (item.get(that.settings.labelpredicate).match(r)) {
-	        //console.log('match found', item.get(that.settings.labelpredicate));
+	// just use selected for lookup
+    var lookup = [];
+    $.each(entities, function(index, item) {
+	    if (item.get(that.settings.labelpredicate).match(r) || item.id.match(r)) {
+            lookup.push(item);
+        }
+    });
+	
+	callback.call(that, _.map(lookup, function(item) {
+	    //console.log('lookup item', item);
+	    //if (item.get(that.settings.labelpredicate).match(r)) {
+	    //console.log('match found', item.get(that.settings.labelpredicate));
         return {
             name: item.get(that.settings.labelpredicate),
             url: item.id,
             info: item.get(that.settings.labelpredicate),
             type: that.settings.type
         };
-        } else {
+        //} else {
             //return false;
-        }
+        //}
     }));
 
 };

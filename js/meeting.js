@@ -1,19 +1,19 @@
 jQuery(document).ready(function() {
-    $("#rdfcal_startDate").datepicker({ dateFormat: 'yy-mm-dd' });
-    $("#rdfcal_targetDate").datepicker({ dateFormat: 'yy-mm-dd' });
+    //$("#rdfcal_startDate").datepicker({ dateFormat: 'yy-mm-dd' });
+    //$("#rdfcal_targetDate").datepicker({ dateFormat: 'yy-mm-dd' });
     
-    var participants = jQuery(".persons li");
-    var values = [];
-    var options = $("#rdfcal_hasAgent");
+    //var participants = jQuery(".persons li");
+    //var values = [];
+    //var options = $("#rdfcal_hasAgent");
     
-    participants.each(function() {
+    /*participants.each(function() {
         // @todo use jquery here 
         values.push([{'v': this.attributes[2].nodeValue, 'n': this.textContent}]);
     });
     
     jQuery.each(values, function(index, item) {
         options.append($("<option />").val(item[0].v).text(item[0].n));
-    });
+    });*/
     
     var eventId = jQuery('body').attr('about');
     console.log('### eventId: ' + eventId);
@@ -21,6 +21,12 @@ jQuery(document).ready(function() {
     console.log('taskCollection', taskCollection);
     var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
     console.log('mentionCollection', mentionCollection);
+
+    // Remove participant placeholder
+    //console.log(jQuery('[rel="rdfcal:attendee"] li[about=""]'));
+    //jQuery('[rel="rdfcal:attendee"] li [about=""]').remove();
+    //console.log(jQuery('[typeof="foaf:Person"][about=""]'));
+    jQuery('[typeof="foaf:Person"][about=""]').remove();
 
     // task added via aloha
     taskCollection.bind('add', function(task, task_list, options) {
@@ -71,6 +77,58 @@ jQuery(document).ready(function() {
         task.save();
     });
 
+
+    // task added via aloha
+    mentionCollection.bind('add', function(mention, mention_list, options) {
+        if (options.fromServer) {
+            return;
+        }
+        console.log('mention id after add', mention.id);
+        console.log('mention data', mention);
+        if (mention.id) {
+            // Make the link work
+            jQuery('[about="' + mention.id + '"] a').attr('href', mention.id);
+            
+            /*// move to function
+            console.log('### complete status', mention.get('rdfcal:completed'));
+            if (mention.get('rdfcal:completed') == 1 && mention.id) {
+                jQuery('[about="' + mention.id + '"]').addClass('mention_status_completed').removeClass('mention_status_active');
+            } else {
+                jQuery('[about="' + mention.id + '"]').addClass('mention_status_active').removeClass('mention_status_completed');
+            }
+            
+            // move to function
+            jQuery('[about="' + mention.id + '"]').click(function() {
+                var uuid = false;
+
+                if (jQuery(this).attr('about')) {
+                    uuid = jQuery(this).attr('about');
+                }
+
+                console.log('### mention complete 2: ' + uuid);
+
+                var data = VIE.EntityManager.getBySubject(uuid);
+                var complete_status = data.get('rdfcal:completed');
+                console.log(complete_status);
+                if (complete_status == 1) {
+                    //jQuery(this).addClass('mention_status_active').removeClass('mention_status_completed');
+                    jQuery('[about="' + uuid + '"]').addClass('mention_status_active').removeClass('mention_status_completed');
+                    data.set({'rdfcal:completed':'0'});
+                } else {
+                    //jQuery(this).addClass('mention_status_completed').removeClass('mention_status_active');
+                    jQuery('[about="' + uuid + '"]').addClass('mention_status_completed').removeClass('mention_status_active');
+                    data.set({'rdfcal:completed':'1'});
+                }
+                
+                data.save();
+            });*/
+        }
+
+        mention.save();
+    });
+
+
+
     taskCollection.comparator = function(item) {
         return dateComparator(item, taskCollection);
     }
@@ -79,9 +137,9 @@ jQuery(document).ready(function() {
     taskCollection.forEach(function(task) {
         if (typeof task.id !== 'string') {
             taskCollection.remove(task);
+            jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
             //jQuery('[typeof="rdfcal\\:Vevent][about=""]').remove();
-            jQuery('[typeof="rdfcal\\:Mention][about=""]').remove();
-            return;
+            //return;
         }
         
         task.bind('change', function(event, calendar, options) {
