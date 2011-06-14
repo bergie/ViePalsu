@@ -21,6 +21,23 @@ GENTICS.Aloha.Repositories.iks_friends.items = [];
 GENTICS.Aloha.Repositories.iks_friends.lookup = false;
 
 GENTICS.Aloha.Repositories.iks_friends.init = function() {
+    //console.log('iks_friends.init');
+
+    //localStorage.removeItem('iks_friend_lookup');
+
+    /*
+    var iks_friends = false;
+    var r = new RegExp('', 'i');
+	iks_friends = localStorage.getItem('iks_friend_lookup');
+	iks_friends_datetime = localStorage.getItem('iks_friend_time');
+
+    if (!iks_friends) {
+	    var user_ids = GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds();
+	    console.log('look up my friends live');
+	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
+	}
+    */
+    
 };
 
 /**

@@ -158,16 +158,4 @@ jQuery(document).ready(function() {
     ViePalsu.DiscussionManager.getCollection();
     ViePalsu.DiscussionManager.autoScroll(true);
     ViePalsu.DiscussionManager.participate();
-    
-    var iks_friends = false;
-	iks_friends = localStorage.getItem('iks_friend_lookup');
-	iks_friends_datetime = localStorage.getItem('iks_friend_time');
-	//console.log('iks cookie', JSON.parse(iks_friends));
-	var date = new Date;
-	//if (!iks_friends || (iks_friends_datetime < date.getTime()-60*60*6)) {
-    if (!iks_friends) {
-	    var user_ids = GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds();
-	    console.log('look up my friends live');
-	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
-	}
 });
