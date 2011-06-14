@@ -30,7 +30,7 @@
         <script src="/js/jquery.easydate-0.2.4.min.js" type="text/javascript"></script>
 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
-
+        
 		<!-- VIE^2 
 		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
 
@@ -111,7 +111,7 @@
             <h2><a href="#">Participants</a></h2>
             <div>
               <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-                <li about="#" typeof="foaf:Person" content="0">
+                <li about="" typeof="foaf:Person" content="0">
                   <span property="foaf:name">Example User</span>
                   <span property="iks:online" content="0"></span>
                 </li>
@@ -162,6 +162,7 @@
 			GENTICS.Aloha.settings = {
 				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
 				errorhandling : false,
+				proxyUrl: '/proxy?proxy_url=',
 				"i18n": {
 					// let the system detect the users language
 					//"acceptLanguage": '<?=$_SERVER['HTTP_ACCEPT_LANGUAGE']?>'
@@ -177,7 +178,7 @@
 					}
 				},
 				"plugins": {
-					"com.gentics.aloha.plugins.Link": {
+					"link": {
 						// all links that match the targetregex will get set the target
 						// e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
 						targetregex : '^(?!.*palsu.me).*',
@@ -188,12 +189,27 @@
 						cssclassregex : '^(?!.*palsu.me).*',
 						cssclass : 'external'
 					},
-					"com.gentics.aloha.plugins.Table": {
+					"table": {
 						config: ['table']
 					},
-					"com.gentics.aloha.plugins.Ribbon": {
+					"ribbon": {
 						enable: false
-					}
+					},
+					"annotations": {
+            		    "Services" : {
+            		        "fise" : {
+            		            //ApiEndpoint: 'http://localhost/aloha-editor/Aloha-Plugin-Annotations/examples/response.ld.json'
+            		            ApiEndpoint: 'http://stanbol.iksfordrupal.net/engines/'
+            		            //ApiEndpoint: 'http://labs.gentics.com:9000/engines/'
+            		        },
+            		        "zemanta" : {
+            		            ApiEndpoint: 'http://api.zemanta.com/services/rest/0.0/',
+            		            ApiKey: '',
+            		            ApiMethod: 'zemanta.suggest_markup'
+            		        }
+            		    }
+            		}
+            		
 				}
 			};
 
@@ -201,6 +217,20 @@
 			$body.bind('aloha',function(){
 				//$('#chat-input').aloha();
 			});
+			
+			/* 
+			// VIE2
+			$.VIE2.connectors['stanbol'].options({
+         	    "proxy_url" : "/proxy",
+         	    "enhancer_url" : "http://stanbol.iksfordrupal.net/engines/",
+         	    "entityhub_url" : "http://stanbol.iksfordrupal.net/entityhub/"
+            });
+            
+            $.VIE2.connectors['dbpedia'].options({
+                "proxy_url" : "/proxy"
+            });
+            */
+            
 		})(window);
 	</script>
 

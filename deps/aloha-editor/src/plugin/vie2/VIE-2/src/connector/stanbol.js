@@ -172,6 +172,8 @@ jQuery.VIE2.connectors['stanbol'].enhance = function (text, callback) {
 
 jQuery.VIE2.connectors['stanbol'].queryEnhancer = function (text, callback) {
 
+    console.log('text', text);
+
 	var proxy = this.options().proxy_url;
 	var enhancer_url = this.options().enhancer_url;
 

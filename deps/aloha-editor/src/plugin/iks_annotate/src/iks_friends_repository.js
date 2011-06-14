@@ -18,6 +18,7 @@ GENTICS.Aloha.Repositories.iks_friends.settings.labelpredicate = 'foaf:name';
 GENTICS.Aloha.Repositories.iks_friends.user_ids = [];
 GENTICS.Aloha.Repositories.iks_friends.items_lookup = false;
 GENTICS.Aloha.Repositories.iks_friends.items = [];
+GENTICS.Aloha.Repositories.iks_friends.lookup = false;
 
 GENTICS.Aloha.Repositories.iks_friends.init = function() {
 };
@@ -31,17 +32,44 @@ GENTICS.Aloha.Repositories.iks_friends.query = function(p, callback) {
 	// jQuery('#username').text()
 	
 	var r = new RegExp(p.queryString, 'i');
+	GENTICS.Aloha.Repositories.iks_friends.lookup = p;
+	//console.log('query string', p.queryString);
 	
-	console.log('query string', p.queryString);
+	//Cookie.erase('iks_friend_lookup');
+	//localStorage.removeItem('iks_friend_lookup');
+    var iks_friends = false;
+	//console.log('iks cookie', iks_friends);
 	
-	//if (!GENTICS.Aloha.Repositories.iks_friends.items_lookup) {
+	//$.storage = new $.store();
+	//iks_friends = $.storage.get('iks_friend_lookup');
+	//console.log('iks cookie', iks_friends);
+	
+	iks_friends = localStorage.getItem('iks_friend_lookup');
+	iks_friends_datetime = localStorage.getItem('iks_friend_time');
+	//console.log('iks cookie', JSON.parse(iks_friends));
+	//console.log('iks cookie2', document.cookie);
+	//console.log('iks cookie3', document.cookie.indexOf('iks_friend_lookup='));
+	
+	// if (document.cookie.indexOf('mycookie=')>0) {
+	
+	// check cache time
+	var date = new Date;
+	
+	 
+	
+	//if (!iks_friends || (iks_friends_datetime < date.getTime()-60*60*6)) {
+    if (!iks_friends) {
 	    var user_ids = _getTwitterFriendIds();
-	    console.log('my friend ids', GENTICS.Aloha.Repositories.iks_friends.user_ids);
+	    console.log('look up my friends live');
 	    var items = _getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
-	//}
+	} else {
+	    console.log('got my friends from localstorage');
+	    GENTICS.Aloha.Repositories.iks_friends.items_lookup = JSON.parse(iks_friends);
+	    //GENTICS.Aloha.Repositories.iks_friends.items_lookup = iks_friends;
+	}
 	
 	
-	console.log('friend list items', GENTICS.Aloha.Repositories.iks_friends.items_lookup);
+	//console.log('friend list items', GENTICS.Aloha.Repositories.iks_friends.items_lookup);
 
     if (!GENTICS.Aloha.Repositories.iks_friends.items_lookup)
 	{
@@ -53,12 +81,15 @@ GENTICS.Aloha.Repositories.iks_friends.query = function(p, callback) {
 
 	//callback.call(GENTICS.Aloha.Repositories.iks_friends.query, GENTICS.Aloha.Repositories.iks_friends.items_lookup);
 
+    // just use selected for lookup
+    var lookup = [];
+    $.each(GENTICS.Aloha.Repositories.iks_friends.items_lookup, function(index, item) {
+	    if (item.name.match(r) || item.url.match(r)) {
+            lookup.push(item);
+        }
+    });
 
-	callback.call(that, _.map(GENTICS.Aloha.Repositories.iks_friends.items_lookup, function(item) {
-	    console.log(item);
-	    
-	    //if (item.name.match(r)) {
-	        console.log('match', item.name);
+	callback.call(that, _.map(lookup, function(item) {
             return {
                 id: item.id,
                 name: item.name,
@@ -66,9 +97,6 @@ GENTICS.Aloha.Repositories.iks_friends.query = function(p, callback) {
                 info: item.info,
                 type: item.type
             };
-        //} else {
-            //return {};
-        //}
     }));
 
 };
@@ -86,7 +114,7 @@ _getTwitterFriendIds = function () {
 		success : function(data) {
 		    //console.log('ajax data:', data);
             
-            var user_ids = JSON.parse(data).slice(0,11);
+            var user_ids = JSON.parse(data).slice(0,99);
             console.log('friend user_ids to lookup', user_ids);
             
             GENTICS.Aloha.Repositories.iks_friends.user_ids = user_ids
@@ -141,8 +169,9 @@ _getTwitterUserDataBatch = function(user_ids, r) {
 		    
 		    console.log('items', items);
 		    
+		    // for lookup field
 		    $.each(userData, function(index, value) {
-		        console.log('each item', value);
+		        //console.log('each item', value);
 		        
 		        if (value.name.match(r)) {
 		        items.push({
@@ -163,10 +192,39 @@ _getTwitterUserDataBatch = function(user_ids, r) {
 				url: 'http://twitter.com/'+userData.screen_name,
 				weight: that.settings.weight + (15-1)/100
 			}));*/
+			
+			
+			// for iks_friends / cache
+			var items_cookie = [];
+			$.each(userData, function(index, value) {
+		        //console.log('each item2 ', value);
+		        
+		        items_cookie.push({
+    				id: 'http://twitter.com/'+value.screen_name,
+    				name: value.name,
+    				repositoryId: 'iks_friends',
+    				type: GENTICS.Aloha.Repositories.iks_friends.settings.type,
+    				url: 'http://twitter.com/'+value.screen_name,
+    				weight: (15-1)/100
+    			});
+		    });
+		    
 		    
 		    console.log('items', items);
+		    console.log('items_cookie', items_cookie);
 		    
 		    GENTICS.Aloha.Repositories.iks_friends.items_lookup = items;
+		    
+		    var date = new Date();
+		    
+		    //Cookie.erase('iks_friend_lookup');
+            localStorage.setItem('iks_friend_lookup', JSON.stringify(items_cookie));
+            localStorage.SetItem('iks_friend_time', date.getTime());
+            
+            //$.storage = new $.store();
+            //$.storage.set('iks_friend_lookup', items_cookie);
+            //$.storage.set('iks_friend_time', items_cookie);
+        	
 		    return items;
 		},
 		error: function(error) {
@@ -221,3 +279,4 @@ GENTICS.Aloha.Repositories.iks_friends.getTwitterUserData = function(user_ids) {
     	});
 
 }
+

@@ -340,14 +340,9 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
     console.log('lookup item', item);
     
     var rdfcal_targetDate = jQuery('#rdfcal_targetDate').val();
+    var r = new RegExp('http://', 'i');
     
-	if (item && item.url && item.name && rdfcal_targetDate) {
-	    /*var rdfcal_name = jQuery('#rdfcal_name').attr('value');
-             var rdfcal_hasAgent = jQuery('#rdfcal_hasAgent option:selected').attr('value');
-             var rdfcal_hasAgentName = jQuery('#rdfcal_hasAgent option:selected').text();
-             var rdfcal_startDate = jQuery('#rdfcal_startDate').attr('value');
-             var rdfcal_targetDate = jQuery('#rdfcal_targetDate').attr('value');
-            */
+	if (item && item.url && item.url.match(r) && item.name && rdfcal_targetDate) {
         var range = GENTICS.Aloha.Selection.getRangeObject();
         
         //console.log('range', range);

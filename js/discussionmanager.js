@@ -21,7 +21,8 @@ ViePalsu.DiscussionManager = {
             if (!newMessage) {
                 return true;
             }
-
+            
+            // @todo is here the collection add problem?!
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
                 'dc:creator': jQuery('#username').text(),
@@ -43,7 +44,9 @@ ViePalsu.DiscussionManager = {
             if (ViePalsu.DiscussionManager.chatInput.html() === '') {
                 ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
             } else {
-                /*$('.message').vie2().vie2('analyze', function (status) {
+                console.log('editableDeactivated');
+                //console.log('input', $('#chat-input').text());
+                /*$('#chat-input').vie2().vie2('analyze', function (status) {
                     if (status === 'ok') {
                         console.log("Success!");
                     }
@@ -102,10 +105,6 @@ ViePalsu.DiscussionManager = {
             }
         });
         
-        // Remove placeholder
-        // @todo move to other location -- bug: create new meeting; open it for the first time --> example user is in autosuggest for person annotation
-        jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
-
         attendees.bind('add', function(person, attendees, options) {
             if (!options.fromServer) {
                 person.save();
@@ -130,10 +129,11 @@ jQuery(document).ready(function() {
     // Make RDFa entities editable on double click
     jQuery('[about]').each(function() {
         var subject = VIE.RDFa.getSubject(jQuery(this));
-        jQuery('[property]', this).dblclick(function() {
+        jQuery('[property]', this).click(function() {
             if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
                 return true;
             }
+            
             jQuery(this).vieSemanticAloha();
             var modelInstance = VIE.EntityManager.getBySubject(subject);
 
@@ -144,12 +144,6 @@ jQuery(document).ready(function() {
                     if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
                         // There were changes, save
                         modelInstance.save();
-                        //use VIE^2 to analyze the text
-                        /*$('.message').vie2().vie2('analyze', function (status) {
-                            if (status === 'ok') {
-                                console.log("Success 2!");
-                            }
-                        });*/
                     }
                 });
             });
@@ -164,4 +158,16 @@ jQuery(document).ready(function() {
     ViePalsu.DiscussionManager.getCollection();
     ViePalsu.DiscussionManager.autoScroll(true);
     ViePalsu.DiscussionManager.participate();
+    
+    var iks_friends = false;
+	iks_friends = localStorage.getItem('iks_friend_lookup');
+	iks_friends_datetime = localStorage.getItem('iks_friend_time');
+	//console.log('iks cookie', JSON.parse(iks_friends));
+	var date = new Date;
+	//if (!iks_friends || (iks_friends_datetime < date.getTime()-60*60*6)) {
+    if (!iks_friends) {
+	    var user_ids = _getTwitterFriendIds();
+	    console.log('look up my friends live');
+	    var items = _getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
+	}
 });
