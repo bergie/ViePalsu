@@ -59,9 +59,9 @@ GENTICS.Aloha.Repositories.iks_friends.query = function(p, callback) {
 	
 	//if (!iks_friends || (iks_friends_datetime < date.getTime()-60*60*6)) {
     if (!iks_friends) {
-	    var user_ids = _getTwitterFriendIds();
+	    var user_ids = GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds();
 	    console.log('look up my friends live');
-	    var items = _getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
+	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
 	} else {
 	    console.log('got my friends from localstorage');
 	    GENTICS.Aloha.Repositories.iks_friends.items_lookup = JSON.parse(iks_friends);
