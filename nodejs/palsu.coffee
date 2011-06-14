@@ -10,6 +10,7 @@ sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
 #require 'socket.io-connect'
+querystring = require 'querystring'
 #require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
@@ -461,44 +462,63 @@ server.get "/m/:id", (request, response) ->
 #server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
     
-    #console.log 'req', request
-    #console.log 'resp', response
-    requestData = request
+    fullBody = ''
     
-    if !requestData.proxy_url
-        #requestData.proxy_url = 'http://evo42.local:8001/proxy';
-        requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+    request.on 'data', (chunk) ->
+        fullBody += chunk.toString()
+        console.log "Received body data:"
+        console.log chunk.toString()
     
-    if !requestData.content
-        requestData.content = "George Walker Bush (born July 6, 1946) is an American politician who served as the 43rd President of the United States from 2001 to 2009. Before that he was the 46th Governor of Texas, serving from 1995 to 2000."
-    
-    if !requestData.verb
-        requestData.verb = "POST"
-    
-    if !requestData.format
-        requestData.format = "text/plain"
-    
-    proxiedRequest =
-        #method: requestData.verb or "GET"
-        method: "POST"
-        uri: requestData.proxy_url
-        body: requestData.content
-        headers:
-            "Accept": requestData.format or "text/plain"
+    request.on 'end', () ->
+        console.log 'end of request', fullBody
+        decodedBody = querystring.parse(fullBody)
+        console.log 'content_data', decodedBody
+        
+        # do nothing...
+        
+        #console.log 're data', request.data
+        #console.log 're body cont', request.body.content
+        #console.log 'req', request
+        console.log 'req', req
+        #console.log 'resp', response
+        requestData = request
+        
+        
+        if !requestData.proxy_url
+            #requestData.proxy_url = 'http://evo42.local:8001/proxy';
+            requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+        
+        if !requestData.content
+            requestData.content = decodedBody.content
+        
+        if !requestData.verb
+            requestData.verb = "POST"
+        
+        if !requestData.format
+            requestData.format = "text/plain"
+        
+        proxiedRequest =
+            #method: requestData.verb or "GET"
+            method: "POST"
+            uri: requestData.proxy_url
+            body: requestData.content
+            headers:
+                "Accept": requestData.format or "text/plain"
+        
+        return req = ProxyRequest
+            #method: requestData.verb or "GET"
+            method: "POST"
+            uri: requestData.proxy_url
+            body: requestData.content
+            headers:
+                "Accept": requestData.format or "text/plain"
+        , (error, resp, body) ->
+            #console.log 'proxiedRequest', proxiedRequest
+            #console.log 'proxy body', body
+            #console.log 'error', error
+            #console.log 'resp', resp
+            return response.send body
 
-    return req = ProxyRequest
-        #method: requestData.verb or "GET"
-        method: "POST"
-        uri: requestData.proxy_url
-        body: requestData.content
-        headers:
-            "Accept": requestData.format or "text/plain"
-    , (error, resp, body) ->
-        console.log 'proxiedRequest', proxiedRequest
-        console.log 'proxy body', body
-        console.log 'error', error
-        console.log 'resp', resp
-        return response.send body
 
 # simple get proxy
 server.get '/proxy', (request, response) ->

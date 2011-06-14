@@ -449,7 +449,7 @@ GENTICS.Aloha.Editable = Class.extend({
 
 		// unbind all events
 		// TODO should only unbind the specific handlers.
-					.unbind('mousedown focus keydown keyup');
+					.unbind('mousedown focus keydown keyup dblclick');
 
 		/* TODO remove this event, it should implemented as bind and unbind
 		// register the onSelectionChange Event with the Editable field
@@ -645,7 +645,7 @@ GENTICS.Aloha.Editable = Class.extend({
 		/**
 		 * @event smartContentChanged
 		 */
-		GENTICS.Aloha.activeEditable.smartContentChange({type : 'blur'}, null);
+		//GENTICS.Aloha.activeEditable.smartContentChange({type : 'blur'}, null);
 	},
 
 	/**

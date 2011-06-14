@@ -340,9 +340,13 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 	    var eventId = jQuery('body').attr('about');
         var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
         
-        var urlId = window.location.protocol + "//" + window.location.host + "/e/" + mentionCollection.length + location.pathname.replace(/\//g, '');
-        var date = new Date();
+        //var urlId = window.location.protocol + "//" + window.location.host + "/e/" + mentionCollection.length + location.pathname.replace(/\//g, '');
+        var urlId = item.url;
         
+        var date = new Date();
+        console.log('urlid', urlId);
+        console.log('in mentions', jQuery('[typeof="rdfcal\\:Mention"][about="'+urlId+'"]'));
+        if (jQuery('[typeof="rdfcal\\:Mention"][about="'+urlId+'"]').length < 1) {
         mentionCollection.add({
             'rdfcal:hasAgent': item.url,
             'foaf:name': item.name,
@@ -350,8 +354,10 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
             'id': urlId
         });
         
-	    console.log('iks annotate OK: added mention of person ' + item.name + ' with ID ' + urlId);
-        
+	        console.log('iks annotate OK: added mention of person ' + item.name + ' with ID ' + urlId);
+        } else {
+    	    console.log('iks annotate OK: person already exists ' + item.name + ' with ID ' + urlId);            
+        }
 	    
 	    // cleanup old resourceItem
 	    this.iks_annotateField.cleanItem();
