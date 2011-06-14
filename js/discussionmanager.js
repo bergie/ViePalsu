@@ -166,8 +166,8 @@ jQuery(document).ready(function() {
 	var date = new Date;
 	//if (!iks_friends || (iks_friends_datetime < date.getTime()-60*60*6)) {
     if (!iks_friends) {
-	    var user_ids = _getTwitterFriendIds();
+	    var user_ids = GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds();
 	    console.log('look up my friends live');
-	    var items = _getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
+	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
 	}
 });

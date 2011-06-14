@@ -101,7 +101,7 @@ GENTICS.Aloha.Repositories.iks_friends.query = function(p, callback) {
 
 };
 
-_getTwitterFriendIds = function () {
+GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds = function () {
     
     jsonUrl = "https://api.twitter.com/1/friends/ids.json?screen_name="+jQuery('#username').text();
 	
@@ -146,7 +146,7 @@ _getTwitterFriendIds = function () {
     //return user_ids;
 }
 
-_getTwitterUserDataBatch = function(user_ids, r) {
+GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch = function(user_ids, r) {
     var that = this;
 	
     var user_ids = user_ids.join(',');
