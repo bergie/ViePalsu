@@ -75,10 +75,6 @@ dateComparator = (item, collection) ->
 
 server = express.createServer()
 server.configure ->
-
-    # Our CSS files need the LessCSS compiler
-    server.use express.compiler
-        src: process.cwd()
     # Serve static files from /styles and /js
     server.use '/styles', express.static "#{process.cwd()}/styles"
     server.use '/js', express.static "#{process.cwd()}/js"
