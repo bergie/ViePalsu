@@ -248,3 +248,27 @@ article li[typeof="rdfcal:Vevent"] {
 #account span[property="foaf:nick"] {
     font-style: italic;
 }
+
+
+/* iks test buttons */
+button.GENTICS_button_addPerson {
+	background-position: -224px 0 !important;
+}
+
+button.GENTICS_button_addEvent {
+	background: url('/static/icons/time_add.png') no-repeat !important;
+}
+
+button.GENTICS_button_datepicker {
+	background: url('/static/icons/date.png') no-repeat !important;
+}
+
+.GENTICS_Datepicker_Createdialog {
+	z-index: 99999;
+	position: absolute;
+	background-color: #F0F0F0;
+	border: 1px solid #cccccc;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+}

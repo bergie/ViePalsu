@@ -1,10 +1,36 @@
 // We need Aloha Editor
-GENTICS_Aloha_base = '/deps/aloha-editor/src';
+GENTICS_Aloha_base = '/deps/aloha-editor/src/';
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'deps/jquery-1.4.2.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + 'aloha.js" id="aloha-script-include"></script>');
 
-document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/dep/jquery-1.5.1.js"></script>');
+// Aloha Editor plugins
+GENTICS_Aloha_base_plugin_aloha = '/deps/aloha-editor/src/plugins/com.gentics.aloha.plugins.';
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Format/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Table/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'List/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Link/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Link/LinkList.js"></script>');
+//document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'HighlightEditables/plugin.js"></script>');
+//document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'TOC/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Paste/plugin.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Paste/wordpastehandler.js"></script>');
 
-document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base + '/aloha.js" id="aloha-script-include" data-plugins="format,abbr,link,list,link"></script>');
-document.write('<link href="' + GENTICS_Aloha_base + '/aloha.css" id="aloha-style-include" rel="stylesheet">');
+// Custom plugins
+GENTICS_Aloha_base_plugin = '/deps/aloha-editor/plugins/';
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'paste/oembedpastehandler.js"></script>');
+
+
+/*
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/annotations.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/lib/annotationservicemanager.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/lib/annotationservice.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/service/fise.js"></script>');
+*/
+
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate/src/iks_annotate.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate/src/iks_friends_repository.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'vie/src/vie-repository.js"></script>');
+document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate_task/src/iks_annotate_task.js"></script>');
 
 // We need VIE
 document.write('<script type="text/javascript" src="/js/underscore-min.js"></script>');

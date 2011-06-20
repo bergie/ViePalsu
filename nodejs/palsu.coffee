@@ -9,7 +9,6 @@ auth = require 'connect-auth'
 sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
-#require 'socket.io-connect'
 querystring = require 'querystring'
 #require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
@@ -40,8 +39,6 @@ writeUser = (user, jQuery) ->
 
 fetchTasksForEvent = (event, callback) ->
     # add tasks
-    console.log 'fetchTasksForEvent: ' + event.id
-    #console.log event
     if not event.id then return
 
     events = event.get "rdfcal:hasTask"
@@ -57,7 +54,6 @@ fetchTasksForEvent = (event, callback) ->
     return events.fetch
         success: (taskCollection) ->
             console.log "Got task collection " + taskCollection.length
-            #console.log 'success taskcollection', taskCollection
             callback()
         error: ->
             console.log "Failed to get task collection"
@@ -83,7 +79,6 @@ server.configure ->
     # Our CSS files need the LessCSS compiler
     server.use express.compiler
         src: process.cwd()
-        enable: ['less']
     # Serve static files from /styles and /js
     server.use '/styles', express.static "#{process.cwd()}/styles"
     server.use '/js', express.static "#{process.cwd()}/js"
@@ -112,14 +107,6 @@ server.configure ->
             consumerSecret: cfg.twitter.secret]
 
 ###
-    server.use auth [auth.Twitter
-            consumerKey: cfg.twitter.key
-            consumerSecret: cfg.twitter.secret]
-    server.use auth [auth.Facebook
-            appId: cfg.facebook.key
-            appSecret: cfg.facebook.secret
-            scope: "email"
-            callback: "http://palsu.me/oauth-signin"]
     server.use auth [auth.Linkedin
             consumerKey: cfg.linkedin.key
             consumerSecret: cfg.linkedin.secret]
@@ -205,7 +192,6 @@ server.get '/t', (request, response) ->
         if !calendar
             VIE.cleanup()
             # todo return error message
-            console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
 
         # Query for events that have the calendar as component
@@ -252,7 +238,6 @@ server.get '/t/my', (request, response) ->
 
         if !calendar
             VIE.cleanup()
-            # todo return error message
             console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
 
@@ -267,7 +252,6 @@ server.get '/t/my', (request, response) ->
                 fetched = 0
 
                 eventCollection.each (event) ->
-                    console.log 'loop eventCollection', eventCollection.length
                     fetchTasksForEvent event, ->
                         fetched++
                         if fetched is eventCollection.length
@@ -280,8 +264,6 @@ server.get '/t/my', (request, response) ->
                 return response.send window.document.innerHTML
 
         return response.send window.document.innerHTML
-
-
 
 
 # Serve the list of meetings for /
@@ -391,13 +373,11 @@ server.get "/m/:id", (request, response) ->
             return response.send window.document.innerHTML
 
         sendContent2 = (collection, error) ->
-            #VIE.cleanup()
             return true
 
         # Query for posts for this event
         # @todo callbacks as array or something like that...
         getPosts = (event, callback, callback2, callback3) ->
-            #console.log event
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
             posts.object = event.id
@@ -409,8 +389,6 @@ server.get "/m/:id", (request, response) ->
                     callback2 event
                     callback3 event
                 error:  (collection, error) ->
-                    #console.log collection
-                    #console.log error
                     callback event
                     callback2 event
                     callback3 event
@@ -418,7 +396,6 @@ server.get "/m/:id", (request, response) ->
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
             console.log '### participants list: '
-            #console.log participants
             participants.predicate = "rdfcal:attendeeOf"
             participants.object = event.id
             return participants.fetch
@@ -432,20 +409,15 @@ server.get "/m/:id", (request, response) ->
             return task_list.fetch
                 success: sendContent2
                 error: sendContent2
-                #error: console.log task_list
 
         getMentions = (event) ->
             mention_list = event.get "rdfcal:hasMention"
-            #console.log '### mentions list'
-            #console.log mention_list
 
             mention_list.predicate = "rdfcal:mentionOf"
             mention_list.object = event.id
             return mention_list.fetch
                 success: sendContent2
                 error: sendContent2
-                #error: console.log task_list
-
 
 
         # Get the Meeting object
@@ -459,34 +431,19 @@ server.get "/m/:id", (request, response) ->
 
 
 # Proxy VIE-2 cross-site requests
-#server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
     
     fullBody = ''
     
     request.on 'data', (chunk) ->
         fullBody += chunk.toString()
-        console.log "Received body data:"
-        console.log chunk.toString()
     
     request.on 'end', () ->
-        console.log 'end of request', fullBody
         decodedBody = querystring.parse(fullBody)
-        console.log 'content_data', decodedBody
-        
-        # do nothing...
-        
-        #console.log 're data', request.data
-        #console.log 're body cont', request.body.content
-        #console.log 'req', request
-        console.log 'req', req
-        #console.log 'resp', response
         requestData = request
         
-        
         if !requestData.proxy_url
-            #requestData.proxy_url = 'http://evo42.local:8001/proxy';
-            requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+            requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
         
         if !requestData.content
             requestData.content = decodedBody.content
@@ -513,10 +470,8 @@ server.post '/proxy', (request, response) ->
             headers:
                 "Accept": requestData.format or "text/plain"
         , (error, resp, body) ->
-            #console.log 'proxiedRequest', proxiedRequest
             #console.log 'proxy body', body
             #console.log 'error', error
-            #console.log 'resp', resp
             return response.send body
 
 
