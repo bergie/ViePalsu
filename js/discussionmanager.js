@@ -43,14 +43,6 @@ ViePalsu.DiscussionManager = {
         GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
             if (ViePalsu.DiscussionManager.chatInput.html() === '') {
                 ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
-            } else {
-                console.log('editableDeactivated');
-                //console.log('input', $('#chat-input').text());
-                /*$('#chat-input').vie2().vie2('analyze', function (status) {
-                    if (status === 'ok') {
-                        console.log("Success!");
-                    }
-                });*/
             }
         });
     },
@@ -84,7 +76,7 @@ ViePalsu.DiscussionManager = {
             window.setTimeout(function() {
                 jQuery('[typeof="sioc:Post"]').each(function() {
                     ViePalsu.DiscussionManager.updateDate(this);
-                });	  
+                });
             }, 20);
             
             if (!options.fromServer) {
@@ -120,7 +112,6 @@ ViePalsu.DiscussionManager = {
     
     updateDate: function(element) {
         jQuery('.easydate', element).attr('title', jQuery('div[property="dc:created"]', element).hide().text());
-        
         jQuery('.easydate', element).easydate();
     }
 };

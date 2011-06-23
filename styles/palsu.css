@@ -273,3 +273,109 @@ button.GENTICS_button_datepicker {
 	border-radius: 2px;
 }
 
+body.meetings #main ul,
+body.tasks #main ul,
+#sidebar ul {
+    list-style-type: none;
+    margin-left: -20px;
+}
+
+body.meetings #main li,
+body.tasks #main li,
+#sidebar li {
+    margin-left: -15px;
+}
+
+body.meetings #main .easydate {
+    font-size: x-small;
+    cursor: help;
+}
+
+body.meetings #main div[property="mgd:agenda"] {
+    margin: 0;
+    padding: 0 0 20px 30px;
+    border-top: 3px solid #ccc;
+    font-size: small;
+}
+
+body.meetings #main li[typeof="rdfcal:Vevent"] {
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+.ingrid span[property="rdfcal:completed"][content="0"] {
+    background-color: red;
+    color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+
+.ingrid span[property="rdfcal:completed"][content="1"] {
+    background-color: #73d216;
+    color: #73d216;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+
+body.tasks p.info {
+    font-size: small;
+}
+
+body.tasks #main li {
+    margin: 10px 0 20px 0;
+}
+
+body.tasks #main table {
+    width: 90%;
+}
+
+body.tasks #main th.status {
+    width: 40px;
+}
+
+body.tasks #main th.assignee {
+    width: 120px;
+}
+
+
+body.tasks #main th.actions {
+    width: 40px;
+}
+
+body.tasks #main td p {
+    text-align: center;
+}
+
+body.tasks #main th.target_date, body.tasks #main th.start_date {
+    width: 65px;
+}
+
+body.tasks .actions {
+    font-size: small;
+}
+
+body.tasks .selected {
+    font-weight: bold;
+}
+
+body.task article div.label {
+    display: inline;
+    width: 100px;
+    float: left;
+}
+
+body.task article div.value {
+    position: relative;
+    float: left;
+    width: 650px;
+}
+
+body.task article hr {
+    border: 0;
+    clear: both;
+    padding: 2px 0 3px 0;
+}

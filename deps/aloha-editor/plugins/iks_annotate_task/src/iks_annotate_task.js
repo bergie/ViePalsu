@@ -290,8 +290,7 @@ eu.iksproject.AnnotationTaskPlugin.insertIksAnnotate = function ( extendToWord )
 		    'typeof': 'rdfcal:Task',
 		    'property': 'rdfcal:name',
 		    'class': 'annotation_task',
-		    'style': '',
-		    'content': ''
+		    'title': ''
 		});
 		
         GENTICS.Utils.Dom.addMarkup(range, newIksAnnotate, false);
@@ -325,7 +324,6 @@ eu.iksproject.AnnotationTaskPlugin.removeIksAnnotate = function () {
 eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
     
 	var item = this.iks_annotateFieldTask.getItem();
-    //console.log('lookup item', item);
     
     var rdfcal_targetDate = jQuery('#rdfcal_targetDate').val();
     var r = new RegExp('http://', 'i');
@@ -354,7 +352,7 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
          
   	    // write task data
   	    this.iks_annotateFieldTask.setAttribute('about', urlId);
-  	    this.iks_annotateFieldTask.setAttribute('style', '');
+  	    this.iks_annotateFieldTask.setAttribute('title', 'Task for '+rdfcal_hasAgentName);
          
          taskCollection.add({
              'rdfcal:name': rdfcal_name,
@@ -366,10 +364,9 @@ eu.iksproject.AnnotationTaskPlugin.iks_annotateChange = function () {
              'dc:created': date.toISOString(),
              'id': urlId
          });
-         //console.log('iks annotate OK: added task ' + rdfcal_name + ' for user ' + rdfcal_hasAgent + ' and ID ' + urlId);
-	    
 	    // cleanup old resourceItem
 	    this.iks_annotateFieldTask.cleanItem();
+	    jQuery('#rdfcal_targetDate').val('');
 	} else {
 	    
 	}

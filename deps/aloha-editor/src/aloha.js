@@ -123,7 +123,25 @@ Ext.form.Field=Ext.extend(Ext.BoxComponent,{invalidClass:"x-form-invalid",invali
 *   Author & Copyright (c) 2010 Gentics Software GmbH, aloha@gentics.com
 *   Licensed unter the terms of http://www.aloha-editor.com/license.html
 */
-jQuery.fn.between=function(content,offset){if(this[0].nodeType!==3){if(offset>this.children().size()){offset=this.children().size()}if(offset<=0){this.prepend(content)}else{this.children().eq(offset-1).after(content)}}else{if(offset<=0){this.before(content)}else{if(offset>=this[0].length){this.after(content)}else{var fullText=this[0].data;this[0].data=fullText.substring(0,offset);this.after(fullText.substring(offset,fullText.length));this.after(content)}}}};jQuery.fn.removeCss=function(cssName){return this.each(function(){var oldstyle=jQuery(this).attr("style");var style=jQuery.grep(jQuery(this).attr("style").split(";"),function(curStyleAttr){var curStyleAttrName=curStyleAttr.split(":");if(curStyleAttrName[0]){if(curStyleAttrName[0].toUpperCase().trim().indexOf(cssName.toUpperCase())==-1){return curStyleAttr}}}).join(";").trim();jQuery(this).removeAttr("style");if(style.trim()){jQuery(this).attr("style",style)}return jQuery(this)})};jQuery.fn.contentEditable=function(b){var ce="contenteditable";if(jQuery.browser.msie&&parseInt(jQuery.browser.version)==7){ce="contentEditable"}if(b==undefined){return jQuery(this).attr(ce)}else{if(b===""){jQuery(this).removeAttr(ce)}else{if(b&&b!=="false"){b="true"}else{b="false"}jQuery(this).attr(ce,b)}}};
+jQuery.fn.between=function(content,offset){if(this[0].nodeType!==3){if(offset>this.children().size()){offset=this.children().size()}if(offset<=0){this.prepend(content)}else{this.children().eq(offset-1).after(content)}}else{if(offset<=0){this.before(content)}else{if(offset>=this[0].length){this.after(content)}else{var fullText=this[0].data;this[0].data=fullText.substring(0,offset);this.after(fullText.substring(offset,fullText.length));this.after(content)}}}};
+
+jQuery.fn.removeCss=function(cssName){
+    return this.each(function(){
+        var oldstyle=jQuery(this).attr("style");
+
+        if (!oldstyle || oldstyle.trim().length < 1) {
+            return jQuery(this).attr("style",'');
+        }
+        
+        var style=jQuery.grep(jQuery(this).attr("style").split(";"),function(curStyleAttr){
+            var curStyleAttrName=curStyleAttr.split(":");
+            if(curStyleAttrName[0]){if(curStyleAttrName[0].toUpperCase().trim().indexOf(cssName.toUpperCase())==-1){
+                return curStyleAttr}}}).join(";").trim();jQuery(this).removeAttr("style");
+            if(style.trim()){jQuery(this).attr("style",style)}
+                return jQuery(this)})};
+                
+
+jQuery.fn.contentEditable=function(b){var ce="contenteditable";if(jQuery.browser.msie&&parseInt(jQuery.browser.version)==7){ce="contentEditable"}if(b==undefined){return jQuery(this).attr(ce)}else{if(b===""){jQuery(this).removeAttr(ce)}else{if(b&&b!=="false"){b="true"}else{b="false"}jQuery(this).attr(ce,b)}}};
 /*
 *   This file is part of Aloha Editor
 *   Author & Copyright (c) 2010 Gentics Software GmbH, aloha@gentics.com

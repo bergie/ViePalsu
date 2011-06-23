@@ -20,12 +20,11 @@ GENTICS_Aloha_base_plugin = '/deps/aloha-editor/plugins/';
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'paste/oembedpastehandler.js"></script>');
 
 
-/*
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/annotations.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/lib/annotationservicemanager.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/lib/annotationservice.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'annotations/src/service/fise.js"></script>');
-*/
+
 
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate/src/iks_annotate.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate/src/iks_friends_repository.js"></script>');
@@ -40,6 +39,9 @@ document.write('<script type="text/javascript" src="/js/vie-aloha.js"></script>'
 
 // And we need Socket.IO
 document.write('<script type="text/javascript" src="/socket.io/socket.io.js"></script>');
+
+// And other helper
+document.write('<script type="text/javascript" src="/js/jquery.easydate-0.2.4.min.js"></script>');
 
 var dateComparator = function(item, collection) {
     var itemIndex = 0;
@@ -122,5 +124,4 @@ jQuery(document).ready(function() {
 	    console.log('look up my friends live');
 	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
 	}
-
 });

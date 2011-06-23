@@ -44,7 +44,7 @@ fetchTasksForEvent = (event, callback) ->
     events = event.get "rdfcal:hasTask"
 
     if not events
-        console.log "Issue getting task collection for event " + event.id
+        console.log "Problem getting task collection for event " + event.id
         return callback()
 
     events.predicate = 'rdfcal:taskOf'
@@ -72,6 +72,15 @@ dateComparator = (item, collection) ->
         if itemDate.getTime() > new Date(date).getTime()
             itemIndex = index + 1
     return itemIndex
+
+dateComparatorChronological = (item, collection) ->
+    itemDate = new Date item.get "dc:created"
+    itemIndex = 0
+    collection.pluck("dc:created").forEach (date, index) ->
+        if itemDate.getTime() < new Date(date).getTime()
+            itemIndex = index + 1
+    return itemIndex
+
 
 server = express.createServer()
 server.configure ->
@@ -195,7 +204,7 @@ server.get '/t', (request, response) ->
         events.predicate = 'rdfcal:component'
         events.object = calendar.id
         events.comparator = (item) ->
-            return dateComparator item, events
+            return dateComparatorChronological item, events
         return events.fetch
             success: (eventCollection) ->
                 fetched = 0
@@ -214,53 +223,6 @@ server.get '/t', (request, response) ->
                 return response.send window.document.innerHTML
 
         return response.send window.document.innerHTML
-
-
-server.get '/t/my', (request, response) ->
-    if !request.isAuthenticated() then return response.redirect '/'
-    return fs.readFile "#{process.cwd()}/templates/tasks.html", "utf-8", (err, data) ->
-        document = jsdom.jsdom data
-        window = document.createWindow()
-        jQ = jQuery.create window
-
-        writeUser request.session.auth.user, jQ
-
-        # Find RDFa entities and load them
-        VIE.RDFaEntities.getInstances jQ "*"
-
-        # meeting list
-        # Get the Calendar object
-        calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-
-        if !calendar
-            VIE.cleanup()
-            console.error "Error: loading calendar for task list"
-            return response.send window.document.innerHTML
-
-        # Query for events that have the calendar as component
-        events = calendar.get 'rdfcal:has_component'
-        events.predicate = 'rdfcal:component'
-        events.object = calendar.id
-        events.comparator = (item) ->
-            return dateComparator item, events
-        return events.fetch
-            success: (eventCollection) ->
-                fetched = 0
-
-                eventCollection.each (event) ->
-                    fetchTasksForEvent event, ->
-                        fetched++
-                        if fetched is eventCollection.length
-                            # Send stuff
-                            VIE.cleanup()
-                            return response.send window.document.innerHTML
-
-            error: (collection, error) ->
-                VIE.cleanup()
-                return response.send window.document.innerHTML
-
-        return response.send window.document.innerHTML
-
 
 # Serve the list of meetings for /
 server.get '/m', (request, response) ->
@@ -288,7 +250,7 @@ server.get '/m', (request, response) ->
         events.predicate = "rdfcal:component"
         events.object = calendar.id
         events.comparator = (item) ->
-            return dateComparator item, events
+            return dateComparatorChronological item, events
         return events.fetch
             success: (eventCollection) ->
                 VIE.cleanup()
@@ -440,6 +402,7 @@ server.post '/proxy', (request, response) ->
         
         if !requestData.proxy_url
             requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
+            #requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
         
         if !requestData.content
             requestData.content = decodedBody.content

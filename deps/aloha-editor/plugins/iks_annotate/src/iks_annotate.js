@@ -265,8 +265,8 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
 		    'typeof': 'foaf:Person',
 		    'property': 'foaf:name',
 		    'class': 'annotation_person',
-		    'style': '',
-		    'content': ''
+		    'content': '',
+		    'title': ''
 		});
         GENTICS.Utils.Dom.addMarkup(range, newIksAnnotate, false);
     }
@@ -304,7 +304,8 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 	if (item && item.url && item.url.match(r) && item.name) {
 	    this.iks_annotateField.setAttribute('about', item.url);
 	    this.iks_annotateField.setAttribute('content', item.name);
-	    this.iks_annotateField.setText(item.name);
+	    this.iks_annotateField.setAttribute('title', 'Person: '+item.name);
+	    //this.iks_annotateField.setText(item.name);
 	    
 	    // add to mentions
 	    var eventId = jQuery('body').attr('about');
