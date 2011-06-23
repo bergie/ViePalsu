@@ -52,16 +52,12 @@ jQuery(document).ready(function() {
     });
 
     // task added via aloha
-    /*mentionCollection.bind('add', function(mention, mention_list, options) {
+    mentionCollection.bind('add', function(mention, mention_list, options) {
         if (options.fromServer) {
             return;
         }
-        if (mention.id) {
-            // Make the link work
-            jQuery('[about="' + mention.id + '"] a').attr('href', mention.id);
-        }
         mention.save();
-    });*/
+    });
 
     taskCollection.comparator = function(item) {
         return dateComparator(item, taskCollection);

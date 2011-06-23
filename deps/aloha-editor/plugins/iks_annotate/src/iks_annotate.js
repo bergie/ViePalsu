@@ -105,17 +105,9 @@ eu.iksproject.AnnotationPlugin.bindInteractions = function () {
         this.iks_annotateField.addListener('keyup', function(obj, event) {
         	// TODO this event is never fired. Why?
         	// if the user presses ESC we do a rough check if he has entered a link or searched for something
-    	    if (event.keyCode == 27) {
-    	    	var curval = that.iks_annotateField.getQueryValue();
-    	    	if (
-    	    		curval[0] == '/' || // local link
-    	    		curval.match(/^.*\.([a-z]){2,4}$/i) || // local file with extension
-    	    		curval[0] == '#' || // inner document link
-    	    		curval.match(/^htt.*/i)  // external link
-    	    	) {
-    	    		// could be a link better leave it as it is
-    	    	}
-    	    }
+    	    /*if (event.keyCode == 27) {
+
+    	    }*/
         	that.iks_annotateChange();
         });
 
@@ -173,7 +165,7 @@ eu.iksproject.AnnotationPlugin.subscribeEvents = function () {
         		that.insertIksAnnotateButton.hide();
         		that.formatIksAnnotateButton.setPressed(true);
         		GENTICS.Aloha.FloatingMenu.setScope(that.getUID('iks_annotate'));
-        		that.iks_annotateField.setTargetObject(foundMarkup, 'about');
+        		that.iks_annotateField.setTargetObject(foundMarkup, 'data-tmp');
         	} else {
         		// no iks_annotate found
         		that.formatIksAnnotateButton.setPressed(false);
@@ -202,7 +194,7 @@ eu.iksproject.AnnotationPlugin.findIksAnnotateMarkup = function ( range ) {
 
 	if ( GENTICS.Aloha.activeEditable ) {
 	    return range.findMarkup(function() {
-	        return this.nodeName.toLowerCase() == 'span';
+	        return (this.nodeName.toLowerCase() == 'span' && jQuery(this).attr('typeof') == 'foaf:Person');
 	    }, GENTICS.Aloha.activeEditable.obj);
 	} else {
 	    return null;
@@ -313,8 +305,6 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
         var urlId = item.url;
         
         var date = new Date();
-        console.log('urlid', urlId);
-        console.log('in mentions', jQuery('[typeof="rdfcal\\:Mention"][about="'+urlId+'"]'));
         if (jQuery('[typeof="rdfcal\\:Mention"][about="'+urlId+'"]').length < 1) {
         mentionCollection.add({
             'rdfcal:hasAgent': item.url,
@@ -323,15 +313,12 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
             'id': urlId
         });
         
-	        console.log('iks annotate OK: added mention of person ' + item.name + ' with ID ' + urlId);
         } else {
-    	    console.log('iks annotate OK: person already exists ' + item.name + ' with ID ' + urlId);            
+    	    //console.log('iks annotate OK: person already exists ' + item.name + ' with ID ' + urlId);            
         }
 	    
 	    // cleanup old resourceItem
 	    this.iks_annotateField.cleanItem();
-	} else {
-	    
 	}
 	
 	/*GENTICS.Aloha.EventRegistry.trigger(
@@ -341,7 +328,6 @@ eu.iksproject.AnnotationPlugin.iks_annotateChange = function () {
 				'item': this.iks_annotateField.getItem()
 			})
 	);*/
-	
 };
 
 /**

@@ -129,17 +129,17 @@ jQuery.fn.removeCss=function(cssName){
     return this.each(function(){
         var oldstyle=jQuery(this).attr("style");
 
-        if (!oldstyle || oldstyle.trim().length < 1) {
-            return jQuery(this).attr("style",'');
-        }
-        
-        var style=jQuery.grep(jQuery(this).attr("style").split(";"),function(curStyleAttr){
+        if (oldstyle && oldstyle.trim().length > 0) {
+            var style=jQuery.grep(jQuery(this).attr("style").split(";"),function(curStyleAttr){
             var curStyleAttrName=curStyleAttr.split(":");
-            if(curStyleAttrName[0]){if(curStyleAttrName[0].toUpperCase().trim().indexOf(cssName.toUpperCase())==-1){
-                return curStyleAttr}}}).join(";").trim();jQuery(this).removeAttr("style");
+            if(curStyleAttrName[0]){
+                if(curStyleAttrName[0].toUpperCase().trim().indexOf(cssName.toUpperCase())==-1){return curStyleAttr}
+            }}).join(";").trim();
+            jQuery(this).removeAttr("style");
             if(style.trim()){jQuery(this).attr("style",style)}
-                return jQuery(this)})};
-                
+            return jQuery(this)}
+        })
+};
 
 jQuery.fn.contentEditable=function(b){var ce="contenteditable";if(jQuery.browser.msie&&parseInt(jQuery.browser.version)==7){ce="contentEditable"}if(b==undefined){return jQuery(this).attr(ce)}else{if(b===""){jQuery(this).removeAttr(ce)}else{if(b&&b!=="false"){b="true"}else{b="false"}jQuery(this).attr(ce,b)}}};
 /*

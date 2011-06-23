@@ -228,7 +228,7 @@ eu.iksproject.AnnotationTaskPlugin.findIksAnnotateMarkupTask = function ( range 
     }
 	if ( GENTICS.Aloha.activeEditable ) {
 	    return range.findMarkup(function() {
-	        return this.nodeName.toLowerCase() == 'mark';
+	        return (this.nodeName.toLowerCase() == 'span' && jQuery(this).attr('typeof') == 'rdfcal:Task');
 	    }, GENTICS.Aloha.activeEditable.obj);
 	} else {
 		return null;
@@ -284,7 +284,7 @@ eu.iksproject.AnnotationTaskPlugin.insertIksAnnotate = function ( extendToWord )
         range.endOffset = iks_annotateText.length;*/
     } else {
         var about_hash = PseudoGuid.GetNew();
-        var newIksAnnotate = jQuery('<mark />').attr({
+        var newIksAnnotate = jQuery('<span />').attr({
             'id': about_hash,
 		    'about': '',
 		    'typeof': 'rdfcal:Task',
