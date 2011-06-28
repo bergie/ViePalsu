@@ -476,12 +476,14 @@ socket.on 'connection', (client) ->
         modelInstance.save()
 
         # Send the item back to everybody else
+        console.log client
         for clientId, clientObject of socket.clients
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
 
     client.on 'disconnect', ->
+        console.log "client disconnected"
         if not client.userInstance then return
 
         # Mark user as offline and notify other users

@@ -121,9 +121,9 @@ eu.iksproject.AnnotationPlugin.bindInteractions = function () {
     // add to all editables the iks_annotate shortcut
     for (var i = 0; i < GENTICS.Aloha.editables.length; i++) {
 
-        // CTRL+G
+        // CTRL+P
         GENTICS.Aloha.editables[i].obj.keydown(function (e) {
-    		if ( e.metaKey && e.which == 71 ) {
+    		if ( e.metaKey && e.which == 80) {
 		        if ( that.findIksAnnotateMarkup() ) {
 		            GENTICS.Aloha.FloatingMenu.userActivatedTab = that.i18n('floatingmenu.tab.iks_annotate');
 		

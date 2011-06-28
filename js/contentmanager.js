@@ -31,6 +31,8 @@ document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugi
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'vie/src/vie-repository.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_annotate_task/src/iks_annotate_task.js"></script>');
 
+//document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin + 'iks_mentions/src/iks_mentions.js"></script>');
+
 // We need VIE
 document.write('<script type="text/javascript" src="/js/underscore-min.js"></script>');
 document.write('<script type="text/javascript" src="/js/backbone-min.js"></script>');
@@ -63,13 +65,20 @@ var dateComparator = function(item, collection) {
 };
 
 jQuery(document).ready(function() {
-
-    var socket = new io.Socket();
+    var connected, trying, tryConnect;
+    
+    var socket = new io.Socket(null, {
+        rememberTransport: false
+        , tryTransportsOnConnectTimeout: false 
+    });
+    
     socket.on('connect', function() {
+        $('#disconnectMessage').fadeOut();
+        
         // Connected, send our username so server knows who is online
         socket.send(jQuery('#account').attr('about'));
     });
-    socket.connect();
+    
     socket.on('message', function(data){
         if (typeof data !== 'object') {
             // Textual data
@@ -103,6 +112,31 @@ jQuery(document).ready(function() {
         });
     });
 
+    //- This method checks to see if we are connected, if not, tell socket.io to connect 
+    //- and reset a timeout to check again in 30 seconds.
+    tryConnect = function () {
+        if (!connected) {
+            var date = new Date();
+            date_reload = date.getTime()+15000;
+            date = new Date(date_reload);
+            $('#reconnect_countdown').attr('title', date).easydate();
+            
+            socket.connect();
+            clearTimeout(trying);
+            trying = setTimeout(tryConnect, 15000);
+        }
+    };
+
+    // displaying a notice to the user and
+    // setting a timer to try connecting in 500ms.
+    socket.on('disconnect', function () {
+        connected = false;
+        trying = setTimeout(tryConnect, 500);
+        $('#disconnectMessage').fadeIn();
+    });
+
+    socket.connect();
+
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
@@ -113,7 +147,9 @@ jQuery(document).ready(function() {
 
     VIE.RDFaEntities.getInstances();
     
-    //localStorage.removeItem('iks_friend_lookup');    
+    // @logout?
+    //localStorage.removeItem('iks_friend_lookup');
+    //localStorage.removeItem('iks_friend_time');
     var iks_friends = false;
     var r = new RegExp('', 'i');
 	iks_friends = localStorage.getItem('iks_friend_lookup');
@@ -121,7 +157,6 @@ jQuery(document).ready(function() {
 
     if (!iks_friends) {
 	    var user_ids = GENTICS.Aloha.Repositories.iks_friends._getTwitterFriendIds();
-	    console.log('look up my friends live');
 	    var items = GENTICS.Aloha.Repositories.iks_friends._getTwitterUserDataBatch(GENTICS.Aloha.Repositories.iks_friends.user_ids, r);
 	}
 });

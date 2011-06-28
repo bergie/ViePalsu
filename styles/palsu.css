@@ -33,14 +33,16 @@ header h1 {
     font-size: 22pt;
     color: #ce5c00;
     text-shadow: #ffffff 0px 0px 2px;
+    width: auto;
+    float: left;
 }
 
 header #account {
-    position: absolute;
+    margin: 10px 0 0 0;
     right: 1em;
-    top: 1em;
     font-size: smaller;
     width: 300px;
+    float: right;
 }
 header #account img {
     float: left;
@@ -379,3 +381,24 @@ body.task article hr {
     clear: both;
     padding: 2px 0 3px 0;
 }
+
+#disconnectMessage {
+    background-color: yellow;
+    padding: 3px;
+    font-size: small;
+    font-weight: bolder;
+    display: none;
+}
+
+#disconnectMessage > span {
+    margin: 0 5px 0 5px;
+    padding: 0 0 0 20px;
+    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+}
+
+#disconnectMessageLoader {
+    display: inline;
+    left: 10000px;
+    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+}
+
