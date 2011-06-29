@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
             jQuery('[about="' + task.id + '"] a').attr('href', task.id);
             
             // move to function
-            console.log('### complete status', task.get('rdfcal:completed'));
+            //console.log('### complete status', task.get('rdfcal:completed'));
             if (task.get('rdfcal:completed') == 1 && task.id) {
                 jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
             } else {
@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 
                 var data = VIE.EntityManager.getBySubject(uuid);
                 var complete_status = data.get('rdfcal:completed');
-                console.log(complete_status);
+                //console.log(complete_status);
                 if (complete_status == 1) {
                     jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
                     data.set({'rdfcal:completed':'0'});
