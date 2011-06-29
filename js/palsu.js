@@ -1,6 +1,6 @@
-//jQuery(function() {
 jQuery(document).ready(function() {    
     
+    /*
     if ($.VIE2.connectors['stanbol']) {
         $.VIE2.connectors['stanbol'].options({
         	    "proxy_url" : "/proxy",
@@ -139,8 +139,10 @@ jQuery(document).ready(function() {
             return this;
         },
     });
+    */
 });
 
+/*
 function analyzeText (elem, button) {
 	//disable button
 	//$(button).attr('disabled', 'disabled');
@@ -169,4 +171,4 @@ function addName () {
     $(document).vie2().vie2('annotate',
       '<http://dbpedia.org/resource/Barack_Obama> foaf:name "B B Obama"');
 };
-
+*/

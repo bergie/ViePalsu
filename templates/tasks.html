@@ -11,9 +11,6 @@
       xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
   <head>
         <title>Palsu &mdash; Online meeting tool</title>
-        
-        <link type="text/css" rel="stylesheet" href="/styles/palsu.css">
-        <base href="/">
 
         <script type="text/javascript" src="/browserify.js"></script>
         <script type="text/javascript">
@@ -24,52 +21,120 @@
         <script src="/js/contentmanager.js" type="text/javascript"></script>
         
         <script src="/js/tasks.js" type="text/javascript"></script>
+        
+        <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
+        <link rel="stylesheet" href="/styles/jquery.ingrid.css" type="text/css" media="screen" />
+        <link type="text/css" rel="stylesheet" href="/styles/palsu.css">
     </head>
-    <body>
-
+    <body class="tasks">
+        <div id="disconnectMessage"><span>Client disconnected - try to reconnect <abbr id="reconnect_countdown" title=""></abbr></span></div>
+        <div id="disconnectMessageLoader"></div>
         <header>
           <div>
-            <h1 property="rdfcal:summary">Meeting Title</h1>
+            <h1>Task List</h1>
             <div id="account" typeof="foaf:Person" about="#me">
               <span class="avatar" rel="foaf:img">
                 <img width="40" src="#" alt="User Picture"/>
               </span>
               <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/m">Meetings</a> &middot; <a href="/signout">Sign-out</a></nav>
               </p>
+              <nav><a href="/m">Meetings</a> &middot; <a href="/signout">Sign-out</a></nav>
             </div>
           </div>
         </header>
 
         <article>
         <h1>Tasks in Palsu</h1>
+        <div id="filter" class="actions">
+            show: <a href="#" class="task_filter_all_tasks_action">all tasks</a> <a href="#" class="task_filter_my_tasks_action">my tasks</a> | 
+            status: <a href="#" class="task_filter_all_status_action">all</a> <a href="#" class="task_filter_open_status_action">open</a> <a href="#" class="task_filter_completed_status_action">completed</a> 
+        </div>
+        
         <div id="main" class="task_list main_tasks">
+            
             <ul typeof="rdfcal:Vcalendar" about="urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66" rel="rdfcal:has_component" rev="rdfcal:component">
                 <li typeof="rdfcal:Vevent" about="">
-                    <a href="" property="rdfcal:summary">Event title</a>
+                    <a href="" class="event" property="rdfcal:summary">Event title</a>
                     
-                    <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
-                        <li class="task_complete_action" about="" typeof="rdfcal:Task">
-                            <i><span property="foaf:name">Agent</span></i> has to implement
-                            <br /><span property="rdfcal:name">Task description</span> by <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
-                        </li>
-                    </ul>
+                    <table class="ingrid datagrid">
+                     <thead>
+                      <tr>
+                       <th class="status">Status</th>
+                       <th class="assignee">Assignee</th>
+                       <th class="description">Description</th>
+                       <th class="start_date">Start date</th>
+                       <th class="target_date">Target date</th>
+                       <th class="actions">&nbsp;</th>
+                      </tr>
+                     </thead>
+                     <tbody class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
+                      <tr class="task_complete_action" about="" typeof="rdfcal:Task">
+                       <td><span property="rdfcal:completed" content=""></span></td>
+                       <td><span property="foaf:name">Assignee</span> <span property="rdfcal:hasAgent" content=""></span></td>
+                       <td><span property="rdfcal:name">Task description</span></td>
+                       <td><span property="rdfcal:startDate">yy-mm-dd</span></td>
+                       <td><span property="rdfcal:targetDate">yy-mm-dd</span></td>
+                       <td><p><a class="small_action edit_action" href="">Edit</a></p></td>
+                      </tr>
+                       </tbody>
+                      </table>
                     
                 </li>
             </ul>
+
         </div>
         </article>
 
         <script type="text/javascript" defer>
-            // js errors without this
             (function(window,undefined){
-                var
-                $ = window.jQuery,
-                GENTICS = window.GENTICS,
-                $body = $('body');
-                $body.bind('aloha',function(){});
-                })(window);
+    			// Prepare
+    			var
+    				$ = window.jQuery,
+    				GENTICS = window.GENTICS,
+    				$body = $('body');
+
+    			// Customise
+    			GENTICS.Aloha.settings = {
+    				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
+    				errorhandling : false,
+    				proxyUrl: '/proxy?proxy_url=',
+    				"i18n": {
+    					"acceptLanguage": 'en'
+    				},
+    				"repositories": {
+    					"linklist": {
+    					    data: []
+    					}
+    				},
+    				"plugins": {
+    					"link": {
+    						targetregex : '^(?!.*palsu.me).*',
+    						target : '_blank',
+    						cssclassregex : '^(?!.*palsu.me).*',
+    						cssclass : 'external'
+    					},
+    					"table": {
+    						config: ['table']
+    					},
+    					"ribbon": {
+    						enable: false
+    					},
+    					"annotations": {
+                		    "Services" : {
+                		        "fise" : {
+                		            ApiEndpoint: 'http://dev.iks-project.eu:8080/engines/'
+                		        }
+                		    }
+                		}
+
+    				}
+    			};
+
+    			// Bind to Aloha Ready Event
+    			$body.bind('aloha',function(){
+    			});
+    		})(window);
         </script>
     </body>
 </html>

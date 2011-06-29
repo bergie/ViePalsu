@@ -33,14 +33,16 @@ header h1 {
     font-size: 22pt;
     color: #ce5c00;
     text-shadow: #ffffff 0px 0px 2px;
+    width: auto;
+    float: left;
 }
 
 header #account {
-    position: absolute;
+    margin: 10px 0 0 0;
     right: 1em;
-    top: 1em;
     font-size: smaller;
     width: 300px;
+    float: right;
 }
 header #account img {
     float: left;
@@ -205,7 +207,6 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_status_completed {
     color: green;
-    text-decoration:line-through;
     list-style-image: url('/static/icons/tick.png');
 }
 
@@ -215,6 +216,10 @@ aside .persons span[property="iks:online"][content="1"] {
 
 .task_complete_action {
     cursor:pointer;
+}
+
+.small_action {
+    font-size: small;
 }
 
 .annotation_person {
@@ -245,3 +250,155 @@ article li[typeof="rdfcal:Vevent"] {
 #account span[property="foaf:nick"] {
     font-style: italic;
 }
+
+
+/* iks test buttons */
+button.GENTICS_button_addPerson {
+	background-position: -224px 0 !important;
+}
+
+button.GENTICS_button_addEvent {
+	background: url('/static/icons/time_add.png') no-repeat !important;
+}
+
+button.GENTICS_button_datepicker {
+	background: url('/static/icons/date.png') no-repeat !important;
+}
+
+.GENTICS_Datepicker_Createdialog {
+	z-index: 99999;
+	position: absolute;
+	background-color: #F0F0F0;
+	border: 1px solid #cccccc;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+}
+
+body.meetings #main ul,
+body.tasks #main ul,
+#sidebar ul {
+    list-style-type: none;
+    margin-left: -20px;
+}
+
+body.meetings #main li,
+body.tasks #main li,
+#sidebar li {
+    margin-left: -15px;
+}
+
+body.meetings #main .easydate {
+    font-size: x-small;
+    cursor: help;
+}
+
+body.meetings #main div[property="mgd:agenda"] {
+    margin: 0;
+    padding: 0 0 20px 30px;
+    border-top: 3px solid #ccc;
+    font-size: small;
+}
+
+body.meetings #main li[typeof="rdfcal:Vevent"] {
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+.ingrid span[property="rdfcal:completed"][content="0"] {
+    background-color: red;
+    color: red;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+
+.ingrid span[property="rdfcal:completed"][content="1"] {
+    background-color: #73d216;
+    color: #73d216;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
+
+body.tasks p.info {
+    font-size: small;
+}
+
+body.tasks #main li {
+    margin: 10px 0 20px 0;
+}
+
+body.tasks #main table {
+    width: 90%;
+}
+
+body.tasks #main th.status {
+    width: 40px;
+}
+
+body.tasks #main th.assignee {
+    width: 120px;
+}
+
+
+body.tasks #main th.actions {
+    width: 40px;
+}
+
+body.tasks #main td p {
+    text-align: center;
+}
+
+body.tasks #main th.target_date, body.tasks #main th.start_date {
+    width: 65px;
+}
+
+body.tasks .actions {
+    font-size: small;
+}
+
+body.tasks .selected {
+    font-weight: bold;
+}
+
+body.task article div.label {
+    display: inline;
+    width: 100px;
+    float: left;
+}
+
+body.task article div.value {
+    position: relative;
+    float: left;
+    width: 650px;
+}
+
+body.task article hr {
+    border: 0;
+    clear: both;
+    padding: 2px 0 3px 0;
+}
+
+#disconnectMessage {
+    background-color: yellow;
+    padding: 3px;
+    font-size: small;
+    font-weight: bolder;
+    display: none;
+}
+
+#disconnectMessage > span {
+    margin: 0 5px 0 5px;
+    padding: 0 0 0 20px;
+    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+}
+
+#disconnectMessageLoader {
+    display: inline;
+    left: 10000px;
+    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+}
+

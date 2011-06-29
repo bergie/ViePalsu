@@ -11,77 +11,58 @@
       xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
   <head>
         <title>Palsu &mdash; Online meeting tool</title>
-        
-        <link rel="stylesheet" href="/styles/palsu.css" />
-        <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
-        <link type="text/css" rel="stylesheet" href="/deps/aloha-editor/src/plugin/iks_annotate/src/iks_annotate.css">
-
-        <base href="/">
-
         <script type="text/javascript" src="/browserify.js"></script>
         <script type="text/javascript">
             var jQuery = require('jquery-browserify');
         </script>
 
         <script src="/js/contentmanager.js" type="text/javascript"></script>
-        <script src="/js/layout.js" type="text/javascript"></script>
-        <script src="/js/discussionmanager.js" type="text/javascript"></script>
-        <script src="/js/jquery.easydate-0.2.4.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/deps/aloha-editor/plugins/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
 
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
-
-		<!-- VIE^2 
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/lib/rdfquery/latest/jquery.rdfquery.rules.js"></script>
-
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/util.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/core.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/connector.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/core/mapping.js"></script>
-		-->
-		
-		<!-- Connector plug-ins 
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/stanbol.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/dbpedia.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/connector/rdfa.js"></script>
-		-->
-		
-		<!-- Mapping plug-ins 
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/person.js"></script>
-		<script type="text/javascript" src="/deps/aloha-editor/src/plugin/vie2/VIE-2/src/mapping/task.js"></script>
-        -->
-        
-        <!-- 
-		<script src="/js/palsu.js" type="text/javascript"></script>
-		-->
-		
         <script src="/js/task.js" type="text/javascript"></script>
 
+        <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
+        <link rel="stylesheet" href="/styles/palsu.css" />
     </head>
     
-    <body typeof="rdfcal:Task" about="#meeting">
-        
+    <body typeof="rdfcal:Task" about="#task" class="task">
+        <div id="disconnectMessage"><span>Client disconnected - try to reconnect <abbr id="reconnect_countdown" title=""></abbr></span></div>
+        <div id="disconnectMessageLoader"></div>
         <header>
           <div>
-            <h1 property="rdfcal:name">Task Title</h1>
+             <h1>Task Details</h1>
             <div id="account" typeof="foaf:Person" about="#me">
               <span class="avatar" rel="foaf:img">
                 <img width="40" src="#" alt="User Picture"/>
               </span>
               <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-                <nav><a href="/m">Meetings</a> &middot; <a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>
               </p>
+              <nav><a href="/m">Meetings</a> &middot; <a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>
             </div>
           </div>
         </header>
         
         <article>
-            <h2>detail / edit task page</h2>
-            <br />
-            <i><span property="foaf:name">Agent</span></i> has to implement
-            <br /><span property="rdfcal:name">Task description</span> by <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
+            <h2>Task Details</h2>
+            
+            <div>
+                <div class="label">Person:</div>
+                <div class="value"><span property="foaf:name">Agent</span></div>
+                <hr />
+                <div class="label">Description:</div>
+                <div class="value"><span property="rdfcal:name">Task description</span></div>
+                <hr />
+                <div class="label">Target date:</div>
+                <div class="value"><span property="rdfcal:targetDate">yy-mm-dd</span></div>
+                <hr />
+                <div class="label">Start date:</div>
+                <div class="value"><span property="rdfcal:startDate">yy-mm-dd</span></div>
+                <hr />
+                <div class="label">Status:</div>
+                <div class="value"><span property="rdfcal:completed">x</span></div>
+            </div>
         </article>
         
         <script type="text/javascript" defer>
@@ -91,9 +72,20 @@
                 $ = window.jQuery,
                 GENTICS = window.GENTICS,
                 $body = $('body');
+                
+                // Customise
+    			GENTICS.Aloha.settings = {
+    				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
+    				errorhandling : false,
+    				proxyUrl: '/proxy?proxy_url=',
+    				"i18n": {
+    					"acceptLanguage": 'en'
+    				}
+			    };
+                
                 $body.bind('aloha',function(){});
                 })(window);
         </script>
-
+        
     </body>
 </html>

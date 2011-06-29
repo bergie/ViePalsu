@@ -21,7 +21,8 @@ ViePalsu.DiscussionManager = {
             if (!newMessage) {
                 return true;
             }
-
+            
+            // @todo is here the collection add problem?!
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
                 'dc:creator': jQuery('#username').text(),
@@ -42,12 +43,6 @@ ViePalsu.DiscussionManager = {
         GENTICS.Aloha.EventRegistry.subscribe(ViePalsu.DiscussionManager.chatInputEditable, 'editableDeactivated', function() {
             if (ViePalsu.DiscussionManager.chatInput.html() === '') {
                 ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
-            } else {
-                /*$('.message').vie2().vie2('analyze', function (status) {
-                    if (status === 'ok') {
-                        console.log("Success!");
-                    }
-                });*/
             }
         });
     },
@@ -81,7 +76,7 @@ ViePalsu.DiscussionManager = {
             window.setTimeout(function() {
                 jQuery('[typeof="sioc:Post"]').each(function() {
                     ViePalsu.DiscussionManager.updateDate(this);
-                });	  
+                });
             }, 20);
             
             if (!options.fromServer) {
@@ -102,10 +97,6 @@ ViePalsu.DiscussionManager = {
             }
         });
         
-        // Remove placeholder
-        // @todo move to other location -- bug: create new meeting; open it for the first time --> example user is in autosuggest for person annotation
-        jQuery('[rel="rdfcal:attendee"] [about="#"]').remove();
-
         attendees.bind('add', function(person, attendees, options) {
             if (!options.fromServer) {
                 person.save();
@@ -121,7 +112,6 @@ ViePalsu.DiscussionManager = {
     
     updateDate: function(element) {
         jQuery('.easydate', element).attr('title', jQuery('div[property="dc:created"]', element).hide().text());
-        
         jQuery('.easydate', element).easydate();
     }
 };
@@ -130,10 +120,11 @@ jQuery(document).ready(function() {
     // Make RDFa entities editable on double click
     jQuery('[about]').each(function() {
         var subject = VIE.RDFa.getSubject(jQuery(this));
-        jQuery('[property]', this).dblclick(function() {
+        jQuery('[property]', this).click(function() {
             if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
                 return true;
             }
+            
             jQuery(this).vieSemanticAloha();
             var modelInstance = VIE.EntityManager.getBySubject(subject);
 
@@ -144,12 +135,6 @@ jQuery(document).ready(function() {
                     if (VIE.AlohaEditable.refreshFromEditables(modelInstance)) {
                         // There were changes, save
                         modelInstance.save();
-                        //use VIE^2 to analyze the text
-                        /*$('.message').vie2().vie2('analyze', function (status) {
-                            if (status === 'ok') {
-                                console.log("Success 2!");
-                            }
-                        });*/
                     }
                 });
             });

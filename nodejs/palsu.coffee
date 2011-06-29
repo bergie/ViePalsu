@@ -9,8 +9,8 @@ auth = require 'connect-auth'
 sys = require 'sys'
 require './vie-redis.coffee'
 RedisStore = require 'connect-redis'
-require 'socket.io-connect'
-require '../js/auth/auth.strategies/linkedin.js'
+querystring = require 'querystring'
+#require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
 browserify = require 'browserify'
@@ -39,14 +39,12 @@ writeUser = (user, jQuery) ->
 
 fetchTasksForEvent = (event, callback) ->
     # add tasks
-    console.log 'fetchTasksForEvent: ' + event.id
-    #console.log event
     if not event.id then return
 
     events = event.get "rdfcal:hasTask"
 
     if not events
-        console.log "Issue getting task collection for event " + event.id
+        console.log "Problem getting task collection for event " + event.id
         return callback()
 
     events.predicate = 'rdfcal:taskOf'
@@ -56,7 +54,6 @@ fetchTasksForEvent = (event, callback) ->
     return events.fetch
         success: (taskCollection) ->
             console.log "Got task collection " + taskCollection.length
-            #console.log 'success taskcollection', taskCollection
             callback()
         error: ->
             console.log "Failed to get task collection"
@@ -76,13 +73,17 @@ dateComparator = (item, collection) ->
             itemIndex = index + 1
     return itemIndex
 
+dateComparatorChronological = (item, collection) ->
+    itemDate = new Date item.get "dc:created"
+    itemIndex = 0
+    collection.pluck("dc:created").forEach (date, index) ->
+        if itemDate.getTime() < new Date(date).getTime()
+            itemIndex = index + 1
+    return itemIndex
+
+
 server = express.createServer()
 server.configure ->
-
-    # Our CSS files need the LessCSS compiler
-    server.use express.compiler
-        src: process.cwd()
-        enable: ['less']
     # Serve static files from /styles and /js
     server.use '/styles', express.static "#{process.cwd()}/styles"
     server.use '/js', express.static "#{process.cwd()}/js"
@@ -111,14 +112,6 @@ server.configure ->
             consumerSecret: cfg.twitter.secret]
 
 ###
-    server.use auth [auth.Twitter
-            consumerKey: cfg.twitter.key
-            consumerSecret: cfg.twitter.secret]
-    server.use auth [auth.Facebook
-            appId: cfg.facebook.key
-            appSecret: cfg.facebook.secret
-            scope: "email"
-            callback: "http://palsu.me/oauth-signin"]
     server.use auth [auth.Linkedin
             consumerKey: cfg.linkedin.key
             consumerSecret: cfg.linkedin.secret]
@@ -145,6 +138,7 @@ server.get '/oauth-signin', (request,response) ->
     request.authenticate [provider], (error, authenticated) ->
         # move to switch...
         console.log 'auth: ' + authenticated
+        console.log request.session.auth
 
         if request.isAuthenticated() and provider == 'twitter'
             console.log 'is twitter'
@@ -203,7 +197,6 @@ server.get '/t', (request, response) ->
         if !calendar
             VIE.cleanup()
             # todo return error message
-            console.error "Error: loading calendar for task list"
             return response.send window.document.innerHTML
 
         # Query for events that have the calendar as component
@@ -211,7 +204,7 @@ server.get '/t', (request, response) ->
         events.predicate = 'rdfcal:component'
         events.object = calendar.id
         events.comparator = (item) ->
-            return dateComparator item, events
+            return dateComparatorChronological item, events
         return events.fetch
             success: (eventCollection) ->
                 fetched = 0
@@ -257,7 +250,7 @@ server.get '/m', (request, response) ->
         events.predicate = "rdfcal:component"
         events.object = calendar.id
         events.comparator = (item) ->
-            return dateComparator item, events
+            return dateComparatorChronological item, events
         return events.fetch
             success: (eventCollection) ->
                 VIE.cleanup()
@@ -296,8 +289,9 @@ server.get "/t/:id", (request, response) ->
             console.log 'send content'
             return response.send window.document.innerHTML
 
-        console.log 'fetch task with id', request.params.id
         # Get the Meeting object
+        console.log 'fetch task with id', request.params.id
+
         calendar = VIE.EntityManager.getBySubject request.params.id
         calendar.fetch
             success: (event) ->
@@ -337,13 +331,11 @@ server.get "/m/:id", (request, response) ->
             return response.send window.document.innerHTML
 
         sendContent2 = (collection, error) ->
-            #VIE.cleanup()
             return true
 
         # Query for posts for this event
         # @todo callbacks as array or something like that...
-        getPosts = (event, callback, callback2) ->
-            #console.log event
+        getPosts = (event, callback, callback2, callback3) ->
             posts = event.get "sioc:container_of"
             posts.predicate = "sioc:has_container"
             posts.object = event.id
@@ -353,16 +345,15 @@ server.get "/m/:id", (request, response) ->
                 success: (collection) ->
                     callback event
                     callback2 event
+                    callback3 event
                 error:  (collection, error) ->
-                    #console.log collection
-                    #console.log error
                     callback event
                     callback2 event
+                    callback3 event
 
         getParticipants = (event) ->
             participants = event.get "rdfcal:attendee"
             console.log '### participants list: '
-            #console.log participants
             participants.predicate = "rdfcal:attendeeOf"
             participants.object = event.id
             return participants.fetch
@@ -376,39 +367,72 @@ server.get "/m/:id", (request, response) ->
             return task_list.fetch
                 success: sendContent2
                 error: sendContent2
-                #error: console.log task_list
+
+        getMentions = (event) ->
+            mention_list = event.get "rdfcal:hasMention"
+
+            mention_list.predicate = "rdfcal:mentionOf"
+            mention_list.object = event.id
+            return mention_list.fetch
+                success: sendContent2
+                error: sendContent2
+
 
         # Get the Meeting object
         calendar = VIE.EntityManager.getBySubject request.params.id
         calendar.fetch
             success: (event) ->
-                getPosts event, getTasks, getParticipants
+                getPosts event, getTasks, getMentions, getParticipants
             error: (event, error) ->
                 VIE.cleanup()
                 return response.send error
 
 
 # Proxy VIE-2 cross-site requests
-#server.post '^\\/proxy.*', (request, response) ->
 server.post '/proxy', (request, response) ->
     
-    proxiedRequest =
-        method: requestData.verb or "GET"
-        uri: requestData.proxy_url
-        data: requestData.content
-        headers:
-            "Accept": requestData.format or "text/plain"
+    fullBody = ''
+    
+    request.on 'data', (chunk) ->
+        fullBody += chunk.toString()
+    
+    request.on 'end', () ->
+        decodedBody = querystring.parse(fullBody)
+        requestData = request
+        
+        if !requestData.proxy_url
+            requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
+            #requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+        
+        if !requestData.content
+            requestData.content = decodedBody.content
+        
+        if !requestData.verb
+            requestData.verb = "POST"
+        
+        if !requestData.format
+            requestData.format = "text/plain"
+        
+        proxiedRequest =
+            #method: requestData.verb or "GET"
+            method: "POST"
+            uri: requestData.proxy_url
+            body: requestData.content
+            headers:
+                "Accept": requestData.format or "text/plain"
+        
+        return req = ProxyRequest
+            #method: requestData.verb or "GET"
+            method: "POST"
+            uri: requestData.proxy_url
+            body: requestData.content
+            headers:
+                "Accept": requestData.format or "text/plain"
+        , (error, resp, body) ->
+            #console.log 'proxy body', body
+            #console.log 'error', error
+            return response.send body
 
-    return req = ProxyRequest
-        method: requestData.verb or "GET"
-        uri: requestData.proxy_url
-        data: requestData.content
-        headers:
-            "Accept": requestData.format or "text/plain"
-    , (error, resp, body) ->
-        console.log proxiedRequest
-        console.log body
-        return response.send body
 
 # simple get proxy
 server.get '/proxy', (request, response) ->
@@ -452,12 +476,14 @@ socket.on 'connection', (client) ->
         modelInstance.save()
 
         # Send the item back to everybody else
+        console.log client
         for clientId, clientObject of socket.clients
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
 
     client.on 'disconnect', ->
+        console.log "client disconnected"
         if not client.userInstance then return
 
         # Mark user as offline and notify other users
