@@ -120,7 +120,7 @@ jQuery(document).ready(function() {
     // Make RDFa entities editable on double click
     jQuery('[about]').each(function() {
         var subject = VIE.RDFa.getSubject(jQuery(this));
-        jQuery('[property]', this).click(function() {
+        jQuery('[property]', this).dblclick(function() {
             if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
                 return true;
             }

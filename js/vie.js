@@ -351,7 +351,7 @@
         // CURIEs will be returned as-is.
         getSubject: function() {
             if (typeof this.id === 'string') {
-                if (this.id.substr(0, 7) === 'http://') {
+                if (this.id.substr(0, 7) === 'http://' || this.id.substr(0, 4) === 'urn:') {
                     return VIE.RDFa._toReference(this.id);
                 }
                 return this.id;
@@ -394,14 +394,14 @@
                 attributeValue = instance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
-                        console.log(referenceInstance.id);
+                        /*console.log(referenceInstance.id);
                         if (referenceInstance.id) {	
                             return VIE.RDFa._toReference(referenceInstance.id);
                         } else {
                             console.log(referenceInstance.cid.replace('c', '_:bnode'));
                             return referenceInstance.cid.replace('c', '_:bnode');
-                        }
-                        //return referenceInstance.getSubject();
+                        }*/
+                        return referenceInstance.getSubject();
                     });
                 } else {
                     instanceLD[property] = attributeValue;

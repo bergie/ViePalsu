@@ -44,7 +44,8 @@ jQuery(document).ready(function() {
         }
 
         jQuery('[about="' + event.id + '"] a').attr('href', event.url);
-        jQuery('[about="' + event.id + '"] span[property="dc:created"]').remove()
+        jQuery('[about="' + event.id + '"] span[property="dc:created"]').remove();
+        
         jQuery('[about="' + event.id + '"] abbr.easydate').attr('title', event.attributes['dc:created']).click(function() {
             jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').slideToggle();
         });
