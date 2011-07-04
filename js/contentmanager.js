@@ -137,7 +137,6 @@ jQuery(document).ready(function() {
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
-		// @todo seems to be executed 2 times?!
 		console.log('backbone.sync', method, json);
 		socket.send(json);
     };

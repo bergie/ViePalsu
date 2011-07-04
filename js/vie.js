@@ -1,4 +1,4 @@
-///     VIE - Vienna IKS Editables
+//     VIE - Vienna IKS Editables
 //     (c) 2011 Henri Bergius, IKS Consortium
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
@@ -242,6 +242,60 @@
             return entityInstance;
         },
 
+        // ### VIE.EntityManager.getByRDFJSON
+        //
+        // Another way to get or load entities is by passing EntityManager a valid
+        // RDF/JSON object.
+        //
+        // This can be either called with a JavaScript object representing JSON-LD,
+        // or with a JSON-LD string.
+        //
+        // Example:
+        //
+        //     var rdfjson = '{"<http://www.example.com/books/wikinomics>": {"dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}}';
+        //     var objectInstance = VIE.EntityManager.getByRDFJSON(rdfjson);
+        getByRDFJSON: function(rdfjson, options){
+            VIE.EntityManager.initializeCollection();
+            var entityInstance;
+            var simpleProperties = {};
+
+            if (typeof rdfjson !== 'object') {
+                try {
+                    rdfjson = jQuery.parseJSON(rdfjson);
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            _.each(rdfjson, function(properties, entityUri){
+                
+                // Simplify rdfjson
+                _(properties).each(function(propertyValues, key){
+                    key = '<' + key + '>';
+                    simpleProperties[key] = _(propertyValues).map(function(value){
+                        return value.value;
+                    });
+                    
+                    simpleProperties[key] = _(simpleProperties[key]).uniq();
+                    if(simpleProperties[key].length == 1)
+                        simpleProperties[key] = simpleProperties[key][0];
+                });
+                
+                entityInstance = VIE.EntityManager.getBySubject(entityUri);
+                
+                if (entityInstance) {
+                    entityInstance.set(simpleProperties, options);
+                    
+                    return entityInstance;
+                }
+                entityInstance = new VIE.RDFEntity(simpleProperties);
+                entityInstance.id = entityUri;
+                
+                VIE.EntityManager.registerModel(entityInstance);
+                return entityInstance;
+            })
+        },
+        
         // All new entities must be added to the `entities` collection.
         registerModel: function(model) {
             model.id = VIE.EntityManager._normalizeSubject(model.id);
@@ -268,7 +322,7 @@
             
             return undefined;
         },
-        
+
         // Create a list of Models for referenced properties
         _referencesToModels: function(value) {
             if (!_.isArray(value)) {
@@ -394,13 +448,6 @@
                 attributeValue = instance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
-                        /*console.log(referenceInstance.id);
-                        if (referenceInstance.id) {	
-                            return VIE.RDFa._toReference(referenceInstance.id);
-                        } else {
-                            console.log(referenceInstance.cid.replace('c', '_:bnode'));
-                            return referenceInstance.cid.replace('c', '_:bnode');
-                        }*/
                         return referenceInstance.getSubject();
                     });
                 } else {
@@ -438,6 +485,7 @@
             }
 
             _.each(entityInstance.attributes, function(propertyValue, property) {
+                if(property == 'id') return true;
                 if (VIE.RDFa._isReference(propertyValue)) {
                     var references = VIE.EntityManager._referencesToModels(propertyValue);
                     entityInstance.attributes[property] = new VIE.RDFEntityCollection(references);
@@ -949,12 +997,8 @@
                     jsonld[propertyName] = propertyName;
                 }
 
-                /*/ Before writing to DOM we check that the value has actually changed.
+                // Before writing to DOM we check that the value has actually changed.
                 if (VIE.RDFa._readPropertyValue(propertyName, propertyElement) !== jsonld[propertyName]) {
-                    VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
-                }*/
-                
-                if (VIE.RDFa._readPropertyValue(propertyName, propertyElement) !== jsonld[propertyName] && jQuery('.aloha-placeholder', propertyElement).length === 0) {
                     VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
                 }
             });
@@ -1026,7 +1070,7 @@
             // values for elements where the HTML presentation differs from the
             // actual value.
             var content = element.attr('content');
-            if (content) {
+            if (content !== undefined) {
                 return content;
             }
             

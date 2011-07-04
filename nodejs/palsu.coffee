@@ -127,6 +127,16 @@ server.get '/', (request, response) ->
         return response.redirect '/m'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
+server.get '/help', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/help.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+
+        writeUser request.session.auth.user, jQ
+        return response.send window.document.innerHTML
+
 server.get '/oauth-signin', (request,response) ->
 
     provider = request.param('p')
@@ -250,6 +260,7 @@ server.get '/m', (request, response) ->
         events = calendar.get "rdfcal:has_component"
         events.predicate = "rdfcal:component"
         events.object = calendar.id
+        
         events.comparator = (item) ->
             return dateComparatorChronological item, events
         return events.fetch
@@ -402,8 +413,10 @@ server.post '/proxy', (request, response) ->
         requestData = request
         
         if !requestData.proxy_url
-            requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
+            #requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
             #requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+            #requestData.proxy_url = 'http://jaslab.cs.upb.de:9090/engines';
+            requestData.proxy_url = 'http://fise.demo.nuxeo.com/engines';
         
         if !requestData.content
             requestData.content = decodedBody.content

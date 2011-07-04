@@ -252,7 +252,6 @@ eu.iksproject.AnnotationPlugin.insertIksAnnotate = function ( extendToWord ) {
         //var newIksAnnotate = jQuery('<span title="b"></span>');
         var about_hash = PseudoGuid.GetNew();
         var newIksAnnotate = jQuery('<span />').attr({
-            'id': about_hash,
 		    'about': '',
 		    'typeof': 'foaf:Person',
 		    'property': 'foaf:name',

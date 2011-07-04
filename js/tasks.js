@@ -51,7 +51,6 @@ jQuery(document).ready(function() {
             
         }
 
-
         event.save();
     });
     
@@ -116,7 +115,7 @@ jQuery(document).ready(function() {
         
         if (jQuery(this).attr('about')) {
             uuid = jQuery(this).attr('about');
-        }        
+        }
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
         if (complete_status == 1) {
@@ -175,7 +174,6 @@ jQuery(document).ready(function() {
         });
 
         _cleanUpTaskTable();
-
     });
     
     jQuery('.task_filter_completed_status_action').click(function() {

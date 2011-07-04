@@ -11,7 +11,8 @@
       xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
   <head>
         <title>Palsu &mdash; Online meeting tool</title>
-
+        <link rel="SHORTCUT ICON" href="/static/favicon.ico" type="image/x-icon">
+        
         <script type="text/javascript" src="/browserify.js"></script>
         <script type="text/javascript">
             var jQuery = require('jquery-browserify');
@@ -39,7 +40,7 @@
               <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
               </p>
-              <nav><a href="/m">Meetings</a> &middot; <a href="/signout">Sign-out</a></nav>
+              <nav><a href="/m">Meetings</a> &middot; <a href="/help">Help</a> &middot; <a href="/signout">Sign-out</a></nav>
             </div>
           </div>
         </header>
@@ -70,8 +71,8 @@
                      </thead>
                      <tbody class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
                       <tr class="task_complete_action" about="" typeof="rdfcal:Task">
-                       <td><span property="rdfcal:completed" content=""></span></td>
-                       <td><span property="foaf:name">Assignee</span> <span property="rdfcal:hasAgent" content=""></span></td>
+                       <td><span property="rdfcal:completed" content="0"></span></td>
+                       <td><span property="foaf:name">Assignee</span></td>
                        <td><span property="rdfcal:name">Task description</span></td>
                        <td><span property="rdfcal:startDate">yy-mm-dd</span></td>
                        <td><span property="rdfcal:targetDate">yy-mm-dd</span></td>

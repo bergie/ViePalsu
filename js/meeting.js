@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
     
     var eventId = jQuery('body').attr('about');
-    jQuery('#chat-history div[rev=sioc:has_container]').attr('about', eventId);
+    jQuery('#chat-history div[rev="sioc:has_container"]').attr('about', eventId);
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
     var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
 
