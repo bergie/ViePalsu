@@ -15,12 +15,13 @@ Backbone.sync = (method, model, success, error) ->
         "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
 
     if method is 'update'
+        console.log "Update enity: ", model.id
         if model.id.substr(0, 7) is "_:bnode"
             # Generate UUID as the URI of the object
             model.id = "urn:uuid:#{toUUID()}"
             console.log "Anonymous entity, saving with URI #{model.id}"
         
-        #console.log "backbone update: ", model.toJSONLD()
+        console.log "backbone update: ", model.toJSONLD()
         for predicate, object of model.toJSONLD()
             if predicate is "@"
                 continue

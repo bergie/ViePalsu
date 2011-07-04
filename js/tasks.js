@@ -2,9 +2,12 @@ jQuery(document).ready(function() {
     // remove empty todos
     jQuery('[typeof="rdfcal\\:Task][about=""]').remove();
     
-    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');    
+    //_cleanUpTaskTable();
+    
+    var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
+    
     eventCollection.bind('add', function(event, calendar, options) {
-        
+
         if (options.fromServer) {
             return;
         }
@@ -14,17 +17,28 @@ jQuery(document).ready(function() {
             jQuery('[about="' + event.id + '"] a').attr('href', event.id);
             jQuery('[about="' + event.id + '"] table').show();
             
+            // hide empty tables
+            jQuery('[about="' + event.id + '"] [property="foaf:name"]').each(function(index, value) {
+                if (jQuery(value).text()  == 'foaf:name') {
+                    jQuery(value).parents('tr').remove();
+                }
+            });
+
+            if (jQuery('[about="' + event.id + '"] tbody tr').length < 1) {
+                jQuery('[about="' + event.id + '"] table').hide();
+                jQuery('[about="' + event.id + '"] div.no_tasks_info').remove();
+                jQuery('[about="' + event.id + '"]').append('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
+            }
+            
             jQuery('.task_complete_action').click(function() {
                 var uuid = false;
 
                 if (jQuery(this).attr('about')) {
                     uuid = jQuery(this).attr('about');
                 }
-                console.log('### task complete: ' + uuid);
 
                 var data = VIE.EntityManager.getBySubject(uuid);
                 var complete_status = data.get('rdfcal:completed');
-                console.log('status', complete_status);
                 if (complete_status == 1) {
                     jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
                     data.set({'rdfcal:completed':'0'});
@@ -49,27 +63,14 @@ jQuery(document).ready(function() {
         
         event.get('rdfcal:hasTask').forEach(function(task) {
             
-            task.bind('change', function(event, calendar, options) {
+            task.bind('change', function(event, calendar, options) {                
                 // move to function
                 if (task.get('rdfcal:completed') == 1 && task.id) {
                     jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
                 } else {
                     jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
                 }
-                
             });
-            
-            // hide empty tables
-            //console.log(jQuery('[about="' + event.id + '"] tbody tr').length);
-            if (jQuery('[about="' + event.id + '"] tbody tr').length < 1) {
-                jQuery('[about="' + event.id + '"] table').hide();
-                jQuery('[about="' + event.id + '"]').append('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
-            }
-
-            if (jQuery('[about="' + event.id + '"] [property="foaf:name"]').text() == 'foaf:name') {
-                jQuery('[about="' + event.id + '"] table').hide();
-                jQuery('[about="' + event.id + '"]').append('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
-            }            
             
             // add edit link target
             jQuery('[about="' + task.id + '"] a.edit_action').attr('href', task.id);
@@ -81,6 +82,19 @@ jQuery(document).ready(function() {
                 jQuery('[about="' + task.id + '"]').addClass('task_status_active').removeClass('task_status_completed');
             }
         });
+        
+        // hide empty tables
+        jQuery('[about="' + event.id + '"] [property="foaf:name"]').each(function(index, value) {
+            if (jQuery(value).text()  == 'foaf:name') {
+                jQuery(value).parents('tr').remove();
+            }
+        });
+        
+        if (jQuery('[about="' + event.id + '"] tbody tr').length < 1) {
+            jQuery('[about="' + event.id + '"] table').hide();
+            jQuery('[about="' + event.id + '"] div.no_tasks_info').remove();
+            jQuery('[about="' + event.id + '"]').append('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
+        }
         
         if (typeof event.id !== 'string') {
             eventCollection.remove(event);
@@ -102,11 +116,8 @@ jQuery(document).ready(function() {
         if (jQuery(this).attr('about')) {
             uuid = jQuery(this).attr('about');
         }
-        console.log('### task complete: ' + uuid);
-        
         var data = VIE.EntityManager.getBySubject(uuid);
         var complete_status = data.get('rdfcal:completed');
-        console.log(complete_status);
         if (complete_status == 1) {
             jQuery(this).addClass('task_status_active').removeClass('task_status_completed');
             data.set({'rdfcal:completed':'0'});
@@ -163,7 +174,6 @@ jQuery(document).ready(function() {
         });
 
         _cleanUpTaskTable();
-
     });
     
     jQuery('.task_filter_completed_status_action').click(function() {
@@ -203,19 +213,32 @@ jQuery(document).ready(function() {
     // default
     jQuery('.task_filter_all_tasks_action').hide();
     jQuery('.task_filter_all_status_action').addClass('selected');
+
+    // hide empty rows
+    jQuery('[property="foaf:name"]').each(function(index, value) {
+        if (jQuery(value).text()  == 'foaf:name') {
+            jQuery(value).parents('tr').remove();
+        }
+    });
 });
 
 function _cleanUpTaskTable() {
-    
     var r = new RegExp('http://', 'i');
     
-    jQuery('table.datagrid').each(function(index, value) {
+    /*jQuery('table.datagrid').each(function(index, value) {
         if (jQuery(this)) {
-            //if (!jQuery(this).find('tbody > tr').attr('about') || jQuery(this).find('tbody > tr:visible').length < 1 || !jQuery(this).find('tbody > tr').attr('about').match(r)) {
+            //console.log(jQuery(this).find('tbody'));
             if (!jQuery(this).find('tbody > tr').attr('about') || !jQuery(this).find('tbody > tr').attr('about').match(r)) {
-                jQuery(this).hide();
-                //jQuery(this).after('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
+                jQuery(this).remove();
+                jQuery(this).after('<div class="no_tasks_info"><p class="info">No Tasks available.</p></div>');
             }
+        }
+    });*/
+    
+    // hide empty rows
+    jQuery('[property="foaf:name"]').each(function(index, value) {
+        if (jQuery(value).text()  == 'foaf:name') {
+            jQuery(value).parents('tr').remove();
         }
     });
 }

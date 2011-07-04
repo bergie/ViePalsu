@@ -11,6 +11,7 @@
       xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
   <head>
     <title>Palsu &mdash; Online meeting tool</title>
+    <link rel="SHORTCUT ICON" href="/static/favicon.ico" type="image/x-icon">
     <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/browserify.js"></script>
     <script type="text/javascript">
@@ -32,7 +33,7 @@
           </span>
           <p> 
             Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
-            <nav><a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>            
+            <nav><a href="/t">Tasks</a> &middot;  <a href="/help">Help</a> &middot; <a href="/signout">Sign-out</a></nav>            
           </p>
         </div>
       </div>
@@ -70,6 +71,28 @@
             $ = window.jQuery,
             GENTICS = window.GENTICS,
             $body = $('body');
+            
+            // Customise
+			GENTICS.Aloha.settings = {
+				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
+				errorhandling : false,
+				proxyUrl: '/proxy?proxy_url=',
+				"i18n": {
+					"acceptLanguage": 'en'
+				},
+				"plugins": {
+					"annotations": {
+            		    "Services" : {
+            		        "fise" : {
+            		            ApiEndpoint: 'http://dev.iks-project.eu:8080/engines/' // 'http://stanbol.iksfordrupal.net/engines/'
+            		        }
+            		    }
+            		}
+            		
+				}
+			};
+
+			
             $body.bind('aloha',function(){});
             })(window);
     </script>

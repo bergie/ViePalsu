@@ -285,7 +285,6 @@ eu.iksproject.AnnotationTaskPlugin.insertIksAnnotate = function ( extendToWord )
     } else {
         var about_hash = PseudoGuid.GetNew();
         var newIksAnnotate = jQuery('<span />').attr({
-            'id': about_hash,
 		    'about': '',
 		    'typeof': 'rdfcal:Task',
 		    'property': 'rdfcal:name',

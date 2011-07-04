@@ -2,11 +2,14 @@ jQuery(document).ready(function() {
     
     var eventCollection = VIE.EntityManager.getBySubject('urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66').get('rdfcal:has_component');
     eventCollection.bind('add', function(event, calendar, options) {
-        if (options.fromServer) {
-            return;
-        }
         
         jQuery('div[property="mgd:agenda"]').slideUp();
+        
+        /*jQuery.each(jQuery('div[property="mgd:agenda"]'), function() {
+            if (jQuery(this).text() == 'mgd:agenda') {
+                jQuery(this).html('<p>No agenda defined.</p>');
+            }
+        });*/
         
         if (event.id) {
             // Make the link work
@@ -18,9 +21,13 @@ jQuery(document).ready(function() {
             if(jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').text() == 'mgd:agenda') {
                 jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').html('<p>No agenda defined.</p>');
             }
-            
         }
-
+        
+        if (options.fromServer) {
+            jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').slideDown();
+            return;
+        }
+        
         event.save();
     });
     
@@ -44,7 +51,8 @@ jQuery(document).ready(function() {
         }
 
         jQuery('[about="' + event.id + '"] a').attr('href', event.url);
-        jQuery('[about="' + event.id + '"] span[property="dc:created"]').remove()
+        jQuery('[about="' + event.id + '"] span[property="dc:created"]').remove();
+        
         jQuery('[about="' + event.id + '"] abbr.easydate').attr('title', event.attributes['dc:created']).click(function() {
             jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').slideToggle();
         });
@@ -54,9 +62,7 @@ jQuery(document).ready(function() {
         }
         
         // add details for latest meeting
-        if (mcounter == 0) {            
-            var latestEventCollection = VIE.EntityManager.getBySubject(event.id).get('mgd\\:agenda');
-        } else {
+        if (mcounter > 0) {
             jQuery('[about="' + event.id + '"] div[property="mgd:agenda"]').hide();
         }
         mcounter++;
@@ -77,5 +83,4 @@ jQuery(document).ready(function() {
     });
     
     jQuery(".easydate").easydate();
-
 });

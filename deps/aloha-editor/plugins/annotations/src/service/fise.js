@@ -203,7 +203,7 @@ GENTICS.Aloha.Annotations.Services.fise.subscribeEvents = function () {
 						var re = new RegExp('\"([0-9]+\.*)\"');
 						var match_confidence = re.exec(named_entity.confidence);
 						if (match != null && match_confidence != null) {
-						    console.log('entity', named_entity);
+						    //console.log('entity', named_entity);
 						    entities.push(named_entity);
 							if (jQuery.inArray(match[1], suggestions) < 0) { // see also autoSuggest plugin
 								suggestions.push(match[1]);
@@ -217,10 +217,10 @@ GENTICS.Aloha.Annotations.Services.fise.subscribeEvents = function () {
 				    var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
                     
     					for (i=0; i < suggestions.length; i++) {
-                            if (entities[i].type == '<http://dbpedia.org/ontology/Person>') {
+                            //if (entities[i].type == '<http://dbpedia.org/ontology/Person>') {
                                 var urlId = window.location.protocol + "//" + window.location.host + "/p/"+encodeURIComponent(suggestions[i])
                             
-                                console.log('check', jQuery('[about="'+urlId+'"]'));
+                                //console.log('check', jQuery('[about="'+urlId+'"]'));
                             
                                 var date = new Date();
                             
@@ -232,7 +232,7 @@ GENTICS.Aloha.Annotations.Services.fise.subscribeEvents = function () {
                                     'id': urlId
                                 });
                         	    }
-                            }
+                            //}
     					}
 
 					} catch(m) {

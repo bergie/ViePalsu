@@ -127,6 +127,16 @@ server.get '/', (request, response) ->
         return response.redirect '/m'
     response.sendfile "#{process.cwd()}/templates/welcome.html"
 
+server.get '/help', (request, response) ->
+    if !request.isAuthenticated() then return response.redirect '/'
+    return fs.readFile "#{process.cwd()}/templates/help.html", "utf-8", (err, data) ->
+        document = jsdom.jsdom data
+        window = document.createWindow()
+        jQ = jQuery.create window
+
+        writeUser request.session.auth.user, jQ
+        return response.send window.document.innerHTML
+
 server.get '/oauth-signin', (request,response) ->
 
     provider = request.param('p')
@@ -150,12 +160,13 @@ server.get '/oauth-signin', (request,response) ->
                     userData = JSON.parse(body)
                     userData.image = userData.profile_image_url
                     userData.homepage = userData.url
-                    console.log userData
                     updateUserSession request, userData
+                    console.log 'redirect user to dashboard'
+                    console.log userData
                     return response.redirect '/m'
                 else
-                    console.log 'redirect to dashboard'
-                    return response.redirect '/m'
+                    console.log 'login error: redirect to homepage'
+                    return response.redirect '/'
 
         if request.isAuthenticated() and provider == 'facebook'
             console.log 'is facebook'
@@ -210,7 +221,7 @@ server.get '/t', (request, response) ->
                 fetched = 0
 
                 eventCollection.each (event) ->
-                    console.log 'loop eventCollection', eventCollection.length
+                    #console.log 'loop eventCollection', eventCollection.length
                     fetchTasksForEvent event, ->
                         fetched++
                         if fetched is eventCollection.length
@@ -238,7 +249,7 @@ server.get '/m', (request, response) ->
         VIE.RDFaEntities.getInstances jQ "*"
         # Get the Calendar object
         calendar = VIE.EntityManager.getBySubject 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
-
+        
         if !calendar
             VIE.cleanup()
             # todo return error message
@@ -249,6 +260,7 @@ server.get '/m', (request, response) ->
         events = calendar.get "rdfcal:has_component"
         events.predicate = "rdfcal:component"
         events.object = calendar.id
+        
         events.comparator = (item) ->
             return dateComparatorChronological item, events
         return events.fetch
@@ -401,8 +413,10 @@ server.post '/proxy', (request, response) ->
         requestData = request
         
         if !requestData.proxy_url
-            requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
+            #requestData.proxy_url = 'http://dev.iks-project.eu:8080/engines';
             #requestData.proxy_url = 'http://stanbol.iksfordrupal.net/engines';
+            #requestData.proxy_url = 'http://jaslab.cs.upb.de:9090/engines';
+            requestData.proxy_url = 'http://fise.demo.nuxeo.com/engines';
         
         if !requestData.content
             requestData.content = decodedBody.content
@@ -476,14 +490,12 @@ socket.on 'connection', (client) ->
         modelInstance.save()
 
         # Send the item back to everybody else
-        console.log client
         for clientId, clientObject of socket.clients
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
                 clientObject.send data
 
     client.on 'disconnect', ->
-        console.log "client disconnected"
         if not client.userInstance then return
 
         # Mark user as offline and notify other users

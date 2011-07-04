@@ -1,6 +1,7 @@
 jQuery(document).ready(function() {
     
     var eventId = jQuery('body').attr('about');
+    jQuery('#chat-history div[rev="sioc:has_container"]').attr('about', eventId);
     var taskCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasTask');
     var mentionCollection = VIE.EntityManager.getBySubject(eventId).get('rdfcal:hasMention');
 
@@ -18,7 +19,6 @@ jQuery(document).ready(function() {
             jQuery('[about="' + task.id + '"] a').attr('href', task.id);
             
             // move to function
-            console.log('### complete status', task.get('rdfcal:completed'));
             if (task.get('rdfcal:completed') == 1 && task.id) {
                 jQuery('[about="' + task.id + '"]').addClass('task_status_completed').removeClass('task_status_active');
             } else {
@@ -35,7 +35,6 @@ jQuery(document).ready(function() {
 
                 var data = VIE.EntityManager.getBySubject(uuid);
                 var complete_status = data.get('rdfcal:completed');
-                console.log(complete_status);
                 if (complete_status == 1) {
                     jQuery('[about="' + uuid + '"]').addClass('task_status_active').removeClass('task_status_completed');
                     data.set({'rdfcal:completed':'0'});
@@ -91,6 +90,13 @@ jQuery(document).ready(function() {
             // Make the link work
             jQuery('[about="' + task.id + '"] a').attr('href', task.id);
         }
+        
+        // cleanup
+        jQuery('[about="' + task.id + '"] span[property="rdfcal:name"]').each(function(index, value) {
+            if (jQuery(value).text()  == 'rdfcal:name') {
+                jQuery(value).parents('li').remove();
+            }
+        });
     });
 
     // Go through the tasks and remove empty template

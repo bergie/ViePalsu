@@ -12,6 +12,8 @@
   <head>
         <title>Palsu &mdash; Online meeting tool</title>
         
+        <link rel="SHORTCUT ICON" href="/static/favicon.ico" type="image/x-icon">
+        
         <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="/browserify.js"></script>
@@ -44,7 +46,7 @@
               <p> 
                 Hello, <span property="foaf:nick" id="username">username</span> <span class="fullname">(<span property="foaf:name" id="name">name</span>)</span>!
               </p>
-              <nav><a href="/m">Meetings</a> &middot; <a href="/t">Tasks</a> &middot; <a href="/signout">Sign-out</a></nav>
+              <nav><a href="/m">Meetings</a> &middot; <a href="/t">Tasks</a> &middot; <a href="/help">Help</a> &middot; <a href="/signout">Sign-out</a></nav>
             </div>
           </div>
         </header>
@@ -83,7 +85,7 @@
             <h2><a href="#">Participants</a></h2>
             <div>
               <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-                <li about="" typeof="foaf:Person" content="0">
+                <li about="" typeof="foaf:Person" content="">
                   <span property="foaf:name">Example User</span>
                   <span property="iks:online" content="0"></span>
                 </li>

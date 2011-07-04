@@ -10,8 +10,6 @@ document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugi
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'List/plugin.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Link/plugin.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Link/LinkList.js"></script>');
-//document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'HighlightEditables/plugin.js"></script>');
-//document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'TOC/plugin.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Paste/plugin.js"></script>');
 document.write('<script type="text/javascript" src="' + GENTICS_Aloha_base_plugin_aloha + 'Paste/wordpastehandler.js"></script>');
 
@@ -74,7 +72,6 @@ jQuery(document).ready(function() {
     
     socket.on('connect', function() {
         $('#disconnectMessage').fadeOut();
-        
         // Connected, send our username so server knows who is online
         socket.send(jQuery('#account').attr('about'));
     });
@@ -140,8 +137,7 @@ jQuery(document).ready(function() {
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
-		// @todo seems to be executed 2 times?!
-		console.log(method, json);
+		console.log('backbone.sync', method, json);
 		socket.send(json);
     };
 

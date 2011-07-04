@@ -82,6 +82,10 @@ body.welcome article, body.meetings article {
     font-size: larger;
 }
 
+body.meetings article {
+    width: 23em;
+}
+
 body.welcome aside {
     display: block;
     float: left;

@@ -10,8 +10,8 @@ ViePalsu.DiscussionManager = {
 
         ViePalsu.DiscussionManager.chatInput.html(ViePalsu.DiscussionManager.defaultMessage);
         ViePalsu.DiscussionManager.chatInputEditable = new GENTICS.Aloha.Editable(ViePalsu.DiscussionManager.chatInput);
-		
-		// editableDeactivated or smartContentChanged
+
+        // editableDeactivated
         jQuery('#chat-input button').button().click(function() {
             if (!ViePalsu.DiscussionManager.chatInputEditable.isModified()){
                 return true;
@@ -22,7 +22,6 @@ ViePalsu.DiscussionManager = {
                 return true;
             }
             
-            // @todo is here the collection add problem?!
             var date = new Date();
             ViePalsu.DiscussionManager.collection.add({
                 'dc:creator': jQuery('#username').text(),
@@ -69,9 +68,21 @@ ViePalsu.DiscussionManager = {
         
         // Remove placeholder
         jQuery('[about="#post1"]').remove();
-
+        
+        jQuery.each(jQuery('[property="dc:creator"]'), function() {            
+            if (jQuery(this).text() == 'dc:creator') {
+                jQuery(this).parents('div[typeof="sioc:Post"]').remove();
+            }
+        });
+        
         ViePalsu.DiscussionManager.collection.bind('add', function(postInstance, collectionInstance, options) {
             ViePalsu.DiscussionManager.autoScroll();
+            
+            jQuery.each(jQuery('[property="dc:creator"]'), function() {
+                if (jQuery(this).text() == 'dc:creator') {
+                    jQuery(this).parents('div[typeof="sioc:Post"]').remove();
+                }
+            });
             
             window.setTimeout(function() {
                 jQuery('[typeof="sioc:Post"]').each(function() {
@@ -120,7 +131,7 @@ jQuery(document).ready(function() {
     // Make RDFa entities editable on double click
     jQuery('[about]').each(function() {
         var subject = VIE.RDFa.getSubject(jQuery(this));
-        jQuery('[property]', this).click(function() {
+        jQuery('[property]', this).dblclick(function() {
             if (subject !== VIE.RDFa.getSubject(jQuery(this))) {
                 return true;
             }
@@ -143,10 +154,17 @@ jQuery(document).ready(function() {
 
     jQuery('[typeof="sioc:Post"]').each(function() {
         ViePalsu.DiscussionManager.updateDate(this);
-    });	    
+    });
 
     ViePalsu.DiscussionManager.initInput();
     ViePalsu.DiscussionManager.getCollection();
     ViePalsu.DiscussionManager.autoScroll(true);
     ViePalsu.DiscussionManager.participate();
+    
+    // remove invalid participants
+    jQuery.each(jQuery('li[typeof="foaf:Person"] > span[property="foaf:name"]'), function() {
+        if (jQuery(this).text() == 'foaf:name') {
+            jQuery(this).parents('li[typeof="foaf:Person"]').remove();
+        }
+    });
 });
