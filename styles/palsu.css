@@ -283,7 +283,11 @@ body.meetings #main ul,
 body.tasks #main ul,
 #sidebar ul {
     list-style-type: none;
-    margin-left: -20px;
+    margin-left: -25px;
+}
+
+#sidebar ul {
+    font-size: 13px;
 }
 
 body.meetings #main li,
@@ -309,7 +313,8 @@ body.meetings #main li[typeof="rdfcal:Vevent"] {
     padding: 0;
 }
 
-.ingrid span[property="rdfcal:completed"][content="0"] {
+.ingrid span[property="rdfcal:completed"][content="0"],
+body.task span[property="rdfcal:completed"][content="0"] {
     background-color: red;
     color: red;
     width: 10px;
@@ -318,7 +323,8 @@ body.meetings #main li[typeof="rdfcal:Vevent"] {
     margin: 0 0 0 10px;
 }
 
-.ingrid span[property="rdfcal:completed"][content="1"] {
+.ingrid span[property="rdfcal:completed"][content="1"],
+body.task span[property="rdfcal:completed"][content="1"] {
     background-color: #73d216;
     color: #73d216;
     width: 10px;
@@ -327,7 +333,8 @@ body.meetings #main li[typeof="rdfcal:Vevent"] {
     margin: 0 0 0 10px;
 }
 
-body.tasks p.info {
+body.tasks p.info,
+body.help p.info {
     font-size: small;
 }
 
