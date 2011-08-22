@@ -8,7 +8,7 @@ VIE = require '../js/vie.js'
 auth = require 'connect-auth'
 sys = require 'sys'
 require './vie-redis.coffee'
-RedisStore = require 'connect-redis'
+RedisStore = require('connect-redis')(express)
 querystring = require 'querystring'
 #require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
