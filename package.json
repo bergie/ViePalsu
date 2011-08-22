@@ -1,5 +1,5 @@
 {
-"name": "Palsu App",
+"name": "palsu-app",
 "version": "0.0.1",
 "description": "Palsu meeting tool -- http://palsu.me",
 "main": "package.js",
@@ -10,5 +10,27 @@
 "repository" : {
     "type" : "git",
     "url" : "https://github.com/bergie/ViePalsu.git"
-    } 
+    }, 
+"dependencies" : {
+    "backbone" : "0.3.3",
+    "browserify" : "1.2.9",
+    "coffee-script" : "1.1.1",
+    "connect" : "1.6.0",
+    "connect-auth" : "0.3.2",
+    "connect-redis" : "1.0.6",
+    "express" : "2.0.0beta3",
+    "htmlparser" : "1.7.3",
+    "jquery" : "1.6.2",
+    "jquery-browserify" : "1.6.2",
+    "jsdom" : "*",
+    "oauth" : "0.9.5",
+    "querystring" : "0.0.4",
+    "redis" : "0.6.7",
+    "request" : "2.1.0",
+    "socket.io" : "0.7.9",
+    "socket.io-connect" : "0.2.2",
+    "system" : "0.1.0",
+    "underscore" : "1.1.7"
+    }
 }
+
