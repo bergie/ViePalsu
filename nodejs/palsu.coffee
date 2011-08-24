@@ -466,38 +466,40 @@ server.listen cfg.port, ->
 socket = io.listen server
 
 # Handle a new connected client
-socket.on 'connection', (client) ->
-    client.on 'message', (data) ->
-        if typeof data isnt 'object'
-            # We got a user identifier, mark as online
-            user = VIE.EntityManager.getByJSONLD
-                '@': data
-            client.userInstance = user
-            user.fetch
-                success: (user) ->
-                    user.set
-                        'iks:online': 1
-                    for clientId, clientObject of socket.clients
-                        clientObject.send user.toJSONLD()
-                    user.save()
-            return
+socket.sockets.on "connection", (client) ->
 
+    client.on "onlinestate", (identifier) ->
+        # We got a user identifier, mark as online
+        user = VIE.EntityManager.getByJSONLD
+            '@': identifier
+        client.userInstance = user
+        user.fetch
+            success: (user) ->
+                user.set
+                    'iks:online': 1
+                user.save()
+
+                # Notify all users
+                socket.sockets.emit "onlinestate", user.toJSONLD()
+
+    client.on "update", (data) ->
         # Generate a RDF Entity instance for the JSON-LD we got from the client
-        modelInstance = VIE.EntityManager.getByJSONLD(data)
+        modelInstance = VIE.EntityManager.getByJSONLD data
         modelInstance.save()
 
         # Send the item back to everybody else
         for clientId, clientObject of socket.clients
             if clientObject isnt client
                 console.log "Forwarding data to #{clientId}"
-                clientObject.send data
+                clientObject.emit "update", data
 
-    client.on 'disconnect', ->
-        if not client.userInstance then return
+    client.on "disconnect", ->
+        return unless client.userInstance
 
-        # Mark user as offline and notify other users
+        # Mark user as offline
         client.userInstance.set
             'iks:online': 0
-        for clientId, clientObject of socket.clients
-            clientObject.send client.userInstance.toJSONLD()
-            client.userInstance.save()
+        client.userInstance.save()
+
+        # Notify all users
+        socket.sockets.emit "onlinestate", client.userInstance.toJSONLD()

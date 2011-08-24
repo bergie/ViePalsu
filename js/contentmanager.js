@@ -64,20 +64,8 @@ var dateComparator = function(item, collection) {
 
 jQuery(document).ready(function() {
     var socket = io.connect();
-    
-    socket.on('connect', function() {
-        $('#disconnectMessage').fadeOut();
-        // Connected, send our username so server knows who is online
-        socket.send(jQuery('#account').attr('about'));
-    });
-    
-    socket.on('message', function(data){
-        if (typeof data !== 'object') {
-            // Textual data
-            console.log("Got", data);
-            return;
-        }
-        
+
+    var updateEntity = function(data) {       
         var inverseProperties = {
             'sioc:has_container': 'sioc:container_of',
             'rdfcal:attendeeOf': 'rdfcal:attendee',
@@ -102,10 +90,23 @@ jQuery(document).ready(function() {
                 }
             });
         });
+    };
+    
+    socket.on('connect', function() {
+        $('#disconnectMessage').fadeOut();
+        // Connected, send our username so server knows who is online
+        socket.emit('onlinestate', jQuery('#account').attr('about'));
     });
 
-    // displaying a notice to the user and
-    // setting a timer to try connecting in 500ms.
+    socket.on('onlinestate', function(user) {
+        updateEntity(user);
+    });
+
+    socket.on('update', function(data) {
+        updateEntity(data);
+    });
+    
+    // displaying a notice to the user
     socket.on('disconnect', function () {
         $('#disconnectMessage').fadeIn();
     });
@@ -114,7 +115,7 @@ jQuery(document).ready(function() {
     Backbone.sync = function(method, model, options) {
 		var json = model.toJSONLD();
 		console.log('backbone.sync', method, json);
-		socket.send(json);
+		socket.emit('update', json);
     };
 
     VIE.RDFaEntities.getInstances();
