@@ -488,10 +488,7 @@ socket.sockets.on "connection", (client) ->
         modelInstance.save()
 
         # Send the item back to everybody else
-        for clientId, clientObject of socket.clients
-            if clientObject isnt client
-                console.log "Forwarding data to #{clientId}"
-                clientObject.emit "update", data
+        client.broadcast.emit "update", data
 
     client.on "disconnect", ->
         return unless client.userInstance
