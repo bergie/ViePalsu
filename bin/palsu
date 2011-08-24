@@ -1,0 +1,19 @@
+#!/usr/bin/env coffee
+palsuRoot = "#{__dirname}/.."
+cli = require "cli"
+
+cli.enable "help"
+cli.enable "version"
+cli.enable "glob"
+cli.enable "daemon"
+cli.setApp "#{palsuRoot}/package.json"
+
+# Non-interactive processing
+cli.parse
+    listen: ['l', 'Start palsu server on this port', 'number']
+palsu = require "palsu-app"
+
+cli.main (args, options) ->
+    cli.args.shift()
+    return unless cli.args.length
+

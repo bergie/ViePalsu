@@ -2,11 +2,17 @@
 "name": "palsu-app",
 "version": "0.0.1",
 "description": "Palsu meeting tool -- http://palsu.me",
-"main": "package.js",
+"main": "./nodejs/palsu",
 "keywords": [
     "IKS project",
     "VIE"
     ],
+"engines":      {
+    "node":         ">=0.4.0"
+},
+"bin" : {
+    "palsu" : "./bin/palsu"
+    },
 "repository" : {
     "type" : "git",
     "url" : "https://github.com/bergie/ViePalsu.git"
@@ -28,7 +34,9 @@
     "socket.io" : "0.7.9",
     "socket.io-connect" : "0.2.2",
     "system" : "0.1.0",
-    "underscore" : "1.1.7"
+    "underscore" : "1.1.7",
+    "cli" : "*",
+    "daemon" : "*"
     }
 }
 
