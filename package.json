@@ -13,7 +13,6 @@
     }, 
 "dependencies" : {
     "backbone" : "0.3.3",
-    "browserify" : "1.2.9",
     "coffee-script" : "1.1.1",
     "connect" : "1.6.0",
     "connect-auth" : "0.3.2",
@@ -21,7 +20,6 @@
     "express" : "2.0.0beta3",
     "htmlparser" : "1.7.3",
     "jquery" : "1.6.2",
-    "jquery-browserify" : "1.6.2",
     "jsdom" : "*",
     "oauth" : "0.9.5",
     "querystring" : "0.0.4",

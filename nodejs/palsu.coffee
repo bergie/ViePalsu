@@ -13,7 +13,6 @@ querystring = require 'querystring'
 #require '../js/auth/auth.strategies/linkedin.js'
 fs = require 'fs'
 jsdom = require 'jsdom'
-browserify = require 'browserify'
 ProxyRequest = require 'request'
 
 configFile = "configuration.json"
@@ -89,9 +88,6 @@ server.configure ->
     server.use '/js', express.static "#{process.cwd()}/js"
     server.use '/static', express.static "#{process.cwd()}/static"
     server.use '/deps', express.static "#{process.cwd()}/deps"
-    server.use browserify
-        require: [ 'jquery-browserify' ]
-
     server.use connect.cookieParser()
     server.use connect.bodyParser()
 
@@ -463,7 +459,8 @@ server.get '/proxy', (request, response) ->
     return
 
 # start server
-server.listen(cfg.port)
+server.listen cfg.port, ->
+    console.log "Palsu is listening to #{cfg.port}"
 
 # ## Handling sockets
 socket = io.listen server
