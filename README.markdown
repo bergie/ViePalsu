@@ -21,4 +21,4 @@ IKS is hosting a public Palsu instance on [palsuapp.info](http://palsuapp.info/)
 Installation
 ------------
 
-npm install express socket.io jquery backbone connect connect-auth connect-redis socket.io-connect jquery jsdom browserify oauth ejs request
+Installation instructions are available at our wiki: [http://wiki.iks-project.eu/index.php/VIE/Palsu#Installation]
