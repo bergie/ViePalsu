@@ -1,21 +1,20 @@
-
 {
     "twitter": 
     {
-        "key": "ybomW22ST1ZjNVCh2OM24g",
-        "secret": "tSIrz4FTqUvSh9GPSSy9Bsix9bcNFQDExih9ZF5OQ"
+        "key": "",
+        "secret": ""
     },
     "linkedin":
     {
-        "key": "kr7toeOBeIuHFpZoB3Ztjv_g3XRtF53mYvRDyGVnepOQTCuJnOUlbiW4BUHEF2-b",
-        "secret": "O5Eo5CQeE_jxo4dTt4Wm2WGKlN0DO0vnKEZwv9NZjVLvFdKb34PEYHjxXkFnXye9"
+        "key": "",
+        "secret": ""
     },
 
     "facebook":
     {
-        "key": "190779634300804",
-        "secret": "b3ebe386e6fc71f9ad690ddd6bf729dd"
+        "key": "",
+        "secret": ""
     },
-    "hostname": "palsu.me",
-    "port": 80
+    "hostname": "localhost",
+    "port": 8001
 }
