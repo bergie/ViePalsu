@@ -63,12 +63,7 @@ var dateComparator = function(item, collection) {
 };
 
 jQuery(document).ready(function() {
-    var connected, trying, tryConnect;
-    
-    var socket = new io.Socket(null, {
-        rememberTransport: false
-        , tryTransportsOnConnectTimeout: false 
-    });
+    var socket = io.connect();
     
     socket.on('connect', function() {
         $('#disconnectMessage').fadeOut();
@@ -109,30 +104,11 @@ jQuery(document).ready(function() {
         });
     });
 
-    //- This method checks to see if we are connected, if not, tell socket.io to connect 
-    //- and reset a timeout to check again in 30 seconds.
-    tryConnect = function () {
-        if (!connected) {
-            var date = new Date();
-            date_reload = date.getTime()+15000;
-            date = new Date(date_reload);
-            $('#reconnect_countdown').attr('title', date).easydate();
-            
-            socket.connect();
-            clearTimeout(trying);
-            trying = setTimeout(tryConnect, 15000);
-        }
-    };
-
     // displaying a notice to the user and
     // setting a timer to try connecting in 500ms.
     socket.on('disconnect', function () {
-        connected = false;
-        trying = setTimeout(tryConnect, 500);
         $('#disconnectMessage').fadeIn();
     });
-
-    socket.connect();
 
     // Implement our own Backbone.sync method
     Backbone.sync = function(method, model, options) {
