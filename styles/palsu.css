@@ -194,18 +194,18 @@ aside .persons span[property="iks:online"][content="1"] {
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
 }
  
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    -webkit-border-radius: 10px;
-    border-radius: 8px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
 }
  
 ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 8px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
     background: #d3d7cf;
 }
 

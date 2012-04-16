@@ -8,7 +8,7 @@
     "VIE"
     ],
 "engines":      {
-    "node":         ">=0.4.0"
+    "node":         ">=0.6.0"
 },
 "bin" : {
     "palsu" : "./bin/palsu"
@@ -23,7 +23,7 @@
     "connect" : "1.6.0",
     "connect-auth" : "0.3.2",
     "connect-redis" : "1.0.6",
-    "express" : "2.0.0beta3",
+    "express" : "2.x.x",
     "htmlparser" : "1.7.3",
     "jquery" : "1.6.2",
     "jsdom" : "*",
