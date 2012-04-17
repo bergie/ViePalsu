@@ -1,6 +1,7 @@
 utils = require "#{__dirname}/utils"
 vieRedis = require "#{__dirname}/../../lib/vie-redis"
 {auto} = require 'async'
+fs = require 'fs'
 
 exports.registerRoutes = (server, prefix) ->
   server.param 'task_id', (req, res, next, id) ->
@@ -11,6 +12,11 @@ exports.registerRoutes = (server, prefix) ->
     unless id.substr(0, 4) is 'urn:'
       req.params.meeting_id = "http://localhost:8001/m/#{id}"
     next()
+
+  server.get prefix, (req, res) ->
+    fs.readFile "#{__dirname}/views/welcome.html", 'utf-8', (err, data) ->
+      return res.send 404 if err
+      res.send data
 
   server.get "#{prefix}t", (req, res) ->
     vie = utils.getVie()
