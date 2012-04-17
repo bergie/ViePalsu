@@ -3,6 +3,10 @@ fs = require 'fs'
 jsdom = require 'jsdom'
 jQuery = require 'jquery'
 
+jsdom.defaultDocumentFeatures =
+  FetchExternalResources: false,
+  ProcessExternalResources: false
+
 exports.writeUser = (user, jQuery) ->
   jQuery('#account [property="foaf\\:nick"]').text user.displayName
   jQuery('#account').attr 'about', "http://twitter.com/#{user.username}"
