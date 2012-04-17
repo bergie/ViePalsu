@@ -8,7 +8,7 @@
       "name": "palsu",
       "location": "./extension/palsu"
     },
-    "/login": {
+    "/login/": {
       "location": "./extension/login",
       "configuration": {
         "linkedin": {
