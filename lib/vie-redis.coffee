@@ -34,9 +34,9 @@ exports.createClient = (vie, config) ->
             reference = model.fromReference reference
             console.log "Adding reference #{predicate}-#{reference} for #{model.getSubjectUri()}"
             redisClient.sadd "#{predicate}-#{reference}", model.getSubjectUri()
-        redisClient.hset model.getSubjectUri(), predicate, JSON.stringify(object), (err) ->
-          return options.error err if err
-          options.success model
+        console.log "hset", model.getSubjectUri(), predicate
+        redisClient.hset model.getSubjectUri(), predicate, JSON.stringify(object), ->
+      options.success model
 
     if method is 'read'
       if model instanceof Backbone.Collection
