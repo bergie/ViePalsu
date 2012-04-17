@@ -1,5 +1,5 @@
 jQuery(document).ready ->
-  eventId = jQuery("body").attr("about")
+  eventId = jQuery("body").attr 'about'
   jQuery("#chat-history div[rev=\"sioc:has_container\"]").attr "about", eventId
   event = vie.entities.get eventId
   taskCollection = event.get 'rdfcal:hasTask'
@@ -8,8 +8,6 @@ jQuery(document).ready ->
   mentionCollection = event.get 'rdfcal:hasMention'
   killPlaceholders mentionCollection
 
-  postCollection = event.get 'sioc:container_of'
-  killPlaceholders postCollection
   killPlaceholders event.get 'rdfcal:attendee'
 
   taskCollection.bind "add", (task, task_list, options) ->
@@ -68,20 +66,5 @@ jQuery(document).ready ->
       jQuery("[about=\"" + uuid + "\"]").addClass("task_status_completed").removeClass "task_status_active"
       data.set "rdfcal:completed": "1"
     data.save()
-
-  jQuery('#chat-input .ui-widget-content').hallo
-    plugins:
-      halloformat: {}
-      hallolists: {}
-    placeholder: 'Write something for the chat'
-  jQuery('#chat-input button').click ->
-    date = new Date
-    newPost =
-      '@subject': "urn:uuid:#{toUUID()}"
-      'sioc:content': jQuery('#chat-input .ui-widget-content').hallo 'getContents'
-      'dc:created': date.toISOString()
-      'sioc:has_container': event.getSubject()
-    postCollection.create newPost
-    jQuery('#chat-input .ui-widget-content').hallo 'setContents', ''
 
   jQuery('#sidebar').accordion()
