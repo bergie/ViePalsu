@@ -8,13 +8,13 @@ jsdom.defaultDocumentFeatures =
   ProcessExternalResources: false
 
 exports.writeUser = (user, jQuery) ->
-  jQuery('#account [property="foaf\\:nick"]').text user.displayName
-  jQuery('#account').attr 'about', "http://twitter.com/#{user.username}"
-  jQuery('#account [property="foaf\\:name"]').text user.name
-  jQuery('#account [rel="foaf\\:img"] img').attr
-    src: user.image
-    title: "Picture of #{user.name}"
-    alt: "Picture of #{user.name}"
+  jQuery('#account [property="foaf\\:nick"]').text user.get 'foaf:name'
+  jQuery('#account').attr 'about', user.getSubjectUri()
+  jQuery('#account [property="foaf\\:name"]').text user.get 'foaf:name'
+  #jQuery('#account [rel="foaf\\:img"] img').attr
+  #  src: user.image
+  #  title: "Picture of #{user.name}"
+  #  alt: "Picture of #{user.name}"
 
 exports.dateComparator = (item, collection) ->
   itemDate = new Date item.get "dc:created"

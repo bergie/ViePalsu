@@ -1,0 +1,25 @@
+{
+  "server": {
+    "hostname": "127.0.0.1",
+    "port": 8001
+  },
+  "extensions": {
+    "/": {
+      "name": "palsu",
+      "location": "./extension/palsu"
+    },
+    "/login": {
+      "location": "./extension/login",
+      "configuration": {
+        "linkedin": {
+          "apiKey": "",
+          "secretKey": "",
+          "callbackURL": "http://localhost:8001/login/linkedin/callback"
+        },
+        "session": {
+          "secret": "your secret here"
+        }
+      }
+    }
+  }
+}
