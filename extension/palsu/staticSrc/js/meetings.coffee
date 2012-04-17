@@ -1,7 +1,6 @@
 handleEvent = (event) ->
   event.url = event.getSubjectUri()
   event.url = "/m/" + encodeURIComponent(event.id) if event.getSubjectUri().substr(0, 4) is "urn:"
-  console.log event.url, event.getSubjectUri()
   eventQ = "[about=\"#{event.getSubjectUri()}\"]"
   jQuery("#{eventQ} a").attr "href", event.url
   jQuery("#{eventQ} span[property=\"dc:created\"]").remove()
@@ -13,7 +12,6 @@ jQuery(document).ready ->
   calendar = vie.entities.get 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
   eventCollection = calendar.get 'rdfcal:has_component'
   eventCollection.bind "add", (event, calendar, options) ->
-    console.log "add", event.getSubjectUri()
     jQuery("div[property=\"mgd:agenda\"]").slideUp()
     handleEvent event
     return event.save() unless options.fromServer

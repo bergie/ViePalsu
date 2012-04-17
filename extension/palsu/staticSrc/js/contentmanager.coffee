@@ -5,6 +5,7 @@ document.write "<script type=\"text/javascript\" src=\"/socket.io/socket.io.js\"
 document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/jquery.easydate-0.2.4.min.js\"></script>"
 document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/jquery-ui-1.8.18.custom.min.js\"></script>"
 document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/hallo-min.js\"></script>"
+document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/create-min.js\"></script>"
 
 window.killPlaceholders = (entities) ->
   toRemove = []
@@ -25,6 +26,10 @@ window.dateComparator = (item, collection) ->
 
   itemIndex
 
+window.toUUID = ->
+  S4 = -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
+  "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
+
 jQuery(document).ready ->
   window.vie = new VIE
   vie.use new vie.RdfaService
@@ -40,10 +45,11 @@ jQuery(document).ready ->
       "rdfcal:mentionOf": "rdfcal:hasMention"
       "rdfcal:component": "rdfcal:has_component"
 
-    entity = vie.entities.addOrUpdate data
+    entity = vie.entities.addOrUpdate data,
+      overrideAttributes: true
     for from, to of inverseProperties
       container = entity.get(from)
-      continue unless container
+      continue unless container and container.get
       containerCollection = container.get(to)
       continue unless containerCollection
       if containerCollection.indexOf(entity) is -1
@@ -65,10 +71,16 @@ jQuery(document).ready ->
 
   Backbone.sync = (method, model, options) ->
     json = model.toJSONLD()
-    console.log "backbone.sync", method, json
     socket.emit "update", json
 
   vie.load
     element: 'body'
   .from('rdfa')
   .execute()
+
+  jQuery('body').midgardEditable
+    vie: vie
+    disabled: false
+    enableCollectionAdd: false
+  jQuery('body').bind 'midgardeditablechanged', (event, options) ->
+    options.instance.save()

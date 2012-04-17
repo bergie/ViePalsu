@@ -74,7 +74,14 @@ jQuery(document).ready ->
   jQuery('#chat-input button').click ->
     date = new Date
     newPost =
+      '@subject': "urn:uuid:#{toUUID()}"
       'sioc:content': jQuery('#chat-input .ui-widget-content').hallo 'getContents'
       'dc:created': date.toISOString()
       'sioc:has_container': event.getSubject()
     postCollection.create newPost
+    jQuery('#chat-input .ui-widget-content').hallo 'setContents', ''
+
+  jQuery('#sidebar').accordion()
+
+  jQuery('[property="mgd:agenda"]').hallo()
+  jQuery('[property="mgd:agenda"]').bind 'hallomodified', 

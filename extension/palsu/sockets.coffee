@@ -9,8 +9,11 @@ exports.registerSockets = (server) ->
   socket = io.listen server
   socket.on 'connection', (client) ->
     client.on 'update', (data) ->
-      entity = vie.entities.addOrUpdate data 
+      entity = vie.entities.addOrUpdate data,
+        overrideAttributes: true
       console.log "Saving", entity.toJSONLD()
-      entity.save()
-
-      client.broadcast.emit 'update', data
+      entity.save {},
+        success: (model) ->
+          client.broadcast.emit 'update', model.toJSONLD()
+        error: ->
+          console.log "ERROR saving"

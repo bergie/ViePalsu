@@ -26,6 +26,7 @@ exports.createClient = (vie, config) ->
       for predicate, object of model.toJSONLD()
         continue if predicate is '@subject'
         predicate = model.fromReference predicate
+        continue unless predicate and model.getSubjectUri()
         if model.isReference object
           if typeof object is 'string'
             object = [object]
@@ -33,8 +34,9 @@ exports.createClient = (vie, config) ->
             reference = model.fromReference reference
             console.log "Adding reference #{predicate}-#{reference} for #{model.getSubjectUri()}"
             redisClient.sadd "#{predicate}-#{reference}", model.getSubjectUri()
-
-        redisClient.hset model.getSubjectUri(), predicate, JSON.stringify object
+        redisClient.hset model.getSubjectUri(), predicate, JSON.stringify(object), (err) ->
+          return options.error err if err
+          options.success model
 
     if method is 'read'
       if model instanceof Backbone.Collection

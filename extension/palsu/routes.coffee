@@ -96,6 +96,7 @@ exports.registerRoutes = (server, prefix) ->
             'getEvent'
             (cb) ->
               posts = event.get 'http://rdfs.org/sioc/ns#container_of'
+              return cb() unless posts
               posts.predicate = 'http://rdfs.org/sioc/ns#has_container'
               posts.object = event.getSubjectUri()
               posts.comparator = (item) -> utils.dateComparator item, posts
@@ -109,6 +110,7 @@ exports.registerRoutes = (server, prefix) ->
             'getEvent'
             (cb) ->
               participants = event.get 'http://www.w3.org/2002/12/cal#attendee'
+              return cb() unless participants
               participants.predicate = 'http://www.w3.org/2002/12/cal#attendeeOf'
               participants.object = event.getSubjectUri()
               participants.fetch
@@ -120,6 +122,7 @@ exports.registerRoutes = (server, prefix) ->
             'getEvent'
             (cb) ->
               taskList = event.get 'http://www.w3.org/2002/12/cal#hasTask'
+              return cb() unless taskList
               taskList.predicate = 'http://www.w3.org/2002/12/cal#taskOf'
               taskList.object = event.getSubjectUri()
               taskList.fetch
@@ -131,6 +134,7 @@ exports.registerRoutes = (server, prefix) ->
             'getEvent'
             (cb) ->
               mentionList = event.get 'http://www.w3.org/2002/12/cal#hasMention'
+              return cb() unless mentionList
               mentionList.predicate = 'http://www.w3.org/2002/12/cal#mentionOf'
               mentionList.object = event.getSubjectUri()
               mentionList.fetch

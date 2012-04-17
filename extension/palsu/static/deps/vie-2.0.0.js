@@ -1728,10 +1728,6 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                 else if (existing.get(attribute) === value) {
                     return true;
                 } else {
-                    if (options.overrideAttributes) {
-                       newAttribs[attribute] = value;
-                       return true;
-                    }
                     //merge existing attribute values with new ones!
                     //not just overwrite 'em!!
                     var oldVals = existing.attributes[attribute];
@@ -1740,7 +1736,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                         // TODO: Merge collections
                         return true;
                     }
-                    
+                    if (options.overrideAttributes) {
+                       newAttribs[attribute] = value;
+                       return true;
+                    } 
                     if (attribute === '@context') {
                         newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
                     } else {
