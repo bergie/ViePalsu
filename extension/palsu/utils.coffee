@@ -65,6 +65,7 @@ exports.getVie = ->
   , 'rdfa'
   vie.namespaces.add 'dc', 'http://purl.org/dc/elements/1.1/'
   vie.namespaces.add 'mgd', 'http://www.midgard-project.org/midgard2/10.05'
+  vie.namespaces.add 'iks', 'http://www.iks-project.eu/#'
   vie
 
 exports.fetchTasksForEvent = (event, callback) ->

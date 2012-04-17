@@ -8,6 +8,19 @@ exports.registerSockets = (server) ->
 
   socket = io.listen server
   socket.on 'connection', (client) ->
+    client.on 'onlinestate', (identifier) ->
+      user = vie.entities.addOrUpdate
+        '@subject': identifier
+      ,
+        overrideAttributes: true
+      client.userInstance = user
+      user.fetch
+        success: ->
+          user.set
+            'iks:online': 1
+          user.save()
+          socket.sockets.emit 'onlinestate', user.toJSONLD()
+
     client.on 'update', (data) ->
       entity = vie.entities.addOrUpdate data,
         overrideAttributes: true
@@ -17,3 +30,12 @@ exports.registerSockets = (server) ->
           client.broadcast.emit 'update', model.toJSONLD()
         error: ->
           console.log "ERROR saving"
+
+    client.on 'disconnect', ->
+      return unless client.userInstance
+
+      client.userInstance.set
+        'iks:online': 0
+      client.userInstance.save()
+
+      socket.sockets.emit 'onlinestate', client.userInstance.toJSONLD()

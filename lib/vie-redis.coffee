@@ -34,7 +34,6 @@ exports.createClient = (vie, config) ->
             reference = model.fromReference reference
             console.log "Adding reference #{predicate}-#{reference} for #{model.getSubjectUri()}"
             redisClient.sadd "#{predicate}-#{reference}", model.getSubjectUri()
-        console.log "hset", model.getSubjectUri(), predicate
         redisClient.hset model.getSubjectUri(), predicate, JSON.stringify(object), ->
       options.success model
 

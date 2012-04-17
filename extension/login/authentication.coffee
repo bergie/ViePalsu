@@ -6,6 +6,7 @@ vieRedis = require "#{__dirname}/../../lib/vie-redis"
 exports.getAuthentication = (config) ->
   vie = new VIE
   vie.namespaces.add 'foaf', 'http://xmlns.com/foaf/0.1/'
+  vie.namespaces.add 'iks', 'http://www.iks-project.eu/#'
 
   profileToEntity = (profile) ->
     entity = vie.entities.addOrUpdate

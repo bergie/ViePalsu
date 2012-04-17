@@ -35,6 +35,7 @@ jQuery(document).ready ->
   vie.use new vie.RdfaService
   vie.namespaces.add 'dc', 'http://purl.org/dc/elements/1.1/'
   vie.namespaces.add 'mgd', 'http://www.midgard-project.org/midgard2/10.05'
+  vie.namespaces.add 'iks', 'http://www.iks-project.eu/#'
 
   socket = io.connect()
   updateEntity = (data) ->
@@ -56,9 +57,9 @@ jQuery(document).ready ->
         containerCollection.add entity,
           fromServer: true
 
-  socket.on "connect", ->
+  socket.on 'connect', ->
     $("#disconnectMessage").fadeOut()
-    socket.emit "onlinestate", jQuery("#account").attr("about")
+    socket.emit "onlinestate", jQuery("#account").attr 'about'
 
   socket.on "onlinestate", (user) ->
     updateEntity user
