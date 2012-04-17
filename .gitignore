@@ -1,3 +1,4 @@
 .DS_Store
 node_modules/
 extension/palsu/static/js/
+configuration/localhost*json
