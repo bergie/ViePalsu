@@ -52,13 +52,16 @@ exports.createClient = (vie, config) ->
             for subject in subjects
               itemInstance = vie.entities.addOrUpdate
                 '@subject': subject
+              ,
+                 overrideAttributes: true
               itemInstance.fetch
                 success: (item) ->
                   instances.push item
                   if instances.length >= subjects.length
                     options.success instances
                 error: (error) ->
-                  console.log "ERR", err
+                  console.log "Failed to fetch #{model.object} #{model.predicate} #{subject}"
+                  options.error err
         else
           throw "When seeking Collections, you must provide predicate and object"
 
