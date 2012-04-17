@@ -83,56 +83,5 @@
         </div>
         <p>&nbsp;</p>
         </article>
-
-        <script type="text/javascript" defer>
-            (function(window,undefined){
-    			// Prepare
-    			var
-    				$ = window.jQuery,
-    				GENTICS = window.GENTICS,
-    				$body = $('body');
-
-    			// Customise
-    			GENTICS.Aloha.settings = {
-    				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
-    				errorhandling : false,
-    				proxyUrl: '/proxy?proxy_url=',
-    				"i18n": {
-    					"acceptLanguage": 'en'
-    				},
-    				"repositories": {
-    					"linklist": {
-    					    data: []
-    					}
-    				},
-    				"plugins": {
-    					"link": {
-    						targetregex : '^(?!.*palsu.me).*',
-    						target : '_blank',
-    						cssclassregex : '^(?!.*palsu.me).*',
-    						cssclass : 'external'
-    					},
-    					"table": {
-    						config: ['table']
-    					},
-    					"ribbon": {
-    						enable: false
-    					},
-    					"annotations": {
-                		    "Services" : {
-                		        "fise" : {
-                		            ApiEndpoint: 'http://dev.iks-project.eu:8080/engines/'
-                		        }
-                		    }
-                		}
-
-    				}
-    			};
-
-    			// Bind to Aloha Ready Event
-    			$body.bind('aloha',function(){
-    			});
-    		})(window);
-        </script>
-    </body>
+    </body>      
 </html>

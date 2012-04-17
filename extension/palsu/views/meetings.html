@@ -60,38 +60,5 @@
           <button type="button" id="eventadd">Add</button>
       </div>
     </aside>
-    
-    <script type="text/javascript" defer>
-        // js errors without this
-        (function(window,undefined){
-            var
-            $ = window.jQuery,
-            GENTICS = window.GENTICS,
-            $body = $('body');
-            
-            // Customise
-			GENTICS.Aloha.settings = {
-				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
-				errorhandling : false,
-				proxyUrl: '/proxy?proxy_url=',
-				"i18n": {
-					"acceptLanguage": 'en'
-				},
-				"plugins": {
-					"annotations": {
-            		    "Services" : {
-            		        "fise" : {
-            		            ApiEndpoint: 'http://dev.iks-project.eu:8080/engines/' // 'http://stanbol.iksfordrupal.net/engines/'
-            		        }
-            		    }
-            		}
-            		
-				}
-			};
-
-			
-            $body.bind('aloha',function(){});
-            })(window);
-    </script>
   </body>
 </html>

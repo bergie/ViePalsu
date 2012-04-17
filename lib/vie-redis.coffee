@@ -1,6 +1,6 @@
 redis = require 'redis'
 Backbone = require 'backbone'
-VIE = require '../js/vie.js'
+{VIE} = require "#{__dirname}/../extension/palsu/static/deps/vie-2.0.0.js"
 
 isEmpty = (object) ->
     for key of object
@@ -9,13 +9,13 @@ isEmpty = (object) ->
 
 redisClient = redis.createClient()
 
-Backbone.sync = (method, model, success, error) ->
+Backbone.sync = (method, model, options) ->
     toUUID = () ->
         S4 = () -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
         "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
 
     if method is 'update'
-        console.log "Update enity: ", model.id
+        console.log "Update entity: ", model.id
         if model.id.substr(0, 7) is "_:bnode"
             # Generate UUID as the URI of the object
             model.id = "urn:uuid:#{toUUID()}"
@@ -36,16 +36,16 @@ Backbone.sync = (method, model, success, error) ->
             redisClient.hset model.id, predicate, JSON.stringify object
 
     if method is 'read'
-        if model instanceof VIE.RDFEntityCollection
+        if model instanceof Backbone.Collection
             if model.predicate and model.object
                 console.log "Retrieving #{model.predicate} connected to #{model.object}"
                 return redisClient.smembers "#{model.predicate}-#{model.object}", (err, subjects) ->
                     if err
                         console.log err
-                        return error err
+                        return options.error err
                     else if subjects
                         if subjects.length is 0
-                            return error "Not found"
+                            return options.error "Not found"
 
                         instances = []
                         for subject in subjects
@@ -55,7 +55,7 @@ Backbone.sync = (method, model, success, error) ->
                                 success: (item) ->
                                     instances.push item
                                     if instances.length >= subjects.length
-                                        success instances
+                                        options.success instances
             else
                 throw "When seeking Collections, you must provide predicate and object"
 
@@ -64,14 +64,15 @@ Backbone.sync = (method, model, success, error) ->
             redisClient.hgetall model.id, (err, item) ->
                 if err
                     console.log err
-                    error err
+                    options.error err
                 else if item
                     if isEmpty item
-                        return error "Not found"
+                        return options.error "Not found"
                     jsonld =
                         "@": model.id
                     for predicate, object of item
                         jsonld[predicate] = JSON.parse object
-                    success VIE.EntityManager.getByJSONLD jsonld
+                    options.success VIE.EntityManager.getByJSONLD jsonld
         else
+            console.log model
             throw "Unknown entity, please provide ID"

@@ -61,28 +61,5 @@
                 <div class="value"><span property="rdfcal:completed" content="0"></span></div>
             </div>
         </article>
-        
-        <script type="text/javascript" defer>
-            // js errors without this
-            (function(window,undefined){
-                var
-                $ = window.jQuery,
-                GENTICS = window.GENTICS,
-                $body = $('body');
-                
-                // Customise
-    			GENTICS.Aloha.settings = {
-    				logLevels: {'error': true, 'warn': true, 'info': true, 'debug': false},
-    				errorhandling : false,
-    				proxyUrl: '/proxy?proxy_url=',
-    				"i18n": {
-    					"acceptLanguage": 'en'
-    				}
-			    };
-                
-                $body.bind('aloha',function(){});
-                })(window);
-        </script>
-        
     </body>
 </html>
