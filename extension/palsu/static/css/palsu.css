@@ -404,12 +404,12 @@ body.task article hr {
 #disconnectMessage > span {
     margin: 0 5px 0 5px;
     padding: 0 0 0 20px;
-    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+    background: url('/static/Palsu/img/icons/transmit_error.png') no-repeat 0px 0px;
 }
 
 #disconnectMessageLoader {
     display: inline;
     left: 10000px;
-    background: url('/static/icons/transmit_error.png') no-repeat 0px 0px;
+    background: url('/static/Palsu/img/icons/transmit_error.png') no-repeat 0px 0px;
 }
 
