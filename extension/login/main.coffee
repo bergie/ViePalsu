@@ -7,6 +7,7 @@ class Login extends nodext.Extension
   config: {}
 
   configure: (server, models) ->
+    server.use http.favicon "#{__dirname}/../palsu/static/img/favicon.ico"
     server.use http.cookieParser()
     server.use http.session
       secret: @config.session.secret

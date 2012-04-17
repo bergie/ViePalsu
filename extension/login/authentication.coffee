@@ -14,7 +14,6 @@ exports.getAuthentication = (config) ->
       'foaf:name': profile.displayName
     ,
       overrideAttributes: true
-    console.log entity.toJSON()
     entity
 
   authentication.use new Strategy
@@ -25,20 +24,20 @@ exports.getAuthentication = (config) ->
     done null, profileToEntity profile
 
   authentication.serializeUser (user, done) ->
-    console.log "serialize", user.toJSONLD()
     user.save {},
       success: ->
         done null, user.getSubjectUri()
       error: (err) -> done err, null
 
   authentication.deserializeUser (id, done) ->
-    console.log "deserialize", id
     entity = vie.entities.addOrUpdate
       '@subject': id
     ,
       overrideAttributes: true
     entity.fetch
-      success: -> done null, entity
-      error: (err) -> done err, null
+      success: ->
+        done null, entity
+      error: (err) ->
+        done err, null
 
   authentication
