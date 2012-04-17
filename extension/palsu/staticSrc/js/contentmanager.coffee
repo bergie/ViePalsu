@@ -3,6 +3,16 @@ document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/backbo
 document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/vie-2.0.0.js\"></script>"
 document.write "<script type=\"text/javascript\" src=\"/socket.io/socket.io.js\"></script>"
 document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/jquery.easydate-0.2.4.min.js\"></script>"
+document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/jquery-ui-1.8.18.custom.min.js\"></script>"
+document.write "<script type=\"text/javascript\" src=\"/static/Palsu/deps/hallo-min.js\"></script>"
+
+window.killPlaceholders = (entities) ->
+  toRemove = []
+  entities.forEach (entity) ->
+    if entity.getSubjectUri().substr(0, 15) is 'mgd:placeholder'
+      toRemove.push entity
+  for entity in toRemove
+    entities.remove entity
 
 window.dateComparator = (item, collection) ->
   itemIndex = 0

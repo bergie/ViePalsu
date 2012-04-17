@@ -1,5 +1,5 @@
 utils = require "#{__dirname}/utils"
-require "#{__dirname}/../../lib/vie-redis"
+vieRedis = require "#{__dirname}/../../lib/vie-redis"
 {auto} = require 'async'
 
 exports.registerRoutes = (server, prefix) ->
@@ -14,14 +14,16 @@ exports.registerRoutes = (server, prefix) ->
 
   server.get "#{prefix}t", (req, res) ->
     vie = utils.getVie()
+    vieRedis.createClient vie
     utils.prepareTemplateEntitized "#{__dirname}/views/tasks.html", req, vie, (err, entities, window, jQuery) ->
       calendar = vie.entities.get 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
       return res.send 404 unless calendar
-      events = calendar.get 'rdfcal:has_component'
+      events = calendar.get 'http://www.w3.org/2002/12/cal#has_component'
       events.comparator = (item) -> utils.dateComparatorChronological item, events
-      events.predicate = 'rdfcal:component'
-      events.object = calendar.id
+      events.predicate = 'http://www.w3.org/2002/12/cal#component'
+      events.object = calendar.getSubjectUri()
       events.fetch
+        add: true
         success: (eventCollection) ->
           fetched = 0
           eventCollection.forEach (event) ->
@@ -34,6 +36,7 @@ exports.registerRoutes = (server, prefix) ->
 
   server.get "#{prefix}t/:task_id", (req, res) ->
     vie = utils.getVie()
+    vieRedis.createClient vie
     utils.prepareTemplate "#{__dirname}/views/task.html", req, (err, window, jQuery) ->
       return res.send 404 if err
 
@@ -51,14 +54,16 @@ exports.registerRoutes = (server, prefix) ->
 
   server.get "#{prefix}m", (req, res) ->
     vie = utils.getVie()
+    vieRedis.createClient vie
     utils.prepareTemplateEntitized "#{__dirname}/views/meetings.html", req, vie, (err, entities, window) ->
       calendar = vie.entities.get 'urn:uuid:e1191010-5bb1-11e0-80e3-0800200c9a66'
       return res.send 404 unless calendar
-      events = calendar.get 'rdfcal:has_component'
+      events = calendar.get 'http://www.w3.org/2002/12/cal#has_component'
       events.comparator = (item) -> utils.dateComparatorChronological item, events
-      events.predicate = 'rdfcal:component'
-      events.object = calendar.id
+      events.predicate = 'http://www.w3.org/2002/12/cal#component'
+      events.object = calendar.getSubjectUri()
       events.fetch
+        add: true
         success: (eventCollection) ->
           fetched = 0
           eventCollection.forEach (event) ->
@@ -71,6 +76,7 @@ exports.registerRoutes = (server, prefix) ->
 
   server.get "#{prefix}m/:meeting_id", (req, res) ->
     vie = utils.getVie()
+    vieRedis.createClient vie
     utils.prepareTemplate "#{__dirname}/views/meeting.html", req, (err, window, jQuery) ->
       return res.send 404 if err
 
@@ -89,41 +95,46 @@ exports.registerRoutes = (server, prefix) ->
           getPosts: [
             'getEvent'
             (cb) ->
-              posts = event.get 'sioc:container_of'
-              posts.predicate = 'sioc:has_container'
-              posts.object = event.id
-              posts.comparator = (item) -> utils.dataComparator item, posts
+              posts = event.get 'http://rdfs.org/sioc/ns#container_of'
+              posts.predicate = 'http://rdfs.org/sioc/ns#has_container'
+              posts.object = event.getSubjectUri()
+              posts.comparator = (item) -> utils.dateComparator item, posts
               posts.fetch
-                success: -> do cb
+                add: true
+                success: (models) ->
+                  do cb
                 error: -> do cb
           ]
           getParticipants: [
             'getEvent'
             (cb) ->
-              participants = event.get 'rdfcal:attendee'
-              participants.predicate = 'rdfcal:attendeeOf'
-              participants.object = event.id
+              participants = event.get 'http://www.w3.org/2002/12/cal#attendee'
+              participants.predicate = 'http://www.w3.org/2002/12/cal#attendeeOf'
+              participants.object = event.getSubjectUri()
               participants.fetch
+                add: true
                 success: -> do cb
                 error: -> do cb
           ]
           getTasks: [
             'getEvent'
             (cb) ->
-              taskList = event.get 'rdfcal:hasTask'
-              taskList.predicate = 'rdfcal:taskOf'
-              taskList.object = event.id
+              taskList = event.get 'http://www.w3.org/2002/12/cal#hasTask'
+              taskList.predicate = 'http://www.w3.org/2002/12/cal#taskOf'
+              taskList.object = event.getSubjectUri()
               taskList.fetch
+                add: true
                 success: -> do cb
                 error: -> do cb
           ]
           getMentions: [
             'getEvent'
             (cb) ->
-              mentionList = event.get 'rdfcal:hasMention'
-              mentionList.predicate = 'rdfcal:mentionOf'
-              mentionList.object = event.id
+              mentionList = event.get 'http://www.w3.org/2002/12/cal#hasMention'
+              mentionList.predicate = 'http://www.w3.org/2002/12/cal#mentionOf'
+              mentionList.object = event.getSubjectUri()
               mentionList.fetch
+                add: true
                 success: -> do cb
                 error: -> do cb
           ]

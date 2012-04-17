@@ -66,3 +66,21 @@ exports.getVie = ->
   vie.namespaces.add 'dc', 'http://purl.org/dc/elements/1.1/'
   vie.namespaces.add 'mgd', 'http://www.midgard-project.org/midgard2/10.05'
   vie
+
+exports.fetchTasksForEvent = (event, callback) ->
+  return if event.isNew()
+  events = event.get "rdfcal:hasTask"
+
+  return callback() unless events
+
+  events.predicate = 'http://www.w3.org/2002/12/cal#taskOf'
+  events.object = event.getSubjectUri()
+  events.comparator = (item) -> exports.dateComparator item, events
+  events.fetch
+    add: true
+    success: (taskCollection) ->
+      console.log "Got task collection " + taskCollection.length
+      callback()
+    error: ->
+      console.log "Failed to get task collection"
+      callback()

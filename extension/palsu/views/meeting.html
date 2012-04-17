@@ -9,23 +9,14 @@
       xmlns:fise = "http://fise.iks-project.eu/ontology/"
       xmlns:foaf = "http://xmlns.com/foaf/0.1/"
       xmlns:rdfcal="http://www.w3.org/2002/12/cal#">
-  <head>
+    <head>
         <title>Palsu &mdash; Online meeting tool</title>
-        
-        <link rel="SHORTCUT ICON" href="/static/favicon.ico" type="image/x-icon">
-        
-        <link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />
-        <script src="/js/jquery-1.6.2.min.js" type="text/javascript"></script>
-        <script src="/js/contentmanager.js" type="text/javascript"></script>
-        <script src="/js/layout.js" type="text/javascript"></script>
-        <script src="/js/discussionmanager.js" type="text/javascript"></script>
-
-        <script type="text/javascript" src="/deps/aloha-editor/plugins/vie2/VIE-2/lib/jquery-ui/1.8/js/jquery-ui-1.8.11.custom.min.js"></script>
-        
-        <script src="/js/meeting.js" type="text/javascript"></script>
-
-        <link rel="stylesheet" href="/deps/ui-lightness/jquery-ui-1.8.12.custom.css" />
-        <link rel="stylesheet" href="/styles/palsu.css" />
+        <link rel="shortcut icon" href="/static/Palsu/img/favicon.ico" type="image/x-icon">
+        <!--<link href="http://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css" />-->
+        <script src="/static/Palsu/deps/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="/static/Palsu/js/contentmanager.js" type="text/javascript"></script>
+        <script src="/static/Palsu/js/meeting.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="/static/Palsu/css/palsu.css" />
     </head>
     
     <body typeof="rdfcal:Vevent" about="#meeting">
@@ -49,7 +40,7 @@
         <article>
         <div id="chat-history">
             <div rel="sioc:container_of" rev="sioc:has_container">
-                <div typeof="sioc:Post" about="#post1">
+                <div typeof="sioc:Post" about="mgd:placeholder:post">
                     <div rel="foaf:depiction"><img width="30" src="#" /></div>
                     <div property="dc:creator">screen name</div>
                     <abbr title="" class="easydate"></abbr><div property="dc:created">date</div>
@@ -80,7 +71,7 @@
             <h2><a href="#">Participants</a></h2>
             <div>
               <ul class="persons" rel="rdfcal:attendee" rev="rdfcal:attendeeOf">
-                <li about="" typeof="foaf:Person" content="">
+                <li about="mgd:placeholder:person" typeof="foaf:Person" content="">
                   <span property="foaf:name">Example User</span>
                   <span property="iks:online" content="0"></span>
                 </li>
@@ -90,7 +81,7 @@
             <h2><a href="#">Tasks</a></h2>
             <div>
                 <ul class="tasks" rel="rdfcal:hasTask" rev="rdfcal:taskOf">
-                    <li about="" typeof="rdfcal:Task">
+                    <li about="mgd:placeholder:task" typeof="rdfcal:Task">
                         <span class="task_complete_action">
                         <i><span property="foaf:name">Agent</span></i>:
                         <br /><span property="rdfcal:name">Task description</span> by <span property="rdfcal:targetDate">yy-mm-dd</span> <span property="rdfcal:completed" content="x"></span>
@@ -104,7 +95,7 @@
             <h2><a href="#">Mentions</a></h2>
             <div>
                 <ul class="mentions" rel="rdfcal:hasMention" rev="rdfcal:mentionOf">
-                    <li about="" typeof="rdfcal:Mention">
+                    <li about="mgd:placeholder:mention" typeof="rdfcal:Mention">
                         <span property="foaf:name">Agent</span>
                     </li>
                 </ul>
