@@ -21,4 +21,12 @@ IKS is hosting a public Palsu instance on [palsuapp.info](http://palsuapp.info/)
 Installation
 ------------
 
-Installation instructions are available at our wiki: [http://wiki.iks-project.eu/index.php/VIE/Palsu#Installation]
+You need Node.js, NPM, and a Redis instance. Then just:
+
+    $ npm install
+
+Copy the `configuration/localhost_8001.json.dist` to `configuration/localhost_8001.json` and edit it accordingly. You'll need a LinkedIn API key.
+
+To start Palsu, run:
+
+    $ ./node_modules/nodext/bin/nodext configuration/localhost_8001.json
