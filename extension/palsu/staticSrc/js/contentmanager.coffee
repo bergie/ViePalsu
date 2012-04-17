@@ -82,5 +82,6 @@ jQuery(document).ready ->
     vie: vie
     disabled: false
     enableCollectionAdd: false
+    toolbarState: 'min'
   jQuery('body').bind 'midgardeditablechanged', (event, options) ->
     options.instance.save()

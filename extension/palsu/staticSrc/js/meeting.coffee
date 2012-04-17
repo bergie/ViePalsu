@@ -70,6 +70,9 @@ jQuery(document).ready ->
     data.save()
 
   jQuery('#chat-input .ui-widget-content').hallo
+    plugins:
+      halloformat: {}
+      hallolists: {}
     placeholder: 'Write something for the chat'
   jQuery('#chat-input button').click ->
     date = new Date
@@ -82,6 +85,3 @@ jQuery(document).ready ->
     jQuery('#chat-input .ui-widget-content').hallo 'setContents', ''
 
   jQuery('#sidebar').accordion()
-
-  jQuery('[property="mgd:agenda"]').hallo()
-  jQuery('[property="mgd:agenda"]').bind 'hallomodified', 
