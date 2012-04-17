@@ -6,7 +6,7 @@ Backbone = require 'backbone'
 connect = require 'connect'
 VIE = require '../js/vie.js'
 auth = require 'connect-auth'
-sys = require 'sys'
+sys = require 'util'
 require './vie-redis.coffee'
 RedisStore = require('connect-redis')(express)
 querystring = require 'querystring'

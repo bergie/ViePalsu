@@ -11,7 +11,7 @@ cli.setApp "#{palsuRoot}/package.json"
 # Non-interactive processing
 cli.parse
     listen: ['l', 'Start palsu server on this port', 'number']
-palsu = require "palsu-app"
+palsu = require "#{__dirname}/../nodejs/palsu"
 
 cli.main (args, options) ->
     cli.args.shift()
