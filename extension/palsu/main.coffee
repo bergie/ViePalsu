@@ -27,7 +27,7 @@ class Palsu extends nodext.Extension
     server.use express.bodyParser()
 
     sockets = require './sockets'
-    sockets.registerSockets server
+    sockets.registerSockets server, @config
 
   registerRoutes: (server) ->
     routes = require './routes'

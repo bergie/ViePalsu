@@ -2,11 +2,16 @@ io = require 'socket.io'
 utils = require './utils'
 vieRedis = require "#{__dirname}/../../lib/vie-redis"
 
-exports.registerSockets = (server) ->
+exports.registerSockets = (server, config) ->
   vie = utils.getVie()
   vieRedis.createClient vie
 
   socket = io.listen server
+
+  socketConf = config.socket ? {}
+  socket.configure ->
+    socket.set param, value for param, value of socketConf
+
   socket.on 'connection', (client) ->
     client.on 'onlinestate', (identifier) ->
       user = vie.entities.addOrUpdate
