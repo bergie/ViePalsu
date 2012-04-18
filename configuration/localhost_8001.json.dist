@@ -6,7 +6,10 @@
   "extensions": {
     "/": {
       "name": "palsu",
-      "location": "./extension/palsu"
+      "location": "./extension/palsu",
+      "configuration": {
+        "idPrefix": "http://localhost:8001/"
+      }
     },
     "/login/": {
       "location": "./extension/login",

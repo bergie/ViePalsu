@@ -31,6 +31,6 @@ class Palsu extends nodext.Extension
 
   registerRoutes: (server) ->
     routes = require './routes'
-    routes.registerRoutes server, @config.urlPrefix
+    routes.registerRoutes server, @config.urlPrefix, @config.idPrefix
 
 exports.extension = Palsu

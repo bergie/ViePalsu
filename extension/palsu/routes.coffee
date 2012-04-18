@@ -3,14 +3,14 @@ vieRedis = require "#{__dirname}/../../lib/vie-redis"
 {auto} = require 'async'
 fs = require 'fs'
 
-exports.registerRoutes = (server, prefix) ->
+exports.registerRoutes = (server, prefix, idPrefix) ->
   server.param 'task_id', (req, res, next, id) ->
     unless id.substr(0, 4) is 'urn:'
-      req.params.task_id = "http://localhost:8001/t/#{id}"
+      req.params.task_id = "#{idPrefix}t/#{id}"
     next()
   server.param 'meeting_id', (req, res, next, id) ->
     unless id.substr(0, 4) is 'urn:'
-      req.params.meeting_id = "http://localhost:8001/m/#{id}"
+      req.params.meeting_id = "#{idPrefix}m/#{id}"
     next()
 
   server.get prefix, (req, res) ->
