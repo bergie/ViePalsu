@@ -1,0 +1,28 @@
+{
+  "server": {
+    "hostname": "palsu.herokuapp.com",
+    "port": 8001
+  },
+  "extensions": {
+    "/": {
+      "name": "palsu",
+      "location": "./extension/palsu",
+      "configuration": {
+        "idPrefix": "https://palsu.herokuapp.com/"
+      }
+    },
+    "/login/": {
+      "location": "./extension/login",
+      "configuration": {
+        "linkedin": {
+          "apiKey": "",
+          "secretKey": "",
+          "callbackURL": "https://palsu.herokuapp.com/login/linkedin/callback"
+        },
+        "session": {
+          "secret": "aina palsussa"
+        }
+      }
+    }
+  }
+}

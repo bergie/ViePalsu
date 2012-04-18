@@ -30,3 +30,27 @@ Copy the `configuration/localhost_8001.json.dist` to `configuration/localhost_80
 To start Palsu, run:
 
     $ ./node_modules/nodext/bin/nodext configuration/localhost_8001.json
+
+Deploying on Heroku
+-------------------
+
+Create an app:
+
+    $ heroku apps:create -s cedar palsu
+
+Enable Redis:
+
+    $ heroku addons:add redistogo:nano
+
+Set your LinkedIn API and secret keys:
+
+    $ heroku config:add LINKEDINAPIKEY=foo
+    $ heroku config:add LINKEDINSECRETKEY=bar
+
+Deploy:
+
+    $ git push heroku master
+
+Watch logs:
+
+    $ heroku logs
