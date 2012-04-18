@@ -25,12 +25,6 @@ getRedis = ->
   if redisOpts.pass
     rd.auth redisOpts.pass, (err) ->
       throw err if err
-  if redisOpts.db
-    rd.select redisOpts.db
-    rd.on 'connect', ->
-      rd.send_anyways true
-      rd.select redisOpts.db
-      rd.send_anyways false
   rd
 
 exports.createClient = (vie) ->
