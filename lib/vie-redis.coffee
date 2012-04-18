@@ -10,8 +10,30 @@ toUUID = ->
   S4 = -> ((1 + Math.random()) * 0x10000|0).toString(16).substring 1
   "#{S4()}#{S4()}-#{S4()}-#{S4()}-#{S4()}-#{S4()}#{S4()}#{S4()}"
 
-exports.createClient = (vie, config) ->
-  redisClient = redis.createClient()
+getRedis = ->
+  unless process.env.REDISTOGO_URL
+    return redis.createClient()
+  redisOpts = {}
+  redisUrl = url.parse process.env.REDISTOGO_URL
+  redisAuth = redisUrl.auth.split ':'
+  redisOpts.host = redisUrl.hostname
+  redisOpts.port = redisUrl.port
+  redisOpts.db = redisAuth[0]
+  redisOpts.pass = redisAuth[1]
+  rd = redis.createClient redisOpts.port, redisOpts.host
+  if redisOpts.pass
+    rd.auth redisOpts.pass, (err) ->
+      throw err if err
+  if redisOpts.db
+    rd.select redisOpts.db
+    rd.on 'connect', ->
+      rd.send_anyways true
+      rd.select redisOpts.db
+      rd.send_anyways false
+  rd
+
+exports.createClient = (vie) ->
+  redisClient = getRedis()
 
   Backbone.sync = (method, model, options) ->
     method = 'update' if method is 'create'

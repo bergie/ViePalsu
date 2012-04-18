@@ -14,7 +14,7 @@ class Login extends nodext.Extension
     server.use http.cookieParser()
     server.use http.session
       secret: @config.session.secret
-      store: new redis
+      store: new redis @getRedisOpts()
 
     @authentication = require('./authentication').getAuthentication @config
     server.use @authentication.initialize()
@@ -36,5 +36,18 @@ class Login extends nodext.Extension
   registerRoutes: (server) ->
     routes = require './routes'
     routes.registerRoutes server, @config.urlPrefix, @authentication
+
+  getRedisOpts: ->
+    unless process.env.REDISTOGO_URL
+      return {}
+
+    redisOpts = {}
+    redisUrl = url.parse process.env.REDISTOGO_URL
+    redisAuth = redisUrl.auth.split ':'
+    redisOpts.host = redisUrl.hostname
+    redisOpts.port = redisUrl.port
+    redisOpts.db = redisAuth[0]
+    redisOpts.pass = redisAuth[1]
+    redisOpts
 
 exports.extension = Login
