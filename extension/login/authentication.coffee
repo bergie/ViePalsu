@@ -17,9 +17,12 @@ exports.getAuthentication = (config) ->
       overrideAttributes: true
     entity
 
+  apiKey = process.env.LINKEDINAPIKEY ? config.linkedIn.apiKey
+  secretKey = process.env.LINKEDINSECRETKEY ? config.linkedIn.secretKey
+
   authentication.use new Strategy
-    consumerKey: config.linkedin.apiKey
-    consumerSecret: config.linkedin.secretKey
+    consumerKey: apiKey
+    consumerSecret: secretKey
     callbackURL: config.linkedin.callbackURL
   , (token, tokenSecret, profile, done) ->
     done null, profileToEntity profile
