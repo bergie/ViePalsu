@@ -1,5 +1,6 @@
 nodext = require 'nodext'
 http = require 'express'
+url = require 'url'
 
 class Login extends nodext.Extension
   name: "Login"

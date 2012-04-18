@@ -1,5 +1,6 @@
 redis = require 'redis'
 Backbone = require 'backbone'
+url = require 'url'
 
 isEmpty = (object) ->
   for key of object
