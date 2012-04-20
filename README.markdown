@@ -54,3 +54,5 @@ Deploy:
 Watch logs:
 
     $ heroku logs
+
+You can try a public demo instance on <http://palsu.herokuapp.com/>.
