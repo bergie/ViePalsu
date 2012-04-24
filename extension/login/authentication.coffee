@@ -23,7 +23,7 @@ exports.getAuthentication = (config) ->
   authentication.use new Strategy
     consumerKey: apiKey
     consumerSecret: secretKey
-    callbackURL: config.linkedin.callbackURL
+    callbackURL: config.linkedIn.callbackURL
   , (token, tokenSecret, profile, done) ->
     done null, profileToEntity profile
 

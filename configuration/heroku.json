@@ -18,7 +18,7 @@
     "/login/": {
       "location": "./extension/login",
       "configuration": {
-        "linkedin": {
+        "linkedIn": {
           "apiKey": "",
           "secretKey": "",
           "callbackURL": "https://palsu.herokuapp.com/login/linkedin/callback"

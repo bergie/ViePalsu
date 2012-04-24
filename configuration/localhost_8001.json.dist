@@ -14,7 +14,7 @@
     "/login/": {
       "location": "./extension/login",
       "configuration": {
-        "linkedin": {
+        "linkedIn": {
           "apiKey": "",
           "secretKey": "",
           "callbackURL": "http://localhost:8001/login/linkedin/callback"
