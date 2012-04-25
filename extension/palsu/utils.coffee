@@ -1,4 +1,4 @@
-{VIE} = require "#{__dirname}/static/deps/vie-2.0.0.js"
+{VIE} = require 'vie'
 fs = require 'fs'
 jsdom = require 'jsdom'
 jQuery = require 'jquery'
