@@ -1,6 +1,8 @@
 Palsu
 =====
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bergie/ViePalsu.svg)](https://greenkeeper.io/)
+
 *Palsu* is an interactive meeting tool that is used to demonstrate capabilities of [VIE](https://github.com/bergie/VIE). The idea is to create a tool for coordinating both online and real-world meetings. This means being able to manage:
 
 * Meeting scheduling
